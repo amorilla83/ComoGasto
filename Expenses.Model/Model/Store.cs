@@ -7,7 +7,9 @@ namespace Expenses.Model.Model
     {
         public Store()
         {
-            StoreLocation = new HashSet<StoreLocation>();
+            Expense = new HashSet<Expense>();
+            Favourite = new HashSet<Favourite>();
+            HistoPrice = new HashSet<HistoPrice>();
         }
 
         public int IdStore { get; set; }
@@ -16,6 +18,8 @@ namespace Expenses.Model.Model
         public int? IdTypeStore { get; set; }
 
         public TypeStore IdTypeStoreNavigation { get; set; }
-        public ICollection<StoreLocation> StoreLocation { get; set; }
+        public ICollection<Expense> Expense { get; set; }
+        public ICollection<Favourite> Favourite { get; set; }
+        public ICollection<HistoPrice> HistoPrice { get; set; }
     }
 }

@@ -7,7 +7,8 @@ namespace Expenses.Model.Model
     {
         public Product()
         {
-            ShoppingProduct = new HashSet<ShoppingProduct>();
+            ExpenseItem = new HashSet<ExpenseItem>();
+            ProductBrand = new HashSet<ProductBrand>();
         }
 
         public int IdProduct { get; set; }
@@ -17,6 +18,7 @@ namespace Expenses.Model.Model
         public string Image { get; set; }
 
         public Label IdLabelNavigation { get; set; }
-        public ICollection<ShoppingProduct> ShoppingProduct { get; set; }
+        public ICollection<ExpenseItem> ExpenseItem { get; set; }
+        public ICollection<ProductBrand> ProductBrand { get; set; }
     }
 }

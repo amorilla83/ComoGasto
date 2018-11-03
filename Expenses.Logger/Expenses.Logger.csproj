@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Expenses.Model\Expenses.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Entities\" />
+    <PackageReference Include="NLog" Version="4.5.10" />
   </ItemGroup>
 
 </Project>

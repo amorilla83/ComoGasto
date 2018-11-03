@@ -7,12 +7,12 @@ namespace Expenses.Model.Model
     {
         public Brand()
         {
-            ShoppingProduct = new HashSet<ShoppingProduct>();
+            ProductBrand = new HashSet<ProductBrand>();
         }
 
         public int IdBrand { get; set; }
         public string Name { get; set; }
 
-        public ICollection<ShoppingProduct> ShoppingProduct { get; set; }
+        public ICollection<ProductBrand> ProductBrand { get; set; }
     }
 }

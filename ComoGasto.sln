@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expenses.API", "Expenses.AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expenses.Infrastructure", "Expenses.Infrastructure\Expenses.Infrastructure.csproj", "{609F6260-8B9F-4523-A59D-4EA69D02731E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expenses.Logger", "Expenses.Logger\Expenses.Logger.csproj", "{B842748C-E5DD-43EA-A7AB-348DED6A401D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{609F6260-8B9F-4523-A59D-4EA69D02731E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{609F6260-8B9F-4523-A59D-4EA69D02731E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{609F6260-8B9F-4523-A59D-4EA69D02731E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B842748C-E5DD-43EA-A7AB-348DED6A401D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B842748C-E5DD-43EA-A7AB-348DED6A401D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B842748C-E5DD-43EA-A7AB-348DED6A401D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B842748C-E5DD-43EA-A7AB-348DED6A401D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

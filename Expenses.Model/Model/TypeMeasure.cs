@@ -7,12 +7,12 @@ namespace Expenses.Model.Model
     {
         public TypeMeasure()
         {
-            ShoppingProduct = new HashSet<ShoppingProduct>();
+            ExpenseItem = new HashSet<ExpenseItem>();
         }
 
         public int IdTypeMeasure { get; set; }
         public string Description { get; set; }
 
-        public ICollection<ShoppingProduct> ShoppingProduct { get; set; }
+        public ICollection<ExpenseItem> ExpenseItem { get; set; }
     }
 }

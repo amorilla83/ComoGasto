@@ -7,6 +7,7 @@ namespace Expenses.Model.Model
     {
         public Section()
         {
+            Expense = new HashSet<Expense>();
             Label = new HashSet<Label>();
         }
 
@@ -14,6 +15,7 @@ namespace Expenses.Model.Model
         public string Name { get; set; }
         public string Description { get; set; }
 
+        public ICollection<Expense> Expense { get; set; }
         public ICollection<Label> Label { get; set; }
     }
 }
