@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Expenses.Domain
+namespace Expenses.Core
 {
     public interface IUnitOfWork : IDisposable
     {

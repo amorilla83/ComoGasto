@@ -1,7 +1,7 @@
-﻿using Domain;
+﻿using Expenses.Core;
 using System;
 
-namespace Expenses.Data
+namespace Expenses.Infrastructure
 {
     public class ConnectionStringProvider : IConnectionStringProvider
     {

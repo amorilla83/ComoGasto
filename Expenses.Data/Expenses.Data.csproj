@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Expenses.Domain\Expenses.Domain.csproj" />
+    <ProjectReference Include="..\Expenses.Domain\Expenses.Core.csproj" />
+    <ProjectReference Include="..\Expenses.Model\Expenses.Model.csproj" />
   </ItemGroup>
 
 </Project>

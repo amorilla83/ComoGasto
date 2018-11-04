@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Expenses.Logger\Expenses.Logger.csproj" />
+    <ProjectReference Include="..\Expenses.Infrastructure\Expenses.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,9 @@
 ﻿using System;
+using Expenses.Model.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Expenses.Model.Model
+namespace Expenses.Core
 {
     public partial class DB_ExpensesContext : DbContext
     {

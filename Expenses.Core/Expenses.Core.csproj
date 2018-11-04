@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Expenses.Core.Entities\Expenses.Core.Entities.csproj" />
     <ProjectReference Include="..\Expenses.Model\Expenses.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Entities\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain
+namespace Expenses.Core
 {
     public interface IConnectionStringProvider
     {
