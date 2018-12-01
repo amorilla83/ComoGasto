@@ -11,13 +11,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expenses.API", "Expenses.AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expenses.Infrastructure", "Expenses.Infrastructure\Expenses.Infrastructure.csproj", "{609F6260-8B9F-4523-A59D-4EA69D02731E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expenses.Core.Entities", "Expenses.Core.Entities\Expenses.Core.Entities.csproj", "{4AC6CE9D-C73F-41D6-A08E-DA100608AE0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expenses.Core.Entities", "Expenses.Core.Entities\Expenses.Core.Entities.csproj", "{4AC6CE9D-C73F-41D6-A08E-DA100608AE0E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A5AB8DDC-2346-430C-858A-68192B124C6D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{96464FE8-37C4-4B1C-934E-C1EB7C625059}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{1E5C2A42-DBF7-4703-9367-5774DEECEBA7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBase", "DataBase", "{337B4D58-5131-4281-A607-1743F7C6BFD1}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Documents\DB_Expenses.sql = ..\..\..\Documents\DB_Expenses.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
