@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Expenses.Infrastructure.Repository
+namespace Expenses.Infrastructure.Data.Repository
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity>
         where TEntity : class

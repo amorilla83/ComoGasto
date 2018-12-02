@@ -1,7 +1,7 @@
 ﻿using Expenses.Core;
 using System;
 
-namespace Expenses.Infrastructure
+namespace Expenses.Infrastructure.Data
 {
     public class ConnectionStringProvider : IConnectionStringProvider
     {

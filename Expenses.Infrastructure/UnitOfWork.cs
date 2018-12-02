@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Expenses.Infrastructure
+namespace Expenses.Infrastructure.Data
 {
     class UnitOfWork : IUnitOfWork
     {

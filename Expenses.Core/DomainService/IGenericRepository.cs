@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Expenses.Core
+namespace Expenses.Core.DomainService
 {
     public interface IGenericRepository <TEntity>
         where TEntity : class
