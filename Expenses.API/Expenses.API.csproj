@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Expenses.Infrastructure\Expenses.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\Expenses.Infrastructure.Data\Expenses.Infrastructure.Data.csproj" />
   </ItemGroup>
 
 </Project>

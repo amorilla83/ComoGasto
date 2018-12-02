@@ -5,17 +5,17 @@ using System.Text;
 
 namespace Expenses.Core.DomainService
 {
-    public interface ICustomerRepository
+    public interface IStoreRepository
     {
         //Create Data
         //No Id when enter, Id when exist
-        Customer Create(Customer customer);
+        Store Insert(Store store);
         //Read Data
-        Customer ReadById(int id);
-        List<Customer> ReadAll();
+        Store GetById(int id);
+        List<Store> GetAll();
         //Update Data
-        Customer Update(Customer customerUpdate);
+        Store Update(Store storeUpdate);
         //Delete Data
-        Customer Delete(int id);
+        Store Delete(int id);
     }
 }

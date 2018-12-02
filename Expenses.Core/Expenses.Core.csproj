@@ -9,8 +9,4 @@
     <ProjectReference Include="..\Expenses.Model\Expenses.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ApplicationService\" />
-  </ItemGroup>
-
 </Project>

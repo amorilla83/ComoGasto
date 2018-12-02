@@ -6,29 +6,29 @@ using System.Text;
 
 namespace Expenses.Infrastructure.Data.Repository
 {
-    class CustomerRepository : ICustomerRepository
-    { 
-        public Customer Create(Customer customer)
+    public class StoreRepository : IStoreRepository
+    {
+        public Store Delete(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Customer Delete(int id)
+        public List<Store> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public List<Customer> ReadAll()
+        public Store GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Customer ReadById(int id)
+        public Store Insert(Store store)
         {
             throw new NotImplementedException();
         }
 
-        public Customer Update(Customer customerUpdate)
+        public Store Update(Store storeUpdate)
         {
             throw new NotImplementedException();
         }
