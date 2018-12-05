@@ -12,7 +12,7 @@ namespace Expenses.Core.DomainService
         Store Insert(Store store);
         //Read Data
         Store GetById(int id);
-        List<Store> GetAll();
+        IEnumerable<Store> GetAll();
         //Update Data
         Store Update(Store storeUpdate);
         //Delete Data

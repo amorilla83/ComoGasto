@@ -13,7 +13,7 @@ namespace Expenses.Infrastructure.Data.Repository
             throw new NotImplementedException();
         }
 
-        public List<Store> GetAll()
+        public IEnumerable<Store> GetAll()
         {
             throw new NotImplementedException();
         }

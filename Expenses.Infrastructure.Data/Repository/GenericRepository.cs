@@ -1,4 +1,5 @@
 ﻿using Expenses.Core;
+using Expenses.Core.DomainService;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

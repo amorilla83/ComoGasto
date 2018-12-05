@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
@@ -17,32 +18,45 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public Store DeleteStore(int id)
         {
-            throw new NotImplementedException();
+            return _storeRepo.Delete(id);
         }
 
         public Store FindStoreById(int id)
         {
-            throw new NotImplementedException();
+            return _storeRepo.GetById(id);
         }
 
         public List<Store> GetAllStores()
         {
-            throw new NotImplementedException();
+            return _storeRepo.GetAll().ToList();
+        }
+
+        public List<Store> GetAllStoresByName (string name)
+        {
+            return _storeRepo.GetAll().Where(a => a.Name == name).ToList();
         }
 
         public Store NewStore(string name, string logo)
         {
-            throw new NotImplementedException();
+            Store store = new Store()
+            {
+                Name = name,
+                Logo = logo
+            };
+            return store;
         }
 
         public Store SaveStore(Store store)
         {
-            throw new NotImplementedException();
+            return _storeRepo.Insert(store);
         }
 
         public Store UpdateStore(Store storeUpdate)
         {
-            throw new NotImplementedException();
+            Store store = FindStoreById(storeUpdate.IdStore);
+            store.Logo = storeUpdate.Logo;
+            store.Name = storeUpdate.Name;
+            return store;
         }
     }
 }

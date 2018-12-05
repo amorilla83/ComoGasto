@@ -16,6 +16,8 @@ namespace Expenses.Core.ApplicationService
         Store FindStoreById(int id);
 
         List<Store> GetAllStores();
+        //Los filtros en la lista los hacemos en el servicio
+        List<Store> GetAllStoresByName(string name);
 
         //Update
         Store UpdateStore(Store storeUpdate);
