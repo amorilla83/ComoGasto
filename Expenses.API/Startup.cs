@@ -24,8 +24,6 @@ namespace Expenses.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            //Configuramos el log
-            LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
         }
 
         public IConfiguration Configuration { get; }
@@ -34,9 +32,12 @@ namespace Expenses.API
         public void ConfigureServices(IServiceCollection services)
         {
             //Aquí se debe añadir la configuración del log que estará definido en service extensions
-            // services.ConfigureLoggerService();
             services.AddScoped<IStoreRepository, StoreRepository>();
             services.AddScoped<IStoreService, StoreService>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
+            services.AddScoped<IProductBrandService, ProductBrandService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -57,7 +58,8 @@ namespace Expenses.API
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //De momento lo comentamos para las pruebas
+            //app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
