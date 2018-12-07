@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using Expenses.Core.ApplicationService;
 using Expenses.Core.ApplicationService.ServicesImpl;
 using Expenses.Core.DomainService;
+using Expenses.Core.Entities;
+using Expenses.Infrastructure.Data;
 using Expenses.Infrastructure.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,13 +34,20 @@ namespace Expenses.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ExpensesContext>(
+                options => options.UseInMemoryDatabase("Expenses")
+                );
+
             //Aquí se debe añadir la configuración del log que estará definido en service extensions
             services.AddScoped<IStoreRepository, StoreRepository>();
             services.AddScoped<IStoreService, StoreService>();
+
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductService, ProductService>();
+
             services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
             services.AddScoped<IProductBrandService, ProductBrandService>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -52,6 +62,45 @@ namespace Expenses.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //Configuramos la base de datos InMemory
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetService<ExpensesContext>();
+                    var product = context.Product.Add(new Product()
+                    {
+                        Id = 1,
+                        Name = "Mayonesa",
+                        Detail = "Detalles",
+                        Image = "Este sería el icono"
+                    }).Entity;
+
+                    var product2 = context.Product.Add( new Product()
+                    {
+                        Id = 2,
+                        Name = "Pan de molde",
+                        Detail = "Detalles pan de molde",
+                        Image = "Icono pan de molde"
+                    }).Entity;
+
+                    var pb = context.ProductBrand.Add( new ProductBrand()
+                    {
+                        Id = FakeDB.idProductBrand++,
+                        Name = "Calvé",
+                        CurrentMoney = 1.45,
+                        Size = 450,
+                        Product = product
+                    }).Entity;
+
+                    var pb2 = context.ProductBrand.Add(new ProductBrand()
+                    {
+                        Id = FakeDB.idProductBrand++,
+                        Name = "Calvé",
+                        CurrentMoney = 1.15,
+                        Size = 250,
+                        Product = product
+                    }).Entity;
+                    context.SaveChanges();
+                }
             }
             else
             {
