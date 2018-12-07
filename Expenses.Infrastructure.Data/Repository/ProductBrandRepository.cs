@@ -12,19 +12,23 @@ namespace Expenses.Infrastructure.Data.Repository
         {
             if (FakeDB.productBrands.Count == 0)
             {
-                var pb = new ProductBrand
+                var pb = new ProductBrand()
                 {
+                    Id = FakeDB.idProductBrand++,
                     Name = "Calvé",
                     CurrentMoney = 1.45,
-                    Size = 450
+                    Size = 450,
+                    Product = new Product () { Id = 1}
                 };
                 FakeDB.productBrands.Add(pb);
 
-                var pb2 = new ProductBrand
+                var pb2 = new ProductBrand()
                 {
+                    Id = FakeDB.idProductBrand++,
                     Name = "Calvé",
                     CurrentMoney = 1.15,
-                    Size = 250
+                    Size = 250,
+                    Product = new Product () { Id = 1}
                 };
 
                 FakeDB.productBrands.Add(pb2);

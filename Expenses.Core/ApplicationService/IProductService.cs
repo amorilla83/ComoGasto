@@ -10,6 +10,8 @@ namespace Expenses.Core.ApplicationService
         //GET
         Product FindProductById(int id);
 
+        Product FindProductByIdIncludeBrands(int id);
+
         List<Product> GetAllProducts();
 
         //POST

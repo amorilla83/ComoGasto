@@ -10,11 +10,11 @@ namespace Expenses.Core.Entities
         public string Name { get; set; }
         public string Detail { get; set; }
         public string Image { get; set; }
-        public List<Product> Products { get; set; }
+        public List<ProductBrand> ProductBrands { get; set; }
 
         public Product ()
         {
-            Products = new List<Product>();
+            ProductBrands = new List<ProductBrand>();
         }
     }
 }

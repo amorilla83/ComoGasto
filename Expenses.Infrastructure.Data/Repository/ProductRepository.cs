@@ -2,6 +2,7 @@
 using Expenses.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Expenses.Infrastructure.Data.Repository
@@ -12,7 +13,7 @@ namespace Expenses.Infrastructure.Data.Repository
         {
             if (FakeDB.products.Count == 0)
             {
-                var product = new Product
+                var product = new Product ()
                 {
                     Id = FakeDB.idProduct++,
                     Name = "Mayonesa",
@@ -20,7 +21,7 @@ namespace Expenses.Infrastructure.Data.Repository
                     Image = "Este sería el icono"
                 };
 
-                var product2 = new Product
+                var product2 = new Product ()
                 {
                     Id = FakeDB.idProduct++,
                     Name = "Pan de molde",
@@ -40,15 +41,17 @@ namespace Expenses.Infrastructure.Data.Repository
 
         public Product GetById(int id)
         {
-            foreach (Product p in FakeDB.products)
-            {
-                if (p.Id == id)
+            //Al hacer el select, ya no apuntamos a la misma posición de memoria del product que podríamos haber obtenido
+            //previamente al obtenerlos todos. Ahora apunta a una posición de memoria en la que está él
+            //Es el clon de Linq
+            return FakeDB.products.
+                Select(p => new Product()
                 {
-                    return p;
-                }
-            }
-
-            return null;
+                    Id = p.Id,
+                    Name = p.Name,
+                    Image = p.Image
+                }).
+                FirstOrDefault(p => p.Id == id);            
         }
 
         public Product Insert(Product product)

@@ -30,7 +30,7 @@ namespace Expenses.API.Controllers
         [HttpGet("{id}")]
         public ActionResult<Product> Get(int id)
         {
-            return _productService.FindProductById(id);
+            return _productService.FindProductByIdIncludeBrands(id);
         }
 
         // POST api/products

@@ -12,14 +12,14 @@ namespace Expenses.Infrastructure.Data.Repository
         {
             if (FakeDB.stores.Count == 0)
             {
-                var store = new Store
+                var store = new Store ()
                 {
                     IdStore = FakeDB.idStore++,
                     Name = "Alcampo",
                     Logo = "Logo de alcampo"
                 };
 
-                var store2 = new Store
+                var store2 = new Store ()
                 {
                     IdStore = FakeDB.idStore++,
                     Name = "Lidl",

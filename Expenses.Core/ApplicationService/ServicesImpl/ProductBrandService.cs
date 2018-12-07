@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Expenses.Core.DomainService;
@@ -10,10 +11,13 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
     public class ProductBrandService : IProductBrandService
     {
         private IProductBrandRepository _productBrandRepository;
+        private IProductRepository _productRepository;
 
-        public ProductBrandService (IProductBrandRepository productBrandRepository)
+        public ProductBrandService (IProductBrandRepository productBrandRepository,
+            IProductRepository productRepository)
         {
             _productBrandRepository = productBrandRepository;
+            _productRepository = productRepository;
         }
 
         public ProductBrand FindProductBrandById(int id)
@@ -28,6 +32,15 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public ProductBrand SaveProductBrand(ProductBrand productBrand)
         {
+            //El producto no es obligatorio pero lo pongo como muestra de validación
+            if (productBrand.Product == null || productBrand.Product.Id <= 0)
+            {
+                throw new InvalidDataException("To create a product Brand, you need a Product");
+            }
+            if (_productRepository.GetById(productBrand.Product.Id) == null)
+            {
+                throw new InvalidDataException("The product doesn't exists");
+            }
             return _productBrandRepository.Insert(productBrand);
         }
 
