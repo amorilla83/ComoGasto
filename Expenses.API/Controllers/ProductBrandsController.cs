@@ -22,9 +22,18 @@ namespace Expenses.API.Controllers
 
         // GET api/productBrands
         [HttpGet]
-        public ActionResult<IEnumerable<ProductBrand>> Get()
+        public ActionResult<IEnumerable<ProductBrand>> Get([FromQuery] Filter filter)
         {
-            return _productBrandService.GetAllProductBrands();
+            try
+            {
+                return Ok(_productBrandService.GetFilteredProductBrands(filter));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            //return _productBrandService.GetAllProductBrands();
         }
 
         // GET api/productBrands/5

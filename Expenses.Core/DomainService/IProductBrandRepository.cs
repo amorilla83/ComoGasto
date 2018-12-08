@@ -7,8 +7,10 @@ namespace Expenses.Core.DomainService
 {
     public interface IProductBrandRepository
     {
+        int Count();
+
         //GET
-        IEnumerable<ProductBrand> GetAll();
+        IEnumerable<ProductBrand> GetAll(Filter filter = null);
 
         ProductBrand GetById(int id);
 

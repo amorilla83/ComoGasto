@@ -63,14 +63,16 @@ namespace Expenses.Infrastructure.Data.Repository
                 }).
                 FirstOrDefault(p => p.Id == id);
                 */
+            var changeTracker = _context.ChangeTracker.Entries<Product>();
             return _context.Product.FirstOrDefault(p => p.Id == id);
         }
 
         public Product GetByIdIncludeProductBrands (int id)
         {
             return _context.Product
+                .Where (p => p.Id == id)
                 .Include(p => p.ProductBrands)
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefault();
         }
 
         public Product Insert(Product product)
@@ -80,7 +82,13 @@ namespace Expenses.Infrastructure.Data.Repository
             FakeDB.products.Add(product);
             return product;
             */
-            return _context.Product.Add(product).Entity;
+            /*
+            var productInsert = _context.Add(product).Entity;
+            _context.SaveChanges();
+            return productInsert;*/
+            _context.Attach(product).State = EntityState.Added;
+            _context.SaveChanges();
+            return product;
         }
 
         public Product Update(Product productUpdate)
@@ -92,7 +100,12 @@ namespace Expenses.Infrastructure.Data.Repository
             p.Image = productUpdate.Image;
             return p;
             */
-            return _context.Product.Update(productUpdate).Entity;
+            /*var productUpdated = _context.Update(productUpdate).Entity;
+            _context.SaveChanges();
+            return productUpdated;*/
+            _context.Attach(productUpdate).State = EntityState.Modified;
+            _context.SaveChanges();
+            return productUpdate;
         }
 
         public Product Delete(int id)
@@ -107,7 +120,16 @@ namespace Expenses.Infrastructure.Data.Repository
             return p;
             */
             // _context.Product.Remove()
-            return null;
+
+            //Eliminamos los productBrands de este producto
+            //Al poner el DeleteBehavior a SetNull, ya no necesitamos eliminarlos si no queremos
+            //var productBrandsToRemove = _context.ProductBrand.Where(pb => pb.Product.Id == id);
+            //_context.RemoveRange(productBrandsToRemove);
+            //Eliminamos el producto
+            var productRemove = _context.Product.Remove(new Product { Id = id }).Entity;
+            _context.SaveChanges();
+            return productRemove;
+
         }
     }
 }

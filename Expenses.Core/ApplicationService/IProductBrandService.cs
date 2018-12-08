@@ -11,6 +11,8 @@ namespace Expenses.Core.ApplicationService
         ProductBrand FindProductBrandById(int id);
 
         List<ProductBrand> GetAllProductBrands();
+        
+        List<ProductBrand> GetFilteredProductBrands(Filter filter);
 
         //POST
         ProductBrand SaveProductBrand(ProductBrand productBrand);

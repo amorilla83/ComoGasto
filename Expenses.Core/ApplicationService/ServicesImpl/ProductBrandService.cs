@@ -30,6 +30,20 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             return _productBrandRepository.GetAll().ToList();
         }
 
+        public List<ProductBrand> GetFilteredProductBrands(Filter filter)
+        {
+            if (filter.CurrentPage <= 0 || filter.ItemsPerPage <= 0)
+            {
+                throw new InvalidDataException("CurrentPage and ItemsPerPage must be greater than 0");
+            }
+            if (((filter.CurrentPage - 1) * filter.ItemsPerPage) >= _productBrandRepository.Count())
+            {
+                throw new InvalidDataException("Index out of bounds. CurrentPage is too high");
+            }
+
+            return _productBrandRepository.GetAll(filter).ToList();
+        }
+
         public ProductBrand SaveProductBrand(ProductBrand productBrand)
         {
             //El producto no es obligatorio pero lo pongo como muestra de validación
