@@ -34,9 +34,11 @@ namespace Expenses.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ExpensesContext>(
+            /*services.AddDbContext<ExpensesContext>(
                 options => options.UseInMemoryDatabase("Expenses")
-                );
+                );*/
+            services.AddDbContext<ExpensesContext>(options =>
+          options.UseSqlite("Data Source=Expenses.db"));
 
             //Aquí se debe añadir la configuración del log que estará definido en service extensions
             services.AddScoped<IStoreRepository, StoreRepository>();
@@ -47,6 +49,12 @@ namespace Expenses.API
 
             services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
             services.AddScoped<IProductBrandService, ProductBrandService>();
+
+            //Evitamos los bucles en las referencias entre objetos
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+        
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -66,40 +74,7 @@ namespace Expenses.API
                 using (var scope = app.ApplicationServices.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<ExpensesContext>();
-                    var product = context.Product.Add(new Product()
-                    {
-                        Id = 1,
-                        Name = "Mayonesa",
-                        Detail = "Detalles",
-                        Image = "Este sería el icono"
-                    }).Entity;
-
-                    var product2 = context.Product.Add( new Product()
-                    {
-                        Id = 2,
-                        Name = "Pan de molde",
-                        Detail = "Detalles pan de molde",
-                        Image = "Icono pan de molde"
-                    }).Entity;
-
-                    var pb = context.ProductBrand.Add( new ProductBrand()
-                    {
-                        Id = FakeDB.idProductBrand++,
-                        Name = "Calvé",
-                        CurrentMoney = 1.45,
-                        Size = 450,
-                        Product = product
-                    }).Entity;
-
-                    var pb2 = context.ProductBrand.Add(new ProductBrand()
-                    {
-                        Id = FakeDB.idProductBrand++,
-                        Name = "Calvé",
-                        CurrentMoney = 1.15,
-                        Size = 250,
-                        Product = product
-                    }).Entity;
-                    context.SaveChanges();
+                    DBSeed.Seed(context);
                 }
             }
             else

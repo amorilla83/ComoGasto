@@ -12,6 +12,8 @@ namespace Expenses.Core.DomainService
 
         Product GetById(int id);
 
+        Product GetByIdIncludeProductBrands(int id);
+
         //POST
         Product Insert(Product product);
 

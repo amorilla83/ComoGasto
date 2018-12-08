@@ -1,5 +1,6 @@
 ﻿using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,13 @@ namespace Expenses.Infrastructure.Data.Repository
                 FirstOrDefault(p => p.Id == id);
                 */
             return _context.Product.FirstOrDefault(p => p.Id == id);
+        }
+
+        public Product GetByIdIncludeProductBrands (int id)
+        {
+            return _context.Product
+                .Include(p => p.ProductBrands)
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public Product Insert(Product product)

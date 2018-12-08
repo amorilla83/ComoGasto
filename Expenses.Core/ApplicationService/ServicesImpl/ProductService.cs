@@ -25,8 +25,12 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public Product FindProductByIdIncludeBrands (int id)
         {
-            Product product = _productRepository.GetById(id);
-            product.ProductBrands = _productBrandRepository.GetAll().Where(pb => pb.Product.Id == id).ToList();
+            Product product = _productRepository.GetByIdIncludeProductBrands(id);
+            //Si lo hacemos así, obtenemos todos los ProductBrand y luego aplica el where
+            //Por eso hay que llevar estas condiciones a un nuevo método del repositorio
+            /*Product product = _productRepository.GetById(id);
+            product.ProductBrands = _productBrandRepository.GetAll().
+                Where(pb => pb.Product != null && pb.Product.Id == id).ToList();*/
             return product;
         }
 
