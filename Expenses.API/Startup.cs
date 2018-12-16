@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Expenses.Core;
 using Expenses.Core.ApplicationService;
 using Expenses.Core.ApplicationService.ServicesImpl;
 using Expenses.Core.DomainService;
@@ -50,6 +51,9 @@ namespace Expenses.API
             services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
             services.AddScoped<IProductBrandService, ProductBrandService>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
             //Evitamos los bucles en las referencias entre objetos
             services.AddMvc().AddJsonOptions(options => {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -57,7 +61,6 @@ namespace Expenses.API
         
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            //services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //Esto lo hace solo el web api pero lo pongo como ejemplo para utilizar luego unit test
             var serviceProvider = services.BuildServiceProvider();

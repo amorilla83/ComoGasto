@@ -9,11 +9,13 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 {
     public class ProductService : IProductService
     {
+        private IUnitOfWork _unitOfWork;
         private IProductRepository _productRepository;
         private IProductBrandRepository _productBrandRepository;
 
-        public ProductService (IProductRepository productRepository, IProductBrandRepository productBrandRepository)
+        public ProductService (IUnitOfWork unitOfWork, IProductRepository productRepository, IProductBrandRepository productBrandRepository)
         {
+            _unitOfWork = unitOfWork;
             _productRepository = productRepository;
             _productBrandRepository = productBrandRepository;
         }
@@ -41,17 +43,33 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public Product SaveProduct(Product product)
         {
-            return _productRepository.Insert(product);
+            using (_unitOfWork)
+            {
+                Product productSaved = _productRepository.Insert(product);
+                _unitOfWork.Commit();
+                return productSaved;
+            }
         }
 
         public Product UpdateProduct(Product productUpdate)
         {
-            return _productRepository.Update(productUpdate);
+            using (_unitOfWork)
+            {
+
+                Product product = _productRepository.Update(productUpdate);
+                _unitOfWork.Commit();
+                return product;
+            }
         }
 
         public Product DeleteProduct(int id)
         {
-            return _productRepository.Delete(id);
+            using (_unitOfWork)
+            {
+                Product product = _productRepository.Delete(id);
+                _unitOfWork.Commit();
+                return product;
+            }
         }
     }
 }

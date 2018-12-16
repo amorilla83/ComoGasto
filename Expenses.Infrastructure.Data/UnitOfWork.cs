@@ -1,22 +1,28 @@
 ﻿using Expenses.Core;
+using Expenses.Core.DomainService;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Expenses.Infrastructure.Data
 {
-    class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
-        private DB_ExpensesContext _context;
+        private ExpensesContext _context;
+
+        public UnitOfWork (ExpensesContext context)
+        {
+            _context = context;
+        }
 
         public void Commit()
         {
-            throw new NotImplementedException();
+            _context.SaveChanges();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
     }
 }

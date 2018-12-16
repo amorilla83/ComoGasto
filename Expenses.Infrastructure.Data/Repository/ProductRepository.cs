@@ -87,7 +87,8 @@ namespace Expenses.Infrastructure.Data.Repository
             _context.SaveChanges();
             return productInsert;*/
             _context.Attach(product).State = EntityState.Added;
-            _context.SaveChanges();
+            //SaveChanges to the UOW
+            //_context.SaveChanges();
             return product;
         }
 
@@ -104,7 +105,8 @@ namespace Expenses.Infrastructure.Data.Repository
             _context.SaveChanges();
             return productUpdated;*/
             _context.Attach(productUpdate).State = EntityState.Modified;
-            _context.SaveChanges();
+            //SaveChanges to the UOW
+            //_context.SaveChanges();
             return productUpdate;
         }
 
@@ -127,7 +129,8 @@ namespace Expenses.Infrastructure.Data.Repository
             //_context.RemoveRange(productBrandsToRemove);
             //Eliminamos el producto
             var productRemove = _context.Product.Remove(new Product { Id = id }).Entity;
-            _context.SaveChanges();
+            //SaveChanges to the UOW
+            //_context.SaveChanges();
             return productRemove;
 
         }

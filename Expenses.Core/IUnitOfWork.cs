@@ -6,6 +6,8 @@ namespace Expenses.Core
 {
     public interface IUnitOfWork : IDisposable
     {
+
+
         void Commit();
 
         
