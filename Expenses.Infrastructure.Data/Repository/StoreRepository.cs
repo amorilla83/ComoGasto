@@ -1,77 +1,85 @@
 ﻿using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Expenses.Infrastructure.Data.Repository
 {
-    public class StoreRepository : IStoreRepository
+    public class StoreRepository : GenericRepository<Store>, IStoreRepository
     {
-        public StoreRepository ()
+        public StoreRepository (ExpensesContext context)
+            :base (context)
         {
-            if (FakeDB.stores.Count == 0)
-            {
-                var store = new Store ()
-                {
-                    IdStore = FakeDB.idStore++,
-                    Name = "Alcampo",
-                    Logo = "Logo de alcampo"
-                };
+            //if (FakeDB.stores.Count == 0)
+            //{
+            //    var store = new Store ()
+            //    {
+            //        StoreId = FakeDB.idStore++,
+            //        Name = "Alcampo",
+            //        Logo = "Logo de alcampo"
+            //    };
 
-                var store2 = new Store ()
-                {
-                    IdStore = FakeDB.idStore++,
-                    Name = "Lidl",
-                    Logo = "Logo del Lidl"
-                };
+            //    var store2 = new Store ()
+            //    {
+            //        StoreId = FakeDB.idStore++,
+            //        Name = "Lidl",
+            //        Logo = "Logo del Lidl"
+            //    };
 
-                FakeDB.stores.Add(store);
-                FakeDB.stores.Add(store);
-            }
+            //    FakeDB.stores.Add(store);
+            //    FakeDB.stores.Add(store);
+            //}
         }
 
-        public IEnumerable<Store> GetAll()
+        public async Task<IEnumerable<Store>> GetAllAsync ()
         {
-            return FakeDB.stores;
+            return await _context.Store.ToListAsync();
         }
 
-        public Store GetById(int id)
-        {
-            foreach (Store s in FakeDB.stores)
-            {
-                if (s.IdStore == id)
-                {
-                    return s;
-                }
-            }
-            return null;
-        }
+        //public IQueryable<Store> GetAll()
+        //{
+            //return FakeDB.stores;
+            //return _context.Store;    
+        //}
 
-        public Store Insert(Store store)
-        {
-            store.IdStore = FakeDB.idStore++;
-            FakeDB.stores.Add(store);
-            return store;
-        }
+        //public Store GetById(int id)
+        //{
+          //  foreach (Store s in FakeDB.stores)
+            //{
+              //  if (s.StoreId == id)
+                //{
+                  //  return s;
+                //}
+            //}
+            //return null;
+        //}
 
-        public Store Update(Store storeUpdate)
-        {
-            Store store = GetById(storeUpdate.IdStore);
-            store.Name = storeUpdate.Name;
-            store.Logo = storeUpdate.Logo;
-            return store;
-        }
+        //public Store Insert(Store store)
+        //{
+          //  store.StoreId = FakeDB.idStore++;
+          //  FakeDB.stores.Add(store);
+          //  return store;
+        //}
 
-        public Store Delete(int id)
-        {
-            Store s = GetById(id);
-            if (s == null)
-            {
-                return null;
-            }
-            FakeDB.stores.Remove(s);
-            return s;
-        }
+        //public Store UpdateStore(Store storeUpdate)
+        //{
+          //  Store store = GetById(storeUpdate.StoreId);
+          //  store.Name = storeUpdate.Name;
+          //  store.Logo = storeUpdate.Logo;
+          //  return store;
+        //}
+
+        //public Store Delete(int id)
+        //{
+          //  Store s = GetById(id);
+          //  if (s == null)
+          //  {
+          //      return null;
+          //  }
+          //  FakeDB.stores.Remove(s);
+          //  return s;
+        //}
     }
 }

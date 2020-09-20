@@ -3,6 +3,7 @@ using Expenses.Core.DomainService;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Expenses.Infrastructure.Data
 {
@@ -15,9 +16,9 @@ namespace Expenses.Infrastructure.Data
             _context = context;
         }
 
-        public void Commit()
+        public async Task Commit()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void Dispose()

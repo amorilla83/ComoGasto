@@ -46,32 +46,34 @@ namespace Expenses.Infrastructure.Data.Repository
         
         public int Count()
         {
-            return _context.ProductBrand.Count();
+            //return _context.ProductBrand.Count();
+            return 0;
         }
 
         public IEnumerable<ProductBrand> GetAll(Filter filter)
         {
             if (filter == null)
             {
-                // return FakeDB.productBrands;
-                return _context.ProductBrand;
+                return FakeDB.productBrands;
+                //return _context.ProductBrand;
             }
-            return _context.ProductBrand
-                .Skip((filter.CurrentPage - 1) * filter.ItemsPerPage) //-1 para que empiece en la posición 0
-                .Take(filter.ItemsPerPage);
+            //return _context.ProductBrand
+            //  .Skip((filter.CurrentPage - 1) * filter.ItemsPerPage) //-1 para que empiece en la posición 0
+            //  .Take(filter.ItemsPerPage);
+            return null;
         }
 
         public ProductBrand GetById(int id)
         {
-            /* foreach (ProductBrand pb in FakeDB.productBrands)
+            foreach (ProductBrand pb in FakeDB.productBrands)
              {
                  if (pb.Id == id)
                  {
                      return pb;
                  }
              }
-             return null;*/
-            return _context.ProductBrand.Include(pb => pb.Product).FirstOrDefault(pb => pb.Id == id);
+             return null;
+            //return _context.ProductBrand.Include(pb => pb.Product).FirstOrDefault(pb => pb.Id == id);
         }
 
         public ProductBrand Insert(ProductBrand productBrand)

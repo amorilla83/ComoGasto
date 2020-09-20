@@ -1,7 +1,9 @@
 ﻿using Expenses.Core.Entities;
+using Expenses.Core.Entities.Communication;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Expenses.Core.ApplicationService
 {
@@ -10,20 +12,20 @@ namespace Expenses.Core.ApplicationService
         //POST
         Store NewStore(string name, string logo);
 
-        Store SaveStore(Store store);
+        Task<StoreResponse> SaveStoreAsync(Store store);
         
         //GET
-        Store FindStoreById(int id);
+        Task<StoreResponse> FindStoreByIdAsync(int id);
 
-        List<Store> GetAllStores();
+        Task<IEnumerable<Store>> GetAllStoresAsync();
         //Los filtros en la lista los hacemos en el servicio
-        List<Store> GetAllStoresByName(string name);
+        //List<Store> GetAllStoresByName(string name);
 
         //PUT
-        Store UpdateStore(Store storeUpdate);
-
+        Task<StoreResponse> UpdateStoreAsync(int id, Store storeUpdate);
+        
         //DELETE
-        Store DeleteStore(int id);
+        Task<StoreResponse> DeleteStoreAsync(int id);
 
     }
 }

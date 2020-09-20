@@ -2,39 +2,83 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
+using Expenses.Core.Entities.Communication;
+using Expenses.Core.Entities.Infrastructure;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Expenses.Core.ApplicationService.ServicesImpl
 {
     public class StoreService : IStoreService
     {
-        readonly IStoreRepository _storeRepo;
+        private readonly IStoreRepository _storeRepo;
 
-        public StoreService (IStoreRepository storeRepostory)
+        private readonly IUnitOfWork _unitOfWok;
+
+        private readonly IMemoryCache _cache;
+
+
+        public StoreService (IStoreRepository storeRepostory, IUnitOfWork unitOfWork, IMemoryCache cache)
         {
             _storeRepo = storeRepostory;
+            _unitOfWok = unitOfWork;
+            _cache = cache;
         }
 
-        public Store DeleteStore(int id)
+        public async Task<StoreResponse> DeleteStoreAsync(int id)
         {
-            return _storeRepo.Delete(id);
+            var existingStore = await _storeRepo.GetByIdAsync(id);
+
+            if (existingStore == null)
+            {
+                return new StoreResponse("Store not found");
+            }
+
+            try
+            {
+                await _storeRepo.DeleteByIdAsync(id);
+                await _unitOfWok.Commit();
+
+                return new StoreResponse(existingStore);
+
+            }
+            catch (Exception ex)
+            {
+                return new StoreResponse($"An error occurred when removing the store: {ex.Message}");
+            }
         }
 
-        public Store FindStoreById(int id)
+        public async Task<StoreResponse> FindStoreByIdAsync(int id)
         {
-            return _storeRepo.GetById(id);
+            try
+            {
+                var store = await _storeRepo.GetByIdAsync(id);
+
+                return new StoreResponse(store);
+            }
+            catch (Exception ex)
+            {
+                return new StoreResponse($"An error occurred when finding a store with id {id}: {ex.Message}");
+            }
         }
 
-        public List<Store> GetAllStores()
+        public async Task<IEnumerable<Store>> GetAllStoresAsync()
         {
-            return _storeRepo.GetAll().ToList();
+            var stores = await _cache.GetOrCreateAsync(CacheKeys.StoresList, (entry) =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                return _storeRepo.GetAllAsync();
+            });
+
+            return stores;
         }
 
-        public List<Store> GetAllStoresByName (string name)
-        {
-            return _storeRepo.GetAll().Where(a => a.Name == name).ToList();
-        }
+        //public List<Store> GetAllStoresByName (string name)
+        //{
+        //    return _storeRepo.GetAll().Where(a => a.Name == name).ToList();
+        //}
 
         public Store NewStore(string name, string logo)
         {
@@ -46,17 +90,43 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             return store;
         }
 
-        public Store SaveStore(Store store)
+        public async Task<StoreResponse> SaveStoreAsync(Store store)
         {
-            return _storeRepo.Insert(store);
+            try
+            {
+                var newStore = await _storeRepo.AddAsync(store);
+                await _unitOfWok.Commit();
+
+                return new StoreResponse(newStore);
+            }
+            catch (Exception ex)
+            {
+                return new StoreResponse($"An error occurred when saving a store: {ex.Message}");
+            }
         }
 
-        public Store UpdateStore(Store storeUpdate)
+        public async Task<StoreResponse> UpdateStoreAsync(int id, Store storeUpdate)
         {
-            Store store = FindStoreById(storeUpdate.IdStore);
-            store.Logo = storeUpdate.Logo;
-            store.Name = storeUpdate.Name;
-            return store;
+            var existingStore = await _storeRepo.GetByIdAsync(id);
+
+            if (existingStore == null)
+            {
+                return new StoreResponse("Store not found");
+            }
+
+            existingStore.Name = storeUpdate.Name;
+            existingStore.Logo = storeUpdate.Logo;
+
+            try
+            {
+                _storeRepo.Update(existingStore);
+
+                return new StoreResponse(existingStore);
+            }
+            catch (Exception ex)
+            {
+                return new StoreResponse($"An error occurred when updating the store: {ex.Message}");
+            }
         }
     }
 }

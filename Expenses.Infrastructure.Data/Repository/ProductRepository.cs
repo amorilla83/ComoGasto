@@ -44,13 +44,13 @@ namespace Expenses.Infrastructure.Data.Repository
 
         public IEnumerable<Product> GetAll()
         {
-            return _context.Product;
-            //return FakeDB.products;
+            //return _context.Product;
+            return FakeDB.products;
         }
 
         public Product GetById(int id)
         {
-            /*
+            
             //Al hacer el select, ya no apuntamos a la misma posición de memoria del product que podríamos haber obtenido
             //previamente al obtenerlos todos. Ahora apunta a una posición de memoria en la que está él
             //Es el clon de Linq
@@ -62,17 +62,18 @@ namespace Expenses.Infrastructure.Data.Repository
                     Image = p.Image
                 }).
                 FirstOrDefault(p => p.Id == id);
-                */
-            var changeTracker = _context.ChangeTracker.Entries<Product>();
-            return _context.Product.FirstOrDefault(p => p.Id == id);
+                
+            //var changeTracker = _context.ChangeTracker.Entries<Product>();
+            //return _context.Product.FirstOrDefault(p => p.Id == id);
         }
 
         public Product GetByIdIncludeProductBrands (int id)
         {
-            return _context.Product
-                .Where (p => p.Id == id)
-                .Include(p => p.ProductBrands)
-                .FirstOrDefault();
+            //return _context.Product
+            //  .Where (p => p.Id == id)
+            //  .Include(p => p.ProductBrands)
+            //  .FirstOrDefault();
+            return null;
         }
 
         public Product Insert(Product product)
@@ -112,7 +113,7 @@ namespace Expenses.Infrastructure.Data.Repository
 
         public Product Delete(int id)
         {
-            /*
+            
             Product p = GetById(id);
             if (p == null)
             {
@@ -120,7 +121,7 @@ namespace Expenses.Infrastructure.Data.Repository
             }
             FakeDB.products.Remove(p);
             return p;
-            */
+            
             // _context.Product.Remove()
 
             //Eliminamos los productBrands de este producto
@@ -128,10 +129,10 @@ namespace Expenses.Infrastructure.Data.Repository
             //var productBrandsToRemove = _context.ProductBrand.Where(pb => pb.Product.Id == id);
             //_context.RemoveRange(productBrandsToRemove);
             //Eliminamos el producto
-            var productRemove = _context.Product.Remove(new Product { Id = id }).Entity;
+            //var productRemove = _context.Product.Remove(new Product { Id = id }).Entity;
             //SaveChanges to the UOW
             //_context.SaveChanges();
-            return productRemove;
+            //return productRemove;
 
         }
     }

@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{1E5C2A42-DBF7-4703-9367-5774DEECEBA7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Front", "Front", "{D34E16EB-4623-4D5E-8C43-6AFDFF7909BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{58453A4C-784A-4552-B1EA-06FC8D7892D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,10 @@ Global
 		{4AC6CE9D-C73F-41D6-A08E-DA100608AE0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AC6CE9D-C73F-41D6-A08E-DA100608AE0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AC6CE9D-C73F-41D6-A08E-DA100608AE0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58453A4C-784A-4552-B1EA-06FC8D7892D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58453A4C-784A-4552-B1EA-06FC8D7892D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58453A4C-784A-4552-B1EA-06FC8D7892D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58453A4C-784A-4552-B1EA-06FC8D7892D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,5 +65,12 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {483A2F48-CB21-4674-AC05-E30D83FB2B58}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.StandardHeader = $2
+		$0.VersionControlPolicy = $3
 	EndGlobalSection
 EndGlobal

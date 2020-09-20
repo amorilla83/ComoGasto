@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Expenses.Core.DomainService
 {
@@ -10,23 +11,23 @@ namespace Expenses.Core.DomainService
         where TEntity : class
     {
         //El get sería para obtener las entidades para modificarlas
-        ICollection<TEntity> GetAll();
-        ICollection<TEntity> FindAll();
-        ICollection<TEntity> GetAllBy(Expression<Func<TEntity, bool>> filter = null, 
+        IQueryable<TEntity> GetAll();
+        IQueryable<TEntity> FindAll();
+        IQueryable<TEntity> GetAllBy(Expression<Func<TEntity, bool>> filter = null, 
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null);
         //Hacemos el find para cuando queramos obtener el objeto de solo lectura
         //Llevará el método AsNoTracking para no trackear los cambios
-        ICollection<TEntity> FindAllBy(Expression<Func<TEntity, bool>> predicate);
+        IQueryable<TEntity> FindAllBy(Expression<Func<TEntity, bool>> predicate);
 
-        TEntity GetBy(Expression<Func<TEntity, bool>> match);
+        Task<TEntity> GetByAsync(Expression<Func<TEntity, bool>> match);
 
-        TEntity GetById(object id);
+        Task<TEntity> GetByIdAsync(object id);
 
-        void Add(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
         void Update(TEntity entity);
 
-        void DeleteById(object id);
+        Task DeleteByIdAsync(object id);
         void Delete(TEntity entity);
 
         int Count();

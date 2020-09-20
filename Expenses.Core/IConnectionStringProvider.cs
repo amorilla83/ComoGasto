@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Expenses.Core
+﻿namespace Expenses.Core
 {
     public interface IConnectionStringProvider
     {

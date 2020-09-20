@@ -1,5 +1,4 @@
 ﻿using Expenses.Core;
-using System;
 
 namespace Expenses.Infrastructure.Data
 {

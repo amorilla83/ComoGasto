@@ -5,10 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Expenses.Core.Entities\Expenses.Core.Entities.csproj" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.5" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.8" />
+    <ProjectReference Include="..\Expenses.Core\Expenses.Core.csproj" />
   </ItemGroup>
 </Project>

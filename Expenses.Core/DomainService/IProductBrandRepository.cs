@@ -1,7 +1,5 @@
-﻿using Expenses.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Expenses.Core.Entities;
 
 namespace Expenses.Core.DomainService
 {

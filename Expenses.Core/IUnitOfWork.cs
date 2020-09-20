@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Expenses.Core
 {
     public interface IUnitOfWork : IDisposable
     {
-
-
-        void Commit();
-
-        
+        Task Commit();        
     }
 }
