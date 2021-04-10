@@ -30,7 +30,18 @@ namespace Expenses.API.Controllers
         public async Task<IEnumerable<StoreModel>> ListAsync()
         {
             var stores = await _storeService.GetAllStoresAsync();
+
+
             var model = _mapper.Map<IEnumerable<Store>, IEnumerable<StoreModel>>(stores);
+
+            //Pasamos la imagen a base64 para que se muestre directamente
+            foreach (StoreModel store in model)
+            {
+                byte[] imageArray = System.IO.File.ReadAllBytes(Path.Combine(@"Resources/Images/Stores", store.Logo));
+                string extension = store.Logo.Split('.').LastOrDefault();
+                store.Image = $"data:image/{extension};base64, {Convert.ToBase64String(imageArray)}";
+            }
+
             return model;
         }
 

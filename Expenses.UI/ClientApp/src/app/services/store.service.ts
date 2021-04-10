@@ -1,9 +1,27 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Store } from '../models/store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StoreService {
 
-  constructor() { }
+  private storeURL = 'https://localhost:5001/api/stores/';
+
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
+  constructor(
+    private http: HttpClient) { }
+
+  getStores(): Observable<any> {
+    return this.http.get(this.storeURL);
+  }
+
+  addStore(store : any) : any {
+    return this.http.post(this.storeURL, store);
+  }
 }

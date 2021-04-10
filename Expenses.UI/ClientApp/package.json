@@ -23,6 +23,7 @@
     "@angular/platform-server": "11.2.3",
     "@angular/router": "11.2.3",
     "bootstrap": "^4.6.0",
+    "bootstrap-icons": "^1.4.0",
     "core-js": "^3.3.3",
     "jquery": "^3.5.1",
     "oidc-client": "^1.9.1",

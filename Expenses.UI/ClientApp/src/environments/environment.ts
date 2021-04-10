@@ -6,6 +6,8 @@ export const environment = {
   production: false
 };
 
+//Aquí es donde se debería de configurar la ruta de los servicios
+
 /*
  * In development mode, to ignore zone related error stack frames such as
  * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can

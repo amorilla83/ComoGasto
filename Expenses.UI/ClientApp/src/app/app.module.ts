@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -10,6 +9,12 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { StoresComponent } from './components/stores/stores.component';
+import { AddPurchaseComponent } from './components/add-purchase/add-purchase.component';
+import { ProductsComponent } from './components/products/products.component';
+import { AddProductComponent } from './components/add-product/add-product.component';
+import { AddStoreComponent } from './components/add-store/add-store.component';
+import { AppRoutingModule } from './app-routing.module';
+import { SafeURLPipe } from './SafeURL.pipe';
 
 @NgModule({
   declarations: [
@@ -18,19 +23,19 @@ import { StoresComponent } from './components/stores/stores.component';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    StoresComponent
+    StoresComponent,
+    AddPurchaseComponent,
+    ProductsComponent,
+    AddProductComponent,
+    AddStoreComponent,
+    SafeURLPipe
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'stores', component: StoresComponent},
-    { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: '**', redirectTo: '', pathMatch: 'full'}
-], { relativeLinkResolution: 'legacy' })
+    ReactiveFormsModule    
   ],
   providers: [],
   bootstrap: [AppComponent]
