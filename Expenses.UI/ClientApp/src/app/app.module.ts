@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -15,6 +16,7 @@ import { AddProductComponent } from './components/add-product/add-product.compon
 import { AddStoreComponent } from './components/add-store/add-store.component';
 import { AppRoutingModule } from './app-routing.module';
 import { SafeURLPipe } from './SafeURL.pipe';
+import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,14 +30,16 @@ import { SafeURLPipe } from './SafeURL.pipe';
     ProductsComponent,
     AddProductComponent,
     AddStoreComponent,
-    SafeURLPipe
+    SafeURLPipe,
+    DeleteModalComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule    
+    ReactiveFormsModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

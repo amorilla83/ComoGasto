@@ -1,21 +1,31 @@
-<h3 class="mt-3">Agregar Tienda</h3>
-<form [formGroup]="addStore" (ngSubmit)="add()">
-    <div class="mb-3">
-        <label for="name" class="form-label">Nombre</label>
-        <input formControlName="name" type="text" class="form-control" id="name">
-        <span *ngIf="addStore.get('name').invalid && addStore.get('name').touched" class="text-danger">
-            El <strong>nombre</strong> es obligatorio.
-        </span>
-    </div>
-    <div class="mb-3">
-        <label for="logo" class="form-label">Logo</label>
-        <input formControlName="logo" class="form-control" type="file" accept="image/*" id="logo"
-               (change)="onFileChange($event)">
-        <span *ngIf="addStore.get('logo').invalid && addStore.get('logo').touched" class="text-danger">
-            El <strong>logo</strong> es obligatorio.
-        </span>
-    </div>
-    <button type="button" class="btn btn-secondary" routerLink="">Volver</button>
-    <!-- float-end se utilizará en bootstrap 5 -->
-    <button type="submit" [disabled] ="addStore.invalid" class="btn btn-primary float-right">Aceptar</button>
-</form>
+<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+    <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">×</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="addStore" (ngSubmit)="add()">
+        <div *ngIf="addStore.get('image').value != undefined">
+            <img [src]="addStore.get('image').value | safeURL" class="rounded mr-1 border" height="170" width="150" [alt] ="addStore.get('name').value">
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre</label>
+            <input formControlName="name" type="text" class="form-control" id="name">
+            <span *ngIf="addStore.get('name').invalid && addStore.get('name').touched" class="text-danger">
+                El <strong>nombre</strong> es obligatorio.
+            </span>
+        </div>
+        <div class="mb-3">
+            <label for="logo" class="form-label">Logo</label>
+            <input formControlName="logo" class="form-control" type="file" accept="image/*" id="logo"
+                   (change)="onFileChange($event)">
+            <span *ngIf="addStore.get('logo').invalid && addStore.get('logo').touched" class="text-danger">
+                El <strong>logo</strong> es obligatorio.
+            </span>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+        <!-- float-end se utilizará en bootstrap 5 -->
+        <button type="submit" [disabled]="(addStore.invalid && newStore) || addStore.get('name').invalid" class="btn btn-primary float-right">Aceptar</button>
+    </form>
+</div>

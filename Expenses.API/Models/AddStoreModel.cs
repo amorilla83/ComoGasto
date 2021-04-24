@@ -12,4 +12,11 @@ namespace Expenses.API.Models
         [Required (ErrorMessage = "Logo is required")]
         public IFormFile Logo { get; set; }
     }
+
+    public class EditStoreModel
+    {
+        [MaxLength(100, ErrorMessage = "Name has max lenght of 100")]
+        public string Name { get; set; }
+        public IFormFile Logo { get; set; }
+    }
 }

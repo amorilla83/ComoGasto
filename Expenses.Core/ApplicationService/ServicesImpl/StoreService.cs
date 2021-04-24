@@ -82,7 +82,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public Store NewStore(string name, string logo)
         {
-            Store store = new Store()
+            Store store = new()
             {
                 Name = name,
                 Logo = logo
@@ -120,7 +120,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             try
             {
                 _storeRepo.Update(existingStore);
-
+                await _unitOfWok.Commit();
                 return new StoreResponse(existingStore);
             }
             catch (Exception ex)

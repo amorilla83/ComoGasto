@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-add-purchase',
@@ -6,10 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-purchase.component.css']
 })
 export class AddPurchaseComponent implements OnInit {
+  @Input() editar: string;
 
-  constructor() { }
+  constructor(
+    public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
+    console.log("Add Purchase On Init");
   }
 
 }

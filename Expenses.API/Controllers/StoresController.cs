@@ -7,22 +7,29 @@ using AutoMapper;
 using Expenses.API.Models;
 using Expenses.Core.ApplicationService;
 using Expenses.Core.Entities;
+using Expenses.Core.Entities.Communication;
+using Expenses.Core.Entities.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.Extensions.Logging;
 
 namespace Expenses.API.Controllers
 {
-    [Route("api/stores")]
+    [Route("api/Stores")]
     [Produces("application/json")]
     [ApiController]
     public class StoresController : Controller
     {
         private readonly IStoreService _storeService;
         private readonly IMapper _mapper;
+        private readonly ILogger<StoresController> _logger;
 
-        public StoresController(IStoreService storeService, IMapper mapper)
+        public StoresController(IStoreService storeService, IMapper mapper, ILogger<StoresController> logger)
         {
             _storeService = storeService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -30,7 +37,6 @@ namespace Expenses.API.Controllers
         public async Task<IEnumerable<StoreModel>> ListAsync()
         {
             var stores = await _storeService.GetAllStoresAsync();
-
 
             var model = _mapper.Map<IEnumerable<Store>, IEnumerable<StoreModel>>(stores);
 
@@ -41,6 +47,8 @@ namespace Expenses.API.Controllers
                 string extension = store.Logo.Split('.').LastOrDefault();
                 store.Image = $"data:image/{extension};base64, {Convert.ToBase64String(imageArray)}";
             }
+
+            _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {model.Count()} stores");
 
             return model;
         }
@@ -54,25 +62,17 @@ namespace Expenses.API.Controllers
 
             if (body.Logo.Length > 0)
             {
-                try
+                string fileName = await SaveLogo(body.Logo);
+                if (string.IsNullOrEmpty(fileName))
                 {
-                    string fileName = Path.GetRandomFileName() + Path.GetExtension(body.Logo.FileName);
-                    var filePath = Path.Combine(@"Resources/Images/Stores", fileName);
-
-                    using (var stream = System.IO.File.Create(filePath))
-                    {
-                        await body.Logo.CopyToAsync(stream);
-                    }
-
-                    store.Logo = fileName;
+                    return BadRequest(new ErrorModel($"Error saving store logo"));
                 }
-                catch (Exception ex)
+                else
                 {
-                    return BadRequest(new ErrorModel($"Error saving store logo {ex.Message}"));
+                    store.Logo = fileName;
                 }
                 
             }
-            //var store = _mapper.Map<AddStoreModel, Store>(body);
             store.Name = body.Name;
             var result = await _storeService.SaveStoreAsync(store);
 
@@ -81,6 +81,8 @@ namespace Expenses.API.Controllers
                 return BadRequest(new ErrorModel(result.Message));
             }
 
+            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida la store con Id {result.Resource.StoreId}");
+
             var storeModel = _mapper.Map<Store, StoreModel>(store);
             return Ok(storeModel);
         }
@@ -88,17 +90,54 @@ namespace Expenses.API.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(StoreModel), 200)]
         [ProducesResponseType(typeof(ErrorModel), 400)]
-        public async Task<IActionResult> PutAsync (int id, [FromBody] AddStoreModel body)
+        public async Task<IActionResult> PutAsync (int id, [FromForm] EditStoreModel body)
         {
-            var store = _mapper.Map<AddStoreModel, Store>(body);
-            var result = await _storeService.UpdateStoreAsync(id, store);
+            //Puede q haya q actualizar la imagen
+            Store newStore = new Store();
+            StoreResponse oldStore = await _storeService.FindStoreByIdAsync(id);
+            bool fileToDelete = false;
+
+            if (oldStore == null)
+            {
+                return BadRequest(new ErrorModel("La tienda no existe en base de datos"));
+            }
+
+            if (!string.IsNullOrEmpty(body.Name))
+            {
+                newStore.Name = body.Name;
+            }
+            else
+            {
+                newStore.Name = oldStore.Resource.Name;
+            }
+
+            if (body.Logo != null && body.Logo.Length > 0)
+            {
+                string fileName = await SaveLogo(body.Logo);
+                newStore.Logo = fileName;
+                fileToDelete = true;
+            }
+            else
+            {
+                newStore.Logo = oldStore.Resource.Logo;
+            }
+
+            var result = await _storeService.UpdateStoreAsync(id, newStore);
 
             if (!result.Success)
             {
                 return BadRequest(new ErrorModel(result.Message));
             }
 
-            var storeModel = _mapper.Map<Store, StoreModel>(store);
+            _logger.LogInformation(AppLoggingEvents.Update, $"Actualizada la store con Id {result.Resource.StoreId}");
+
+            if (fileToDelete)
+            {
+                _logger.LogDebug($"Eliminamos la imagen {newStore.Logo}");
+                System.IO.File.Delete(Path.Combine(@"Resources/Images/Stores", newStore.Logo));
+            }
+
+            var storeModel = _mapper.Map<Store, StoreModel>(newStore);
             return Ok(storeModel);
         }
 
@@ -114,8 +153,30 @@ namespace Expenses.API.Controllers
                 return BadRequest(new ErrorModel(result.Message));
             }
 
+            _logger.LogInformation(AppLoggingEvents.Delete, $"Eliminada la store con Id {id}");
+
             var storeModel = _mapper.Map<Store, StoreModel>(result.Resource);
             return Ok(storeModel);
+        }
+
+        private static async Task<string> SaveLogo (IFormFile logo)
+        {
+            try
+            {
+                string fileName = Path.GetRandomFileName() + Path.GetExtension(logo.FileName);
+                var filePath = Path.Combine(@"Resources/Images/Stores", fileName);
+
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await logo.CopyToAsync(stream);
+                }
+
+                return fileName;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
     }

@@ -1,0 +1,16 @@
+<!-- Modal -->
+<!--<ng-template #modalData let-modal>-->
+<div class="modal-header">
+    <h4 class="modal-title" id="deleteModalLabel">Eliminar tienda</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()">
+        <span aria-hidden="true">×</span>
+    </button>
+</div>
+<div class="modal-body">
+    <p>Esta acción eliminará la tienda <strong>{{name}}</strong> de la base de datos</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="cancel()">Cerrar</button>
+    <button type="button" class="btn btn-primary" (click)="delete()">Eliminar</button>
+</div>
+<!--</ng-template>-->

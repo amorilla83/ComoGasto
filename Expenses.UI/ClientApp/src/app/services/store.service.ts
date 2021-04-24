@@ -14,6 +14,10 @@ export class StoreService {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
 
+ httpOptionsFile: any = {
+    headers: new HttpHeaders({"Content-Type": "multipart/form-data"})         
+  };
+
   constructor(
     private http: HttpClient) { }
 
@@ -22,6 +26,15 @@ export class StoreService {
   }
 
   addStore(store : any) : any {
-    return this.http.post(this.storeURL, store);
+    return this.http.post(this.storeURL, store, this.httpOptionsFile);
+  }
+
+  editStore(store: any, id: number): any {
+    return this.http.put(this.storeURL + id, store, this.httpOptionsFile);
+  }
+
+
+  deleteStore(store: any) : any {
+    return this.http.delete(this.storeURL + store.id);
   }
 }
