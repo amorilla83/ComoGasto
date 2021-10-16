@@ -46,16 +46,17 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public ProductBrand SaveProductBrand(ProductBrand productBrand)
         {
-            //El producto no es obligatorio pero lo pongo como muestra de validación
-            if (productBrand.Product == null || productBrand.Product.Id <= 0)
-            {
-                throw new InvalidDataException("To create a product Brand, you need a Product");
-            }
-            if (_productRepository.GetById(productBrand.Product.Id) == null)
-            {
-                throw new InvalidDataException("The product doesn't exists");
-            }
-            return _productBrandRepository.Insert(productBrand);
+            return null;
+            ////El producto no es obligatorio pero lo pongo como muestra de validación
+            //if (productBrand.Product == null || productBrand.Product.Id <= 0)
+            //{
+            //    throw new InvalidDataException("To create a product Brand, you need a Product");
+            //}
+            //if (_productRepository.GetById(productBrand.Product.Id) == null)
+            //{
+            //    throw new InvalidDataException("The product doesn't exists");
+            //}
+            //return _productBrandRepository.Insert(productBrand);
         }
 
         public ProductBrand UpdateProductBrand(ProductBrand productBrandUpdate)

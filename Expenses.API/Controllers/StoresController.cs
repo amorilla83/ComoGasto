@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Expenses.API.Models;
+using Expenses.API.Models.Stores;
 using Expenses.Core.ApplicationService;
 using Expenses.Core.Entities;
 using Expenses.Core.Entities.Communication;
 using Expenses.Core.Entities.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Logging;
 
 namespace Expenses.API.Controllers
@@ -95,7 +95,7 @@ namespace Expenses.API.Controllers
             //Puede q haya q actualizar la imagen
             Store newStore = new Store();
             StoreResponse oldStore = await _storeService.FindStoreByIdAsync(id);
-            bool fileToDelete = false;
+            string fileToDelete = string.Empty;
 
             if (oldStore == null)
             {
@@ -115,7 +115,7 @@ namespace Expenses.API.Controllers
             {
                 string fileName = await SaveLogo(body.Logo);
                 newStore.Logo = fileName;
-                fileToDelete = true;
+                fileToDelete = oldStore.Resource.Logo;
             }
             else
             {
@@ -131,10 +131,10 @@ namespace Expenses.API.Controllers
 
             _logger.LogInformation(AppLoggingEvents.Update, $"Actualizada la store con Id {result.Resource.StoreId}");
 
-            if (fileToDelete)
+            if (!string.IsNullOrEmpty(fileToDelete))
             {
-                _logger.LogDebug($"Eliminamos la imagen {newStore.Logo}");
-                System.IO.File.Delete(Path.Combine(@"Resources/Images/Stores", newStore.Logo));
+                _logger.LogDebug($"Eliminamos la imagen {fileToDelete}");
+                System.IO.File.Delete(Path.Combine(@"Resources/Images/Stores", fileToDelete));
             }
 
             var storeModel = _mapper.Map<Store, StoreModel>(newStore);
@@ -154,6 +154,10 @@ namespace Expenses.API.Controllers
             }
 
             _logger.LogInformation(AppLoggingEvents.Delete, $"Eliminada la store con Id {id}");
+
+
+            _logger.LogDebug($"Eliminamos la imagen {result.Resource.Logo}");
+            System.IO.File.Delete(Path.Combine(@"Resources/Images/Stores", result.Resource.Logo));
 
             var storeModel = _mapper.Map<Store, StoreModel>(result.Resource);
             return Ok(storeModel);

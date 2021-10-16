@@ -1,8 +1,8 @@
 <h3 class="mt-3">Listado de Tiendas</h3>
 <div class="row at-5">
     <!-- ngIf listaStores > 0-->
-    <div *ngFor="let store of listStores" class="position-relative">
-        <img [src]="store.image | safeURL" class="rounded mr-1 border" height="170" width="150" [alt]="store.name">
+    <div *ngFor="let store of listStores" class="col">
+        <img [src]="store.image | safeURL" class="rounded mr-1 border" height="170" width="150" [title]="store.name" [alt]="store.name">
         <div class="text-center">
             <button type="button" class="btn btn-default btn-circle m-1 border" (click)="triggerEditModal(store, false)">
                 <i class="bi bi-pencil"></i>
@@ -12,7 +12,7 @@
             </button>
         </div>
     </div>
-    <a (click)="triggerAddModal()">
+    <a (click)="triggerAddModal()" class="col">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYxzwidi2WVre_1hP0ZV4G_Mrin_aAfxQTiQ&usqp=CAU"
              class="rounded mr-1" height="170" width="150" alt="Nueva tienda" />
     </a>

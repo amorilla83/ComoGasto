@@ -8,6 +8,11 @@ namespace Expenses.Infrastructure.Data
         //dotnet ef migrations add LogoInDB --project ../Expenses.Model
 
         public DbSet<Store> Store { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<Brand> Brand { get; set; }
+        public DbSet<Format> Format { get; set; }
+        public DbSet<Purchase> Purchase { get; set; }
+        public DbSet<ProductPurchase> ProductPurchase { get; set; }
 
         public ExpensesContext ()
         { }

@@ -21,10 +21,10 @@ namespace Expenses.Infrastructure.Data
             return new Product()
             {
                 Id = productDO.Id,
-                Detail = productDO.Detail,
-                Image = productDO.Image,
+                //Detail = productDO.Detail,
+                //Image = productDO.Image,
                 Name = productDO.Name,
-                ProductBrands = productDO.ProductBrands.Select(pb => Convert(pb)).ToList()
+                //ProductBrands = productDO.ProductBrands.Select(pb => Convert(pb)).ToList()
             };
         }
 
@@ -33,11 +33,11 @@ namespace Expenses.Infrastructure.Data
             return new ProductDO()
             {
                 Id = product.Id,
-                Detail = product.Detail,
-                Image = product.Image,
+                //Detail = product.Detail,
+                //Image = product.Image,
                 Name = product.Name,
                 //Con poner solo el método ya entiende la conversión que tiene que hacer, recibe lo que selecciona y devuelve el objeto que debe
-                ProductBrands = product.ProductBrands.Select(Convert).ToList()
+                //ProductBrands = product.ProductBrands.Select(Convert).ToList()
             };
         }
 

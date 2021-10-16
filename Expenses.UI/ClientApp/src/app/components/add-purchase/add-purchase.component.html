@@ -1,13 +1,102 @@
-<div class="modal-header">
-    <h4 class="modal-title" id="deleteModalLabel">Editar tienda</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click) ="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">×</span>
-    </button>
-</div>
-<div class="modal-body">
-    <p>Esta acción editará la tienda de la base de datos <strong>{{editar}}</strong></p>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-danger">Cerrar</button>
-    <button type="button" class="btn btn-primary">Eliminar</button>
-</div>
+<h3>{{title}}</h3>
+
+<ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="Data" animation="true">
+    <ngb-panel title="Fecha" id="Data" >
+      <ng-template ngbPanelContent>
+          <div class="input-group w-25">
+            <input class="form-control" placeholder="dd-mm-yyyy" name="date" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event)">
+            <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                <i class="bi bi-calendar3"></i>
+            </button>
+        </div>
+      </ng-template>
+    </ngb-panel>
+    <ngb-panel id="Store">
+      <ng-template ngbPanelTitle>
+        <span>Tiendas</span>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div *ngIf="listStores.length == 0" class="row at-3">
+          <h5 class="float-start">No existe ninguna tienda en base de datos.</h5>
+        </div>
+        <div class="row at-5">
+          <!-- ngIf listaStores > 0-->
+          <div *ngFor="let store of listStores" class="position-relative col">
+              <img [src]="store.image | safeURL" height="170" width="150" (click)="selectStore(store.id)"
+              [ngClass]="(store.id == selectedStore) ? 'rounded border border-primary border-5' : 'rounded mr-1 border' " 
+              [title]="store.name" [alt]="store.name">
+            
+          </div>
+          <a (click)="triggerAddModal('tienda')">
+            <button class="btn btn-default btn-circle m-1 border" >
+              <i class="bi bi-plus-circle-fill"><span>Añadir Tienda</span></i>
+            </button>
+          </a>
+        </div>
+      </ng-template>
+    </ngb-panel>
+    <ngb-panel title="Productos" id="Product">
+      <ng-template ngbPanelContent>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
+          aria-describedby="Search Product" placeholder="Enter text to search" >
+        </div>
+        <div class="row">
+          <!-- ngIf listaProducts > 0-->
+          <div *ngFor="let product of listProducts | nameFilter: searchText" class="position-relative col">
+              <button class="btn btn-default btn-circle border rounded-pill" (click)="addProductToPurchase(product.id)">
+                {{product.name}}
+              </button>            
+          </div>
+          <a (click)="triggerAddModal('producto')">
+            <button class="btn btn-default btn-circle my-3 border" >
+              <i class="bi bi-plus-circle-fill"><span>  Añadir Producto</span></i>
+            </button>
+          </a>
+        </div>
+        <div *ngIf="listProductsPurchase.length > 0">
+          <div class="row justify-content-end my-3">
+            <label class="col-2">Total: <b>{{getTotal()}} €</b></label>
+            <button (click)="addPurchase()" [disabled]="listProductsPurchase.length == 0"
+            class="btn btn-primary col-3">GuardarCompra</button>
+          </div>
+          <div class="row">
+        <table class="table table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Producto</th>
+              <th scope="col">Marca</th>
+              <th scope="col">Formato</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Cantidad/Peso</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of listProductsPurchase">
+              <th scope="row">{{product.idProduct}}</th>
+              <td>{{product.product}}</td>
+              <td>{{product.brand}}</td>
+              <td>{{product.format}}</td>
+              <td>{{product.price}} € </td>
+              <td>
+                <span *ngIf="product.quantity != ''">{{product.quantity}}</span>
+                <span *ngIf="product.weight != ''">{{product.weight}} gr.</span>
+              </td>
+              <td>{{getTotalProduct (product)}} €</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5"></td>
+              <td colspan="1">Total</td>
+              <td colspan="1"> {{getTotal()}} €</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      </div>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>

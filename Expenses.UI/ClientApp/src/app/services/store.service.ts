@@ -26,11 +26,11 @@ export class StoreService {
   }
 
   addStore(store : any) : any {
-    return this.http.post(this.storeURL, store, this.httpOptionsFile);
+    return this.http.post(this.storeURL, store);
   }
 
   editStore(store: any, id: number): any {
-    return this.http.put(this.storeURL + id, store, this.httpOptionsFile);
+    return this.http.put(this.storeURL + id, store);
   }
 
 

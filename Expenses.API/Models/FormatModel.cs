@@ -1,11 +1,9 @@
 ﻿using System;
 namespace Expenses.API.Models
 {
-    public class StoreModel
+    public class FormatModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Logo { get; set; }
-        public string Image { get; set; }
     }
 }

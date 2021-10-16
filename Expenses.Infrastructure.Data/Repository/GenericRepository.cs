@@ -41,9 +41,9 @@ namespace Expenses.Infrastructure.Data.Repository
             _context.Set<TEntity>().Remove(entity);
         }
 
-        public async Task<TEntity> GetByAsync(Expression<Func<TEntity, bool>> match)
+        public async Task<TEntity> GetByConditionAsync(Expression<Func<TEntity, bool>> match)
         {
-            return await _context.Set<TEntity>().FindAsync(match);
+            return await _context.Set<TEntity>().FirstOrDefaultAsync(match);
         }
 
         public IQueryable<TEntity> FindAll()

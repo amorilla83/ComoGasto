@@ -5,17 +5,16 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { StoresComponent } from './components/stores/stores.component';
 import { AddPurchaseComponent } from './components/add-purchase/add-purchase.component';
-import { ProductsComponent } from './components/products/products.component';
-import { AddProductComponent } from './components/add-product/add-product.component';
-//import { AddStoreComponent } from './components/add-store/add-store.component';
+import { PurchasesComponent } from './components/purchases/purchases.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'stores', component: StoresComponent },
-//  { path: 'add-store', component: AddStoreComponent },
-//  { path: 'edit-store/:id', component: AddStoreComponent },
+  { path: 'purchase', component: AddPurchaseComponent },
+  { path: 'purchase/:id', component: AddPurchaseComponent},
   { path: 'counter', component: CounterComponent },
   { path: 'fetch-data', component: FetchDataComponent },
+  { path: 'purchase-list', component: PurchasesComponent},
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

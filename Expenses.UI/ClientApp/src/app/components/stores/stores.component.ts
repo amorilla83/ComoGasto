@@ -61,20 +61,12 @@ export class StoresComponent implements OnInit {
     const modalRef = this.modalService.open(AddStoreComponent, { ariaLabelledBy: 'modal-basic-title' });
     modalRef.componentInstance.storeEdit = store;
     modalRef.componentInstance.newStore = newStore;
-    //modalRef.result.then(
-    //  (res) => {
-    //    this.closeModal = `Closed with: ${res}`;
-    //    if (res === 'Save click') {
-    //      if (newStore) {
-    //        this.addStore(store);
-    //      }
-    //      else {
-    //        this.editStore(store);
-    //      }
-    //    }
-    //  }, (res) => {
-    //    this.closeModal = `Dismissed ${this.getDismissReason(res)}`;
-    //  });
+    modalRef.result.then(
+     (res) => {
+       this.getStores();
+      }, (res) => {
+       this.closeModal = `Dismissed ${this.getDismissReason(res)}`;
+     });
   }
 
   triggerAddModal() {
@@ -126,11 +118,11 @@ export class StoresComponent implements OnInit {
 
   addStore(store: Store) {
     this.storeService.addStore(store).subscribe(
-      data => {
+      (      data: any) => {
         console.log(data);
         this.getStores();
       },
-      error => {
+      (      error: any) => {
         console.log(error);
       });
   }

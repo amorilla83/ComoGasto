@@ -1,5 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NgbAccordion, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Product } from 'src/app/models/product';
+import { ProductPurchase } from 'src/app/models/productPurchase';
+import { Purchase } from 'src/app/models/purchase';
+import { Store } from 'src/app/models/store';
+import { ProductService } from 'src/app/services/product.service';
+import { PurchaseService } from 'src/app/services/purchase.service';
+import { StoreService } from 'src/app/services/store.service';
+import { AddItemComponent } from '../add-item/add-item.component';
+import { AddProductComponent } from '../add-product/add-product.component';
+import { AddStoreComponent } from '../add-store/add-store.component';
 
 @Component({
   selector: 'app-add-purchase',
@@ -7,13 +18,234 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./add-purchase.component.css']
 })
 export class AddPurchaseComponent implements OnInit {
-  @Input() editar: string;
+  @ViewChild('acc') accordionComponent: NgbAccordion;
+  listStores: Store[] = [];
+  listProducts: Product[] = [];
+  listProductsPurchase: ProductPurchase [] = [];
+  date: NgbDateStruct;
+  title: string;
+  searchText: string;
+  selectedStore: number;
+  idPurchase: number;
 
-  constructor(
-    public activeModal: NgbActiveModal) { }
+  constructor(private storeService: StoreService, 
+    private productService: ProductService, 
+    private purchaseService: PurchaseService,
+    private aRoute : ActivatedRoute,
+    private modalService: NgbModal) {
+
+    this.idPurchase = +this.aRoute.snapshot.paramMap.get("id")!;
+    }
+  
 
   ngOnInit(): void {
-    console.log("Add Purchase On Init");
+    this.esEditar ();
   }
 
+  esEditar () {
+
+    if (this.idPurchase != undefined)
+    {
+      this.purchaseService.getPurchase(this.idPurchase).subscribe(
+        data => {
+          console.log(data);
+          let date : Date = new Date (data.date);
+          this.title = "Compra del día " + date.toLocaleString() + " en " + data.store.name;
+          this.selectedStore = data.store.id;
+          this.date = { day: date.getUTCDay(), month: date.getUTCMonth(), year: date.getUTCFullYear()};
+          this.getStores();
+          this.getProducts();
+          this.getProductsPurchase();
+          this.accordionComponent.toggle("Product");
+        },
+        error => {
+          console.log(error);
+        }
+      )
+    }
+  }
+
+  getStores() {
+    this.storeService.getStores().subscribe(
+      data => {
+        console.log(data);
+        this.listStores = data;
+      },
+      error => {
+        console.log(error);
+      });
+  }
+
+  getProducts() {
+    this.productService.getProducts().subscribe(
+      data => {
+        console.log(data);
+        this.listProducts = data;
+      },
+      error => {
+        console.log(error);
+      });
+  }
+
+  getProductsPurchase () {
+    this.purchaseService.getProductsByPurchase(this.idPurchase).subscribe(
+      data => {
+        console.log(data);
+        this.listProductsPurchase = data;
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
+
+  onDateSelection(event)
+  {
+    console.log(this.date);
+    this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year;
+    this.getStores();
+    this.accordionComponent.toggle("Store");
+  }
+
+  triggerAddModal(typeItem: string) {
+    if (typeItem == 'tienda')
+    {
+      const modalRef = this.modalService.open(AddStoreComponent, { ariaLabelledBy: 'modal-basic-title' });
+      modalRef.componentInstance.storeEdit = undefined;
+      modalRef.componentInstance.newStore = true;
+      modalRef.result.then(
+       (res) => {
+         this.getStores();
+        }, (error) => {
+         console.log(error);
+       });
+    }
+
+    if (typeItem == 'producto')
+    {
+      const modalRef = this.modalService.open(AddItemComponent, {ariaLabelledBy: 'modal-basic-title'});
+      modalRef.componentInstance.typeItem = typeItem;
+      modalRef.result.then(
+        (res) => {
+          //Añadir producto a la lista
+          console.log(res);
+          if (!res.includes('click')){
+
+            let productItem : Product = { id: this.listProducts.length + 1, name: res};
+            this.productService.addProduct(productItem).subscribe(
+              (response) => {
+                this.listProducts.push(response);
+                console.log(response);
+              },
+              (error) => console.log(error));
+              
+            console.log("Nuevo producto añadido a la lista");
+          }
+        },
+        (error) => {
+          console.log(error);
+        }
+      )
+    }
+  }
+
+  selectStore (id: number)
+  {
+    console.log("Select Store" + id.toString());
+    this.selectedStore = id;
+    this.title = this.title + " en " + this.listStores.find(s => s.id == id)?.name;
+    this.getProducts();
+    this.accordionComponent.toggle("Product");
+  }
+
+  addProductToPurchase(id: number)
+  {
+    //Mostrar el modal con el formulario para las diferentes opciones de un producto
+    const modalRef = this.modalService.open(AddProductComponent, { ariaLabelledBy: 'modal-basic-title' });
+    
+      modalRef.componentInstance.product = this.listProducts.find(p => p.id == id);
+      modalRef.result.then(
+       (res) => {
+         console.log(res);
+
+        if (res != undefined){
+          //TODO: Añadir la compra y el producto a base de datos
+          if (this.idPurchase == undefined)
+          {
+            this.addPurchase();
+          }
+          if (this.idPurchase == undefined)
+          {
+              return;
+          }
+
+         res.product = this.listProducts.find(p => p.id == id).name;
+          //Añadimos el producto a la compra
+          this.purchaseService.addProductToPurchase(res, this.idPurchase).subscribe(
+            data => {
+              console.log(data);
+              console.log("Producto añadido a la compra");
+              this.listProductsPurchase.push(data);
+              console.log (this.listProductsPurchase);
+            },
+            error => {
+              console.log(error);
+            });
+
+        }}, (error) => {
+         console.log(error);
+      });
+  }
+
+  getTotalProduct(product: ProductPurchase) : number
+  {
+    if (product.quantity > 0)
+    {
+      return product.price * product.quantity;
+    }
+
+    if (product.weight > 0)
+    {
+      return product.price;
+    }
+    
+  }
+
+  getTotal () : number
+  {
+    let total = 0.0;
+    for(let i = 0; i < this.listProductsPurchase.length; i++)
+    {
+      total += this.listProductsPurchase[i].price * this.listProductsPurchase[i].quantity;
+    }
+
+    return total;
+  }
+
+  addPurchase ()
+  {
+    //Guarda la compra completa en base de datos
+    //date
+    //selectedStore
+    //listProductsPurchase
+    let purchase : Purchase = 
+    {
+      date : new Date(this.date.year, this.date.month, this.date.day),
+      store: { id : this.selectedStore, name: '', logo: '', image: ''},
+      count: 0,
+      total: 0,
+      productList: undefined
+    };
+
+    this.purchaseService.addPurchase(purchase).subscribe(
+      data => {
+        console.log(data);
+
+    console.log("Compra guardada");
+        this.idPurchase = data.idPurchase;
+      },
+      error => {
+        console.log(error);
+      });
+  }
 }

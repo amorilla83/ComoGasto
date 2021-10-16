@@ -1,1 +1,68 @@
-<p>add-product works!</p>
+<div class="modal-header">
+    <h4 class="modal-title">{{product.name}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()">
+
+    </button>
+</div>
+<form [formGroup]="addProductToPurchase" (ngSubmit)="addProduct()">
+    <div class="modal-body row g-3">
+        <div class="col-12">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="granel" formControlName="granel" (change)="checkedChanged($event)">
+                <label class="form-check-label" for="granel">
+                    Granel
+                </label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <select class="form-select" formControlName="marca" aria-label="Default select example" (change)="onBrandSelected($event)">
+                <option selected>Selecciona la marca</option>
+                <option [value]="marca.id" *ngFor="let marca of brandList">{{marca.name}}</option>
+                <option value="-1">Otra...</option>
+            </select>
+            <!--<span *ngIf="addProductToPurchase.get('marca').invalid && addProductToPurchase.get('marca').touched" class="text-danger">
+            Debes seleccionar una marca
+          </span>-->
+        </div>
+        <div class="col-md-6">
+            <select formControlName="formato" class="form-select" aria-label="Default select example" (change)="onFormatSelected($event)">
+                <option selected>Selecciona el formato</option>
+                <option [value]="format.id" *ngFor="let format of formatList">{{format.name}}</option>
+                <option value="-1">Otro...</option>
+            </select>
+            <!--<span *ngIf="addProductToPurchase.get('marca').invalid && addProductToPurchase.get('marca').touched" class="text-danger">
+            Debes seleccionar una marca
+          </span>-->
+        </div>
+        <div class="col-md-6">
+            <label for="precio" class="form-label">Precio</label>
+            <div class="input-group mb-2">
+                <input formControlName="precio" type="text" class="form-control" id="precio" autocomplete="off">
+                <span class="input-group-text">€</span>
+            </div>
+            <span *ngIf="addProductToPurchase.get('precio').invalid && addProductToPurchase.get('precio').touched" class="text-danger">
+              El <strong>precio</strong> es obligatorio.
+            </span>
+        </div>
+
+        <div class="col-md-6">
+            <div *ngIf = "addProductToPurchase.get('granel').value">
+                <label for="peso" class="form-label">Peso</label>
+                <div class="input-group mb-2">
+                    <input formControlName="peso" type="text" class="form-control" id="peso" autocomplete="off">
+                    <span class="input-group-text">gr.</span>
+                </div>
+            </div>
+            <div *ngIf = "!addProductToPurchase.get('granel').value">
+                <label for="unidades" class="form-label">Unidades</label>
+                <input formControlName="unidades" type="number" class="form-control" id="unidades" value="1">
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        <button type="submit" [disabled]="addProductToPurchase.invalid"
+            class="btn btn-primary float-end">Aceptar</button>
+    </div>
+</form>

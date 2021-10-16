@@ -2,25 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Expenses.Core.DomainService
 {
-    public interface IProductRepository
+    public interface IProductRepository: IGenericRepository<Product>
     {
-        //GET
-        IEnumerable<Product> GetAll();
+        Task<IEnumerable<Product>> GetAllAsync();
+        ////GET
+        //IEnumerable<Product> GetAll();
 
-        Product GetById(int id);
+        //Product GetById(int id);
 
-        Product GetByIdIncludeProductBrands(int id);
+        //Product GetByIdIncludeProductBrands(int id);
 
-        //POST
-        Product Insert(Product product);
+        ////POST
+        //Product Insert(Product product);
 
-        //PUT
-        Product Update(Product productUpdate);
+        ////PUT
+        //Product Update(Product productUpdate);
 
-        //DELETE
-        Product Delete(int id);
+        ////DELETE
+        //Product Delete(int id);
     }
 }

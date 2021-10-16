@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
+using Expenses.Core.Entities.Communication;
+using Expenses.Core.Entities.Infrastructure;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Expenses.Core.ApplicationService.ServicesImpl
 {
@@ -11,65 +15,136 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
     {
         private IUnitOfWork _unitOfWork;
         private IProductRepository _productRepository;
-        private IProductBrandRepository _productBrandRepository;
 
-        public ProductService (IUnitOfWork unitOfWork, IProductRepository productRepository, IProductBrandRepository productBrandRepository)
+        private readonly IMemoryCache _cache;
+
+        public ProductService (IUnitOfWork unitOfWork, IMemoryCache cache,
+            IProductRepository productRepository)
         {
             _unitOfWork = unitOfWork;
             _productRepository = productRepository;
-            _productBrandRepository = productBrandRepository;
+            _cache = cache;
         }
 
-        public Product FindProductById(int id)
+        public Product NewProduct(string name)
         {
-            return _productRepository.GetById(id);
-        }
-
-        public Product FindProductByIdIncludeBrands (int id)
-        {
-            Product product = _productRepository.GetByIdIncludeProductBrands(id);
-            //Si lo hacemos así, obtenemos todos los ProductBrand y luego aplica el where
-            //Por eso hay que llevar estas condiciones a un nuevo método del repositorio
-            /*Product product = _productRepository.GetById(id);
-            product.ProductBrands = _productBrandRepository.GetAll().
-                Where(pb => pb.Product != null && pb.Product.Id == id).ToList();*/
+            Product product = new()
+            {
+                Name = name
+            };
             return product;
         }
 
-        public List<Product> GetAllProducts()
+        public async Task<ProductResponse> SaveProductAsync(Product product)
         {
-            return _productRepository.GetAll().ToList();
-        }
-
-        public Product SaveProduct(Product product)
-        {
-            using (_unitOfWork)
+            try
             {
-                Product productSaved = _productRepository.Insert(product);
-                _unitOfWork.Commit();
-                return productSaved;
+                var newProduct = await _productRepository.AddAsync(product);
+                await _unitOfWork.Commit();
+                UpdateCache();
+                return new ProductResponse(newProduct);
+            }
+            catch (Exception ex)
+            {
+                return new ProductResponse($"An error occurred when saving a store: {ex.Message}");
             }
         }
 
-        public Product UpdateProduct(Product productUpdate)
+        public async Task<ProductResponse> FindProductByIdAsync(int id)
         {
-            using (_unitOfWork)
+            try
             {
+                var product = await _productRepository.GetByIdAsync(id);
 
-                Product product = _productRepository.Update(productUpdate);
-                _unitOfWork.Commit();
-                return product;
+                return new ProductResponse(product);
+            }
+            catch (Exception ex)
+            {
+                return new ProductResponse($"An error occurred when finding a store with id {id}: {ex.Message}");
             }
         }
 
-        public Product DeleteProduct(int id)
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            using (_unitOfWork)
+            var products = await _cache.GetOrCreateAsync(CacheKeys.ProductsList, (entry) =>
             {
-                Product product = _productRepository.Delete(id);
-                _unitOfWork.Commit();
-                return product;
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                return _productRepository.GetAllAsync();
+            });
+
+            return products;
+        }
+
+        public async Task<ProductResponse> UpdateProductAsync(int id, Product productUpdate)
+        {
+            var existingProduct = await _productRepository.GetByIdAsync(id);
+
+            if (existingProduct == null)
+            {
+                return new ProductResponse("Product not found");
+            }
+
+            existingProduct.Name = productUpdate.Name;
+
+            try
+            {
+                _productRepository.Update(existingProduct);
+                await _unitOfWork.Commit();
+                UpdateCache();
+                return new ProductResponse(existingProduct);
+            }
+            catch (Exception ex)
+            {
+                return new ProductResponse($"An error occurred when updating the store: {ex.Message}");
             }
         }
+
+        public async Task<ProductResponse> DeleteProductAsync(int id)
+        {
+            var existingProduct = await _productRepository.GetByIdAsync(id);
+
+            if (existingProduct == null)
+            {
+                return new ProductResponse("Store not found");
+            }
+
+            try
+            {
+                await _productRepository.DeleteByIdAsync(id);
+                await _unitOfWork.Commit();
+                UpdateCache();
+                return new ProductResponse(existingProduct);
+
+            }
+            catch (Exception ex)
+            {
+                return new ProductResponse($"An error occurred when removing the product: {ex.Message}");
+            }
+        }
+
+        private void UpdateCache()
+        {
+            try
+            {
+                _cache.Remove(CacheKeys.StoresList);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        //public Product FindProductByIdIncludeBrands (int id)
+        //{
+        //    Product product = _productRepository.GetByIdIncludeProductBrands(id);
+        //    //Si lo hacemos así, obtenemos todos los ProductBrand y luego aplica el where
+        //    //Por eso hay que llevar estas condiciones a un nuevo método del repositorio
+        //    /*Product product = _productRepository.GetById(id);
+        //    product.ProductBrands = _productBrandRepository.GetAll().
+        //        Where(pb => pb.Product != null && pb.Product.Id == id).ToList();*/
+        //    return product;
+        //}
+
     }
 }

@@ -51,15 +51,6 @@ namespace Expenses.API
             //    options.UseSqlite($"Data Source=../Expenses.API/App_Data/Expenses.db",
             //    o => o.MigrationsAssembly("Expenses.Model")));
 
-            
-
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IProductService, ProductService>();
-
-            services.AddScoped<IProductBrandRepository, ProductBrandRepository>();
-            services.AddScoped<IProductBrandService, ProductBrandService>();
-
-
 
             //Evitamos los bucles en las referencias entre objetos
             //services.AddMvc().AddJsonOptions(options => {

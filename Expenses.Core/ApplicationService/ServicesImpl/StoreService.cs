@@ -15,7 +15,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
     {
         private readonly IStoreRepository _storeRepo;
 
-        private readonly IUnitOfWork _unitOfWok;
+        private readonly IUnitOfWork _unitOfWork;
 
         private readonly IMemoryCache _cache;
 
@@ -23,7 +23,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
         public StoreService (IStoreRepository storeRepostory, IUnitOfWork unitOfWork, IMemoryCache cache)
         {
             _storeRepo = storeRepostory;
-            _unitOfWok = unitOfWork;
+            _unitOfWork = unitOfWork;
             _cache = cache;
         }
 
@@ -39,8 +39,8 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             try
             {
                 await _storeRepo.DeleteByIdAsync(id);
-                await _unitOfWok.Commit();
-
+                await _unitOfWork.Commit();
+                UpdateCache();
                 return new StoreResponse(existingStore);
 
             }
@@ -95,8 +95,8 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             try
             {
                 var newStore = await _storeRepo.AddAsync(store);
-                await _unitOfWok.Commit();
-
+                await _unitOfWork.Commit();
+                UpdateCache();
                 return new StoreResponse(newStore);
             }
             catch (Exception ex)
@@ -120,12 +120,25 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             try
             {
                 _storeRepo.Update(existingStore);
-                await _unitOfWok.Commit();
+                await _unitOfWork.Commit();
+                UpdateCache();
                 return new StoreResponse(existingStore);
             }
             catch (Exception ex)
             {
                 return new StoreResponse($"An error occurred when updating the store: {ex.Message}");
+            }
+        }
+
+        private void UpdateCache ()
+        {
+            try
+            {
+                _cache.Remove(CacheKeys.StoresList);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

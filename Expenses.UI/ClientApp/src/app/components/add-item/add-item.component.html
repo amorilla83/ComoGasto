@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="addModalLabel">Añadir {{typeItem}}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="dismiss()">
+        
+    </button>
+</div>
+<div class="modal-body">
+    <input type="text" class="form-control rounded-pill" aria-label="Add" [(ngModel)]="addName" 
+          aria-describedby="Add" placeholder="Nombre" >
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="cancel()">Cerrar</button>
+    <button type="button" class="btn btn-primary" (click)="save()">Aceptar</button>
+</div>

@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Expenses.Core.Entities;
+
+namespace Expenses.Core.DomainService
+{
+    public interface IPurchaseRepository : IGenericRepository<Purchase>
+    {
+        Task<IEnumerable<Purchase>> GetAllAsync();
+        Task<Purchase> GetWithProductsByIdAsync(int id);
+    }
+}

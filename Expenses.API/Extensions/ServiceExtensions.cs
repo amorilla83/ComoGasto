@@ -44,6 +44,10 @@ namespace Expenses.API.Extensions
         public static void ConfigureRepositories (this IServiceCollection services)
         {
             services.AddScoped<IStoreRepository, StoreRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
+            services.AddScoped<IFormatRepository, FormatRepository>();
+            services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
@@ -51,6 +55,10 @@ namespace Expenses.API.Extensions
         public static void ConfigureDomainServices (this IServiceCollection services)
         {
             services.AddScoped<IStoreService, StoreService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IFormatService, FormatService>();
+            services.AddScoped<IPurchaseService, PurchaseService>();
         }
     }
 }

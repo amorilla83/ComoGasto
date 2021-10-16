@@ -1,26 +1,28 @@
 ﻿using Expenses.Core.Entities;
+using Expenses.Core.Entities.Communication;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Expenses.Core.ApplicationService
 {
     public interface IProductService
     {
-        //GET
-        Product FindProductById(int id);
-
-        Product FindProductByIdIncludeBrands(int id);
-
-        List<Product> GetAllProducts();
-
         //POST
-        Product SaveProduct(Product product);
+        Product NewProduct(string name);
+
+        Task<ProductResponse> SaveProductAsync(Product product);
+
+        //GET
+        Task<ProductResponse> FindProductByIdAsync(int id);
+
+        Task<IEnumerable<Product>> GetAllProductsAsync();
 
         //PUT
-        Product UpdateProduct(Product productUpdate);
+        Task<ProductResponse> UpdateProductAsync(int id, Product productUpdate);
 
         //DELETE
-        Product DeleteProduct(int id);
+        Task<ProductResponse> DeleteProductAsync(int id);
     }
 }

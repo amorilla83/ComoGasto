@@ -23,7 +23,7 @@
     "@angular/platform-server": "11.2.3",
     "@angular/router": "11.2.3",
     "@ng-bootstrap/ng-bootstrap": "^9.1.0",
-    "bootstrap": "^4.6.0",
+    "bootstrap": "^5.0.0-beta3",
     "bootstrap-icons": "^1.4.0",
     "core-js": "^3.3.3",
     "jquery": "^3.5.1",

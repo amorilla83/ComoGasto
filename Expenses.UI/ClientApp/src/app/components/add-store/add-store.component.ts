@@ -17,6 +17,7 @@ export class AddStoreComponent implements OnInit {
 
   addStore: FormGroup;
   title: string;
+  imageUpload: any;
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -56,7 +57,10 @@ export class AddStoreComponent implements OnInit {
 
     var formData: any = new FormData();
     formData.append("name", this.addStore.get('name').value);
-    formData.append("logo", this.addStore.get('logo').value);
+    formData.append("logo", this.imageUpload);
+
+    console.log(this.addStore.get('image').value);
+    console.log(formData);
 
     if (this.newStore) {
       this.storeService.addStore(formData).subscribe(
@@ -75,10 +79,7 @@ export class AddStoreComponent implements OnInit {
     //  logo: this.addStore.get('logo').value,
     //  image: this.addStore.get('image').value
     //}
-    this.activeModal.close();
-    console.log(formData);
-
-    this.router.navigate(['/stores']);
+    this.activeModal.close('Ok');
 
   }
 
@@ -100,6 +101,7 @@ export class AddStoreComponent implements OnInit {
 
       if (event.target.files && event.target.files.length) {
         const [file] = event.target.files;
+        this.imageUpload = (event.target as HTMLInputElement).files[0];
         reader.readAsDataURL(file);
 
         reader.onload = () => {

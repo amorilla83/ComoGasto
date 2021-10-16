@@ -19,7 +19,7 @@ namespace Expenses.Core.DomainService
         //Llevará el método AsNoTracking para no trackear los cambios
         IQueryable<TEntity> FindAllBy(Expression<Func<TEntity, bool>> predicate);
 
-        Task<TEntity> GetByAsync(Expression<Func<TEntity, bool>> match);
+        Task<TEntity> GetByConditionAsync(Expression<Func<TEntity, bool>> match);
 
         Task<TEntity> GetByIdAsync(object id);
 
