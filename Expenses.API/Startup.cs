@@ -1,25 +1,14 @@
-﻿using AutoMapper;
+﻿using System.IO;
 using Expenses.API.Extensions;
-using Expenses.Core;
-using Expenses.Core.ApplicationService;
-using Expenses.Core.ApplicationService.ServicesImpl;
-using Expenses.Core.DomainService;
-using Expenses.Infrastructure.Data;
-using Expenses.Infrastructure.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using NLog;
-using System;
-using System.IO;
 
 namespace Expenses.API
 {
@@ -73,8 +62,9 @@ namespace Expenses.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ComoGasto", Version = "v1" });
             });
 
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            //UPDATE 6.0
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc();
 
 
             services.AddMemoryCache();
