@@ -35,4 +35,12 @@ export class PurchaseService {
   addProductToPurchase (productPurchase: any, idPurchase: number) : any {
     return this.http.put(this.purchaseURL + idPurchase + '/product', productPurchase);
   }
+
+  deleteProductFromPurchase (idPurchase: number, idProduct: number): any{
+    return this.http.delete(this.purchaseURL + idPurchase + '/product/' + idProduct);
+  }
+
+  updateProductFromPurchase (productPurchase: any, idPurchase: number) : any {
+    return this.http.put(this.purchaseURL + idPurchase + '/product/' + productPurchase.idProduct, productPurchase);
+  }
 }

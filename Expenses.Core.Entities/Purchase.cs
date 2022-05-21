@@ -15,6 +15,7 @@ namespace Expenses.Core.Entities
         [Key]
         public int IdPurchase { get; set; }
 
+        //[ForeignKey("StoreId")]
         public Store Store { get; set; }
         public int StoreId { get; set; }
 

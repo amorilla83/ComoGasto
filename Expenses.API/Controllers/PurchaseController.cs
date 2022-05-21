@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using AutoMapper;
 using Expenses.API.Models;
@@ -99,7 +100,7 @@ namespace Expenses.API.Controllers
 
         // PUT api/purchase/5/product
         [HttpPut("{id}/product")]
-        [ProducesResponseType(typeof(PurchaseModel), 200)]
+        [ProducesResponseType(typeof(ProductPurchaseModel), 200)]
         [ProducesResponseType(typeof(ErrorModel), 400)]
         public async Task<IActionResult> PutAsync(int id, [FromBody] AddProductPurchaseModel body)
         {
@@ -112,12 +113,33 @@ namespace Expenses.API.Controllers
                 return BadRequest(new ErrorModel(result.Message));
             }
 
-            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida el producto {body.ProductId} a la compra" +
-                $" con Id {result.Resource.IdPurchase}");
+            _logger.LogInformation(AppLoggingEvents.Create, $"Añadido el producto {body.ProductId} a la compra" +
+                $" con Id {result.Resource.PurchaseId}");
 
-            var purchaseModel = _mapper.Map<Purchase, PurchaseModel>(result.Resource);
+            var purchaseModel = _mapper.Map<ProductPurchase, ProductPurchaseModel>(result.Resource);
+            
+            return Ok(purchaseModel);
+        }
+
+        [HttpDelete("{idPurchase}/product/{idProduct}")]
+        [ProducesResponseType (typeof (ProductPurchaseModel), 200)]
+        [ProducesResponseType(typeof (ErrorModel), 400)]
+        public async Task<IActionResult> DeleteAsync (int idPurchase, int idProduct)
+        {
+            var result = await _purchaseService.DeleteProductFromPurchase(idPurchase, idProduct);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ErrorModel(result.Message));
+            }
+
+            _logger.LogInformation(AppLoggingEvents.Create, $"Eliminado el producto {idProduct} de la compra" +
+                $" con Id {idPurchase}");
+
+            var purchaseModel = _mapper.Map<ProductPurchase, ProductPurchaseModel>(result.Resource);
 
             return Ok(purchaseModel);
+
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class ProductPurchaseModel
     {
-        public int Id { get; set; }
+        public int ProductId { get; set; }
 
         public ProductModel Product { get; set; }
 

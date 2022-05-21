@@ -77,6 +77,7 @@ export class AddProductComponent implements OnInit {
     console.log(this.addProductToPurchase);
     // Peta el product id y marca y formato están vacíos
     let brand = this.brandList.find(b => b.id == this.addProductToPurchase.get('marca').value);
+    let format = this.formatList.find(f => f.id == this.addProductToPurchase.get('formato').value);
     let productPurchase : ProductPurchase =
     {
       
@@ -85,7 +86,7 @@ export class AddProductComponent implements OnInit {
       brandId : this.addProductToPurchase.get('marca').value,
       brand : brand?.name,
       formatId : this.addProductToPurchase.get('formato').value,
-      format: this.formatList.find(f => f.id == this.addProductToPurchase.get('formato').value).name,
+      format: format?.name,
       quantity : this.addProductToPurchase.get('unidades').value,
       price : this.addProductToPurchase.get('precio').value,
       weight: this.addProductToPurchase.get('peso').value

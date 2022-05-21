@@ -20,10 +20,19 @@ namespace Expenses.Infrastructure.Data.Repository
             return await _context.Purchase.Include(p => p.Store).ToListAsync();
         }
 
-        public async Task<Purchase> GetWithProductsByIdAsync(int id)
+        public async Task<Purchase> GetAllDataByIdAsync(int id)
         {
             return await _context.Purchase.Include(p => p.Store)
-                .Include(p => p.ProductList).FirstOrDefaultAsync(p => p.IdPurchase == id);
+                .Include(p => p.ProductList).ThenInclude(pr => pr.Product)
+                .Include(p => p.ProductList).ThenInclude(pr => pr.Brand)
+                .Include(p => p.ProductList).ThenInclude(pr => pr.Format)
+                .FirstOrDefaultAsync(p => p.IdPurchase == id);
+        }
+
+        public async Task<Purchase> GetWithProductsByIdAsync (int id)
+        {
+            return await _context.Purchase.Include(p => p.ProductList)
+                .FirstOrDefaultAsync(p => p.IdPurchase == id);
         }
     }
 }

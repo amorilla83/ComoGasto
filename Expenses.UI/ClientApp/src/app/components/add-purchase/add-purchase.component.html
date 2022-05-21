@@ -1,4 +1,4 @@
-<h3>{{title}}</h3>
+<h3 *ngIf="title">Compra del día {{date.day}}/{{date.month}}/{{date.year}} en {{selectedStore}}</h3>
 
 <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="Data" animation="true">
     <ngb-panel title="Fecha" id="Data" >
@@ -20,7 +20,6 @@
           <h5 class="float-start">No existe ninguna tienda en base de datos.</h5>
         </div>
         <div class="row at-5">
-          <!-- ngIf listaStores > 0-->
           <div *ngFor="let store of listStores" class="position-relative col">
               <img [src]="store.image | safeURL" height="170" width="150" (click)="selectStore(store.id)"
               [ngClass]="(store.id == selectedStore) ? 'rounded border border-primary border-5' : 'rounded mr-1 border' " 
@@ -56,9 +55,7 @@
         </div>
         <div *ngIf="listProductsPurchase.length > 0">
           <div class="row justify-content-end my-3">
-            <label class="col-2">Total: <b>{{getTotal()}} €</b></label>
-            <button (click)="addPurchase()" [disabled]="listProductsPurchase.length == 0"
-            class="btn btn-primary col-3">GuardarCompra</button>
+            <label class="col-2">Total: <b>{{getTotal() | number}} €</b></label>
           </div>
           <div class="row">
         <table class="table table-striped">
@@ -71,27 +68,44 @@
               <th scope="col">Precio</th>
               <th scope="col">Cantidad/Peso</th>
               <th scope="col">Total</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let product of listProductsPurchase">
-              <th scope="row">{{product.idProduct}}</th>
-              <td>{{product.product}}</td>
-              <td>{{product.brand}}</td>
-              <td>{{product.format}}</td>
+              <th scope="row">{{product.productId}}</th>
+              <td>{{product.product.name}}</td>
+              <td>
+                <span *ngIf="product.brand != undefined">{{product.brand.name}}</span>
+              </td>
+              <td>
+                <span *ngIf="product.format != undefined">{{product.format.name}}</span>
+                <span *ngIf="product.format == undefined && product.weight != ''">Granel</span>
+              </td>
               <td>{{product.price}} € </td>
               <td>
-                <span *ngIf="product.quantity != ''">{{product.quantity}}</span>
+                <span *ngIf="product.weight == ''">{{product.quantity}}</span>
                 <span *ngIf="product.weight != ''">{{product.weight}} gr.</span>
               </td>
-              <td>{{getTotalProduct (product)}} €</td>
+              <td>{{getTotalProduct (product) | number}} €</td>
+              <td>
+                <button type="button" class="btn" (click)="editProductPurchase(product.productId)">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn" (click)="deleteProductPurchase(product.productId)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
               <td colspan="5"></td>
               <td colspan="1">Total</td>
-              <td colspan="1"> {{getTotal()}} €</td>
+              <td colspan="1"> {{getTotal() | number}} €</td>
             </tr>
           </tfoot>
         </table>

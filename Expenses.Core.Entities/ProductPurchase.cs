@@ -12,10 +12,10 @@ namespace Expenses.Core.Entities
         public int ProductId { get; set; }
 
         public Brand Brand { get; set; }
-        public int BrandId { get; set; }
+        public int? BrandId { get; set; }
 
         public Format Format { get; set; }
-        public int FormatId { get; set; }
+        public int? FormatId { get; set; }
 
         public double Price { get; set; }
         public int? Quantity { get; set; }

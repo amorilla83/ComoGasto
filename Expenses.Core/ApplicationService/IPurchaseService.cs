@@ -12,9 +12,9 @@ namespace Expenses.Core.ApplicationService
         Task<IEnumerable<ProductPurchase>> GetProductsPurchase(int id);
         Task<PurchaseResponse> GetPurchaseByIdAsync(int id);
 
-
         Task<PurchaseResponse> SavePurchaseAsync(Purchase purchase);
         Task<PurchaseResponse> FindPurchaseByIdAsync(int id);
-        Task<PurchaseResponse> AddProductToPurchase(int id, ProductPurchase product);
+        Task<ProductPurchaseResponse> AddProductToPurchase(int id, ProductPurchase product);
+        Task<ProductPurchaseResponse> DeleteProductFromPurchase(int idPurchase, int idProduct);
     }
 }
