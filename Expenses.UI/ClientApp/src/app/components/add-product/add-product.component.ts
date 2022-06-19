@@ -1,9 +1,11 @@
+import { unescapeIdentifier } from '@angular/compiler';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Brand } from 'src/app/models/brand';
 import { Item } from 'src/app/models/item';
 import { Product } from 'src/app/models/product';
+import { ProductDetails } from 'src/app/models/productDetails';
 import { ProductPurchase } from 'src/app/models/productPurchase';
 import { BrandService } from 'src/app/services/brand.service';
 import { FormatService } from 'src/app/services/format.service';
@@ -16,10 +18,10 @@ import { AddItemComponent } from '../add-item/add-item.component';
   styleUrls: ['./add-product.component.css']
 })
 export class AddProductComponent implements OnInit {
-  @Input() product: Product;
+  @Input() productPurchase: ProductPurchase;
   addProductToPurchase: FormGroup;
   id = 0;
-  brandList: Brand[] = [];
+  brandList: Item[] = [];
 
   formatList: Item[] = [];
 
@@ -42,12 +44,53 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getBrands ();  
+    //this.getBrands ();  
+    this.getDetails ();
+    if (this.productPurchase.id != undefined && this.productPurchase.id != 0)
+    {
+      console.log(this.productPurchase);
+      this.addProductToPurchase.setValue({
+        marca: this.productPurchase.productDetail != undefined ? this.productPurchase.productDetail.brand.id : 0,
+        formato: this.productPurchase.productDetail != undefined ? this.productPurchase.productDetail.format.id : 0,
+        precio: this.productPurchase.price,
+        unidades: this.productPurchase.quantity,
+        peso: this.productPurchase.weight,
+        granel: (this.productPurchase.weight != undefined)
+      }
+      );
+
+      if (this.productPurchase.productDetail == undefined)
+      {
+        this.granel(true);
+      }
+    }
+    console.log(this.addProductToPurchase);
+  }
+
+  getDetails ()
+  {
+    if (this.productPurchase.productDetail != undefined)
+    {
+    this.productService.getProductDetails(this.productPurchase.productDetail.product.id).subscribe(
+      data => {
+        console.log(data);
+        this.productPurchase.productDetail.product = data;
+        this.brandList = this.productPurchase.productDetail.product.productDetails.map(pd => pd.brand);
+
+        if (this.productPurchase.productDetail.brand != undefined && this.productPurchase.productDetail.brand.id != 0)
+        {
+          this.formatList = this.productPurchase.productDetail.product.productDetails.filter(p => p.brand.id == this.productPurchase.productDetail.brand.id).map(p => p.format);
+        }
+      },
+      error => {
+        console.log(error);
+      });
+    }
   }
 
   getBrands ()
   {
-    this.productService.getBrandsByProduct(this.product.id).subscribe(
+    this.productService.getBrandsByProduct(this.productPurchase.productDetail.product.id).subscribe(
       data => {
         console.log(data);
         this.brandList = data;
@@ -60,7 +103,12 @@ export class AddProductComponent implements OnInit {
   checkedChanged (event)
   {
     console.log(event.target.checked);
-    if (event.target.checked)
+    this.granel(event.target.checked);
+  }
+
+  granel (checked: boolean)
+  {
+    if (checked)
     {
     this.addProductToPurchase.get('marca').disable();
     this.addProductToPurchase.get('formato').disable();
@@ -80,18 +128,41 @@ export class AddProductComponent implements OnInit {
     let format = this.formatList.find(f => f.id == this.addProductToPurchase.get('formato').value);
     let productPurchase : ProductPurchase =
     {
-      
-      productId : this.product.id,
-      product : '',
-      brandId : this.addProductToPurchase.get('marca').value,
-      brand : brand?.name,
-      formatId : this.addProductToPurchase.get('formato').value,
-      format: format?.name,
+      id: this.productPurchase.id,
+      productId: this.productPurchase.product.id,
+      product: this.productPurchase.product,
+      purchaseId: this.productPurchase.purchaseId,
       quantity : this.addProductToPurchase.get('unidades').value,
       price : this.addProductToPurchase.get('precio').value,
-      weight: this.addProductToPurchase.get('peso').value
+      weight: this.addProductToPurchase.get('peso').value,
+      productDetail: undefined
+      // productDetail: {
+      //   id: this.productPurchase.productDetail.id,
+      //   product: this.productPurchase.product,
+      //   productId: this.productPurchase.product.id,
+      //   brand: brand,
+      //   brandId: brand != undefined ? brand.id : 0,
+      //   format: format,
+      //   formatId: format != undefined ? format.id : 0,
+      //   lastPrice: this.addProductToPurchase.get('precio').value
+      // }
     }
 
+    if (this.productPurchase.productDetail != undefined)
+    {
+      productPurchase.productDetail = {
+        id: this.productPurchase.productDetail.id,
+        product: this.productPurchase.product,
+        productId: this.productPurchase.product.id,
+        brand: brand,
+        brandId: brand != undefined ? brand.id : 0,
+        format: format,
+        formatId: format != undefined ? format.id : 0,
+        lastPrice: this.addProductToPurchase.get('precio').value
+      };
+    }
+
+    console.log('ProductPurchase a añadir')
     console.log(productPurchase);
     this.activeModal.close(productPurchase);
 
@@ -108,29 +179,57 @@ export class AddProductComponent implements OnInit {
   onBrandSelected(event) { 
     if (event.target.value == -1) 
     {
-      //Abrimos el modal de add-item
+      //Abrimos el modal de add-item para añadir una nueva marca al listado
       const modalRef = this.modalService.open(AddItemComponent, {ariaLabelledBy: 'modal-basic-title'});
       modalRef.componentInstance.typeItem = 'marca';
       modalRef.result.then(
         (res) => {
           //Añadir marca a la lista
           console.log(res);
-          if (!res.includes('click')){
-            let brandItem : Brand = { name: res, formatList: null, productId: this.product.id};
-            this.brandService.addBrand(brandItem).subscribe(
-              (response) => 
-              {
-                console.log("Tenemos la respuesta");
-                console.log(response);
-                console.log(response.id);
-                this.brandList.push(response);
-                this.formatList = response.formatList;
+          if (res != null){
+            let brandItem: Brand = res;
+            //let brandItem : Brand = { name: res, formatList: null, productId: this.product.id};
+            if (brandItem.id == 0)
+            {
+              //Es una nueva marca              
+              this.brandService.addBrand(brandItem).subscribe(
+                (response) => 
+                {
+                  console.log("Tenemos la respuesta");
+                  console.log(response);
+                  console.log(response.id);
+                  brandItem.id = response.id;
+                  //this.brandList.push(response);
+                  //this.formatList = response.formatList;
 
-                console.log("Nueva marca añadida a la lista");
+                  console.log("Nueva marca añadida a la lista");
 
-                this.addProductToPurchase.patchValue({marca: response.id});
-              },
-              (error) => console.log(error));
+                  this.addProductToPurchase.patchValue({marca: response.id});
+                },
+                (error) => console.log(error));
+            }
+            else
+            {
+              //La marca ya existe en base de datos pero no está asociada al producto
+              //Buscar en productDetails los formatos asociados a la marca existente
+              this.productService.getFormatsByBrand(brandItem.id).subscribe(
+                (response) => 
+                {
+                  if (response[0] == null)
+                  {
+                    this.formatList = [];
+                  }
+                  else 
+                  {
+                  this.formatList = response;
+                  }
+                }
+              );
+
+              this.addProductToPurchase.patchValue({marca: brandItem.id});
+            }
+            this.brandList.push(brandItem);
+
           }
         },
         (error) => {
@@ -140,9 +239,9 @@ export class AddProductComponent implements OnInit {
     }
     else {
       console.log ('Marca seleccionada ');
-      console.log(event);
       this.addProductToPurchase.patchValue({marca: event.target.value});
-      this.formatList = this.brandList.find(b => b.id == this.addProductToPurchase.get('marca').value).formatList;
+      console.log (this.productPurchase.productDetail.product.productDetails.filter(p => p.brand.id == this.addProductToPurchase.get('marca').value));
+      this.formatList = this.productPurchase.productDetail.product.productDetails.filter(p => p.brand.id == this.addProductToPurchase.get('marca').value).map(p => p.format);
       console.log(this.formatList);
     }
   }
@@ -165,23 +264,30 @@ export class AddProductComponent implements OnInit {
         (res) => {
           //Añadir formato a la lista
           console.log(res);
-          if (!res.includes('click')){
-            //TODO: Añadir el formato a la base de datos y recargar la lista
-            let formatItem : Item = { name: res, parentId: brand};
-            this.formatService.addFormat(formatItem).subscribe(
-              (response) => 
-              {
-                console.log("Tenemos la respuesta");
-                console.log(response);
-                console.log(response.id);
-                this.formatList.push(response);
+          if (res != null){
+            let formatItem : Item = res;
 
-                console.log("Nuevo formato añadida a la lista");
+            if (formatItem.id == 0)
+            {
+              //Es un nuevo formato a añadir a la base de datos
+              this.formatService.addFormat(formatItem).subscribe(
+                (response) => 
+                {
+                  console.log("Tenemos la respuesta");
+                  console.log(response);
+                  console.log(response.id);
+                  formatItem.id = response.id;
+                  //this.formatList.push(response);
+  
+                  console.log("Nuevo formato añadida a la lista");
+                },
+                (error) => console.log(error));
+              console.log("Nuevo formato añadido a la lista");
+            }
 
-                this.addProductToPurchase.patchValue({formato: response.id});
-              },
-              (error) => console.log(error));
-            console.log("Nuevo formato añadido a la lista");
+            this.formatList.push(formatItem);
+            this.addProductToPurchase.patchValue({formato: formatItem.id});
+            console.log(this.addProductToPurchase);
           }
         },
         (error) => {
@@ -192,7 +298,10 @@ export class AddProductComponent implements OnInit {
     else {
       console.log ('formato Seleccionado');
       console.log (event);
-      this.addProductToPurchase.patchValue({formato: event.target.value});
+      let productDetail = this.productPurchase.productDetail.product.productDetails
+        .find(p => (p.format.id == this.addProductToPurchase.get('formato').value) &&
+              p.brand.id == this.addProductToPurchase.get('marca').value);
+      this.addProductToPurchase.patchValue({productDetail: productDetail, formato: event.target.value, precio: productDetail.lastPrice});
     }
   }
 }

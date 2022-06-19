@@ -41,10 +41,22 @@ namespace Expenses.API.Controllers
         {
             var products = await _productService.GetAllProductsAsync();
 
-
             _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {products.Count()} products");
 
             return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductModel>>(products);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
+        [ProducesResponseType(typeof(ErrorModel), 400)]
+        public async Task<ProductModel> GetDetailsAsync (int id)
+        {
+            var details = await _productService.GetProductDetailsAsync(id);
+
+            _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido los detalles del producto {id}");
+
+            return _mapper.Map<Product, ProductModel>(details);
         }
 
         [HttpGet]
@@ -53,12 +65,13 @@ namespace Expenses.API.Controllers
         [ProducesResponseType(typeof(ErrorModel), 400)]
         public async Task<IEnumerable<BrandModel>> ListBrandAsync (int id)
         {
-            var brands = await _brandService.GetBrandsByProduct(id);
+            //var brands = await _brandService.GetBrandsByProduct(id);
 
-            _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {brands.Count()} marcas " +
-                $" para el producto con id {id}");
+            //_logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {brands.Count()} marcas " +
+            //    $" para el producto con id {id}");
 
-            return _mapper.Map<IEnumerable<Brand>, IEnumerable<BrandModel>>(brands);
+            //return _mapper.Map<IEnumerable<Brand>, IEnumerable<BrandModel>>(brands);
+            return null;
         }
 
 
@@ -98,28 +111,29 @@ namespace Expenses.API.Controllers
             //    return BadRequest("Parameter Id and ProductId must be the same");
             //}
 
-            Product newProduct = new Product();
-            ProductResponse oldProduct = await _productService.FindProductByIdAsync(id);
-            
-            if (oldProduct == null)
-            {
-                return BadRequest(new ErrorModel("El producto no existe en base de datos"));
-            }
+            //Product newProduct = new Product();
+            //ProductResponse oldProduct = await _productService.FindProductByIdAsync(id);
 
-            newProduct.Name = body.Name;
+            //if (oldProduct == null)
+            //{
+            //    return BadRequest(new ErrorModel("El producto no existe en base de datos"));
+            //}
 
-            var result = await _productService.UpdateProductAsync(id, newProduct);
+            //newProduct.Name = body.Name;
 
-            if (!result.Success)
-            {
-                return BadRequest(new ErrorModel(result.Message));
-            }
+            //var result = await _productService.UpdateProductAsync(id, newProduct);
 
-            _logger.LogInformation(AppLoggingEvents.Update, $"Actualizada el producto con Id {result.Resource.Id}");
+            //if (!result.Success)
+            //{
+            //    return BadRequest(new ErrorModel(result.Message));
+            //}
 
-            var productModel = _mapper.Map<Product, ProductModel>(newProduct);
+            //_logger.LogInformation(AppLoggingEvents.Update, $"Actualizada el producto con Id {result.Resource.Id}");
 
-            return Ok(productModel);
+            //var productModel = _mapper.Map<Product, ProductModel>(newProduct);
+
+            //return Ok(productModel);
+            return null;
         }
 
         // DELETE api/products/5
@@ -128,18 +142,19 @@ namespace Expenses.API.Controllers
         [ProducesResponseType(typeof(ErrorModel), 400)]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = await _productService.DeleteProductAsync(id);
+            //var result = await _productService.DeleteProductAsync(id);
 
-            if (!result.Success)
-            {
-                return BadRequest(new ErrorModel(result.Message));
-            }
+            //if (!result.Success)
+            //{
+            //    return BadRequest(new ErrorModel(result.Message));
+            //}
 
-            _logger.LogInformation(AppLoggingEvents.Delete, $"Eliminado el producto con Id {id}");
+            //_logger.LogInformation(AppLoggingEvents.Delete, $"Eliminado el producto con Id {id}");
 
-            var productModel = _mapper.Map<Product, ProductModel>(result.Resource);
+            //var productModel = _mapper.Map<Product, ProductModel>(result.Resource);
 
-            return Ok(productModel);
+            //return Ok(productModel);
+            return null;
         }
     }
 }

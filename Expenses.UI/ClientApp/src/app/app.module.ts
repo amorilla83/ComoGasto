@@ -20,6 +20,7 @@ import { DeleteModalComponent } from './components/delete-modal/delete-modal.com
 import { NameFilterPipe } from './Filter.pipe';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { PurchasesComponent } from './components/purchases/purchases.component';
+import { AlertComponent } from './components/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { PurchasesComponent } from './components/purchases/purchases.component';
     DeleteModalComponent,
     NameFilterPipe,
     AddProductComponent,
-    PurchasesComponent
+    PurchasesComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

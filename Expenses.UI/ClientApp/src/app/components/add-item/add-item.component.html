@@ -4,9 +4,17 @@
         
     </button>
 </div>
-<div class="modal-body">
+<div class="modal-body row g-2">
+    <div *ngIf="listItem.length != 0" class="col-md-6">
+        <select class="form-select" aria-label="Default select example" (change)="onItemSelected($event)">
+            <option selected>Selecciona {{typeItem}}</option>
+            <option [value]="item.id" *ngFor="let item of listItem">{{item.name}}</option>
+        </select>
+    </div>
+    <div class="col-12">
     <input type="text" class="form-control rounded-pill" aria-label="Add" [(ngModel)]="addName" 
           aria-describedby="Add" placeholder="Nombre" >
+    </div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-danger" (click)="cancel()">Cerrar</button>

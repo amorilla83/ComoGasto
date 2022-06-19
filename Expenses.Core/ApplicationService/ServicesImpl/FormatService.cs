@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             try
             {
                 Format newFormat = new Format();
+
                 //Exists format and associate with brand
                 newFormat = await FindFormatByNameAsync(addFormat.Name);
 
@@ -40,24 +42,23 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
                     };
                 }
 
+                //if (addFormat.BrandList.Any())
+                //{
+                //    if (newFormat.BrandList.Any(b => b.Id == addFormat.BrandList.First().Id))
+                //    {
+                //        throw new Exception($"El formato {addFormat.Name} ya está asociado con " +
+                //            $"la marca con Id {addFormat.BrandList.First().Id}");
+                //    }
 
-                if (addFormat.BrandList.Any())
-                {
-                    if (newFormat.BrandList.Any(b => b.Id == addFormat.BrandList.First().Id))
-                    {
-                        throw new Exception($"El formato {addFormat.Name} ya está asociado con " +
-                            $"la marca con Id {addFormat.BrandList.First().Id}");
-                    }
+                //    Brand newBrand = await _brandService.FindBrandByIdAsync(addFormat.BrandList.First().Id);
 
-                    Brand newBrand = await _brandService.FindBrandByIdAsync(addFormat.BrandList.First().Id);
+                //    if (newBrand == null)
+                //    {
+                //        throw new Exception($"La marca con Id {addFormat.BrandList.First().Id} no existe en base de datos");
+                //    }
 
-                    if (newBrand == null)
-                    {
-                        throw new Exception($"La marca con Id {addFormat.BrandList.First().Id} no existe en base de datos");
-                    }
-
-                    newFormat.BrandList.Add(newBrand);
-                }
+                //    newFormat.BrandList.Add(newBrand);
+                //}
 
                 _formatRepository.Update(newFormat);
 
@@ -66,7 +67,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             }
             catch (Exception ex)
             {
-                return new FormatResponse($"An error occurred when saving a brand: {ex.Message}");
+                return new FormatResponse($"An error occurred when saving a format: {ex.Message}");
             }
         }
 
@@ -74,6 +75,11 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
         {
             Expression<Func<Format, bool>> predicate = (Format entity) => entity.Name == name;
             return await _formatRepository.GetByConditionAsync(predicate);
+        }
+
+        public async Task<IEnumerable<Format>> GetAllFormatsAsync()
+        {
+            return await _formatRepository.GetAllAsync();
         }
     }
 }

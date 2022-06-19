@@ -10,5 +10,6 @@ namespace Expenses.Core.DomainService
         Task<IEnumerable<Purchase>> GetAllAsync();
         Task<Purchase> GetAllDataByIdAsync(int id);
         Task<Purchase> GetWithProductsByIdAsync(int id);
+        void UpdateProduct(Purchase updatePurchase, ProductPurchase updateProduct);
     }
 }

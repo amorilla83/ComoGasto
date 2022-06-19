@@ -12,6 +12,6 @@ namespace Expenses.Infrastructure.Data
         public static readonly List<Store> stores = new List<Store>();
 
         public static int idProductBrand = 1;
-        public static readonly List<ProductBrand> productBrands = new List<ProductBrand>();
+        public static readonly List<ProductDetails> productBrands = new List<ProductDetails>();
     }
 }

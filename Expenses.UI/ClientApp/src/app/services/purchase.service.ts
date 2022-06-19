@@ -32,6 +32,11 @@ export class PurchaseService {
     return this.http.post(this.purchaseURL, purchase);
   }
 
+  deletePurchase (id: number) : any
+  {
+    return this.http.delete(this.purchaseURL + id);
+  }
+
   addProductToPurchase (productPurchase: any, idPurchase: number) : any {
     return this.http.put(this.purchaseURL + idPurchase + '/product', productPurchase);
   }
@@ -41,6 +46,6 @@ export class PurchaseService {
   }
 
   updateProductFromPurchase (productPurchase: any, idPurchase: number) : any {
-    return this.http.put(this.purchaseURL + idPurchase + '/product/' + productPurchase.idProduct, productPurchase);
+    return this.http.put(this.purchaseURL + idPurchase + '/product/' + productPurchase.id, productPurchase);
   }
 }

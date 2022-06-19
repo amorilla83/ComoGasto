@@ -1,6 +1,7 @@
 ﻿using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,17 @@ namespace Expenses.Infrastructure.Data.Repository
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _context.Product.ToListAsync();
+        }
+
+        public async Task<Product> GetProductDetailsAsync (int id)
+        {
+            return await _context.Product
+                .Where(p => p.Id == id)
+                .Include(p => p.ProductDetails)
+                .ThenInclude(pd => pd.Format )
+                .Include(p => p.ProductDetails)
+                .ThenInclude(p => p.Brand)
+                .FirstOrDefaultAsync();
         }
 
         //public IEnumerable<Product> GetAll()

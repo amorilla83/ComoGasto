@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Item } from 'src/app/models/item';
+import { BrandService } from 'src/app/services/brand.service';
+import { FormatService } from 'src/app/services/format.service';
 
 @Component({
   selector: 'app-add-item',
@@ -9,21 +12,61 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class AddItemComponent implements OnInit {
   @Input() public typeItem: string;
   addName: string;
+  selectedItem: Item;
+  listItem: Item[] = [];
 
-  constructor(public activeModal: NgbActiveModal) { }
+  constructor(public activeModal: NgbActiveModal, private brandService: BrandService,
+    private formatService: FormatService) {
+    
+   }
+
 
   ngOnInit(): void {
+    //Cargar toda la lista de base de datos
+    if (this.typeItem == 'marca')
+    {
+      this.brandService.getBrands().subscribe(
+        data => {
+          console.log(data);
+          this.listItem = data;
+        },
+        error => {
+          console.log(error);
+        });
+    }
+    else if (this.typeItem == 'formato')
+    {
+      this.formatService.getFormats().subscribe(
+        data => {
+          console.log(data);
+          this.listItem = data;
+        },
+        error => {
+          console.log(error);
+        });
+    }
   }
 
   cancel() {
-    this.activeModal.close('Cancel click');
+    this.activeModal.close(null);
   }
 
   save() {
-    this.activeModal.close(this.addName);
+    if (this.selectedItem == undefined)
+    {
+      //No se ha seleccionado ningún valor, se añade una nueva item con el texto
+      this.selectedItem= {id: 0, name: this.addName};
+    }
+
+    this.activeModal.close(this.selectedItem);
   }
 
   dismiss() {
-    this.activeModal.close('Cross click');
+    this.activeModal.close(null);
+  }
+
+  onItemSelected (event) {
+    this.selectedItem = this.listItem.find(i => i.id == event.target.value);
+    this.addName = this.selectedItem.name;
   }
 }

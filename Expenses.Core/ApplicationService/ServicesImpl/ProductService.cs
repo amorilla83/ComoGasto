@@ -75,6 +75,11 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             return products;
         }
 
+        public async Task<Product> GetProductDetailsAsync (int id)
+        {
+            return await _productRepository.GetProductDetailsAsync(id);
+        }
+
         public async Task<ProductResponse> UpdateProductAsync(int id, Product productUpdate)
         {
             var existingProduct = await _productRepository.GetByIdAsync(id);
@@ -88,10 +93,11 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
             try
             {
-                _productRepository.Update(existingProduct);
-                await _unitOfWork.Commit();
-                UpdateCache();
-                return new ProductResponse(existingProduct);
+                //_productRepository.Update(existingProduct);
+                //await _unitOfWork.Commit();
+                //UpdateCache();
+                //return new ProductResponse(existingProduct);
+                return null;
             }
             catch (Exception ex)
             {

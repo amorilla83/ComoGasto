@@ -1,10 +1,12 @@
+import { Product } from "./product";
+import { ProductDetails } from "./productDetails";
+
 export interface ProductPurchase {
+    id: number;
+    purchaseId: number;
+    productDetail: ProductDetails;
     productId: number;
-    product: string;
-    brandId: number;
-    brand:string;
-    formatId: number;
-    format:string;
+    product: Product;
     price: number;
     quantity: number;
     weight: number;

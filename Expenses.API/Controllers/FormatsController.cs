@@ -29,16 +29,29 @@ namespace Expenses.API.Controllers
             _formatService = formatService;
         }
 
+        //GET api/formats
+        [HttpGet]
+        [ProducesResponseType(typeof(ItemModel), 200)]
+        [ProducesResponseType(typeof(ErrorModel), 400)]
+        public async Task<IActionResult> GetAsync ()
+        {
+            var formats = await _formatService.GetAllFormatsAsync();
+
+            _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {formats.Count()} formatos");
+
+            return Ok(_mapper.Map<IEnumerable<Format>, IEnumerable<ItemModel>>(formats));
+        }
+        
+
         // POST api/formats
         [HttpPost]
         [ProducesResponseType(typeof(FormatModel), 200)]
         [ProducesResponseType(typeof(ErrorModel), 400)]
         public async Task<IActionResult> PostAsync([FromBody] AddFormatModel body)
         {
-            Format format = new Format()
+            Format format = new()
             {
                 Name = body.Name,
-                BrandList = new List<Brand>() { new Brand { Id = body.ParentId } }
             };
 
             var result = await _formatService.SaveFormatAsync(format);
@@ -48,10 +61,10 @@ namespace Expenses.API.Controllers
                 return BadRequest(new ErrorModel(result.Message));
             }
 
-            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida el producto con Id {result.Resource.Id} " +
-                $"relacionado con la marca {body.ParentId}");
+            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida el formato con Id {result.Resource.Id} ");
+            //    $"relacionado con la marca {body.ParentId}");
 
-            FormatModel formatModel = _mapper.Map<Format, FormatModel>(result.Resource);
+            ItemModel formatModel = _mapper.Map<Format, ItemModel>(result.Resource);
 
             return Ok(formatModel);
         }

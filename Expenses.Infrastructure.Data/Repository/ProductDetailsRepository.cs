@@ -1,23 +1,25 @@
 ﻿using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Expenses.Infrastructure.Data.Repository
 {
-    public class ProductBrandRepository : IProductBrandRepository
+    public class ProductDetailsRepository : IProductDetailsRepository
     {
         private readonly ExpensesContext _context;
 
-        public ProductBrandRepository (ExpensesContext context)
+        public ProductDetailsRepository (ExpensesContext context)
         {
             _context = context;
         }
 
-        public ProductBrandRepository ()
+        public ProductDetailsRepository ()
         {
             /*if (FakeDB.productBrands.Count == 0)
             {
@@ -50,7 +52,7 @@ namespace Expenses.Infrastructure.Data.Repository
             return 0;
         }
 
-        public IEnumerable<ProductBrand> GetAll(Filter filter)
+        public IEnumerable<ProductDetails> GetAll(Filter filter)
         {
             if (filter == null)
             {
@@ -63,9 +65,9 @@ namespace Expenses.Infrastructure.Data.Repository
             return null;
         }
 
-        public ProductBrand GetById(int id)
+        public ProductDetails GetById(int id)
         {
-            foreach (ProductBrand pb in FakeDB.productBrands)
+            foreach (ProductDetails pb in FakeDB.productBrands)
              {
                  if (pb.Id == id)
                  {
@@ -76,7 +78,7 @@ namespace Expenses.Infrastructure.Data.Repository
             //return _context.ProductBrand.Include(pb => pb.Product).FirstOrDefault(pb => pb.Id == id);
         }
 
-        public ProductBrand Insert(ProductBrand productBrand)
+        public ProductDetails Insert(ProductDetails productBrand)
         {
 
             /*productBrand.Id = FakeDB.idProductBrand++;
@@ -110,7 +112,7 @@ namespace Expenses.Infrastructure.Data.Repository
             return productBrand;
         }
 
-        public ProductBrand Update(ProductBrand productBrandUpdate)
+        public ProductDetails Update(ProductDetails productBrandUpdate)
         {
             /*ProductBrand pb = GetById(productBrandUpdate.Id);
             pb.Name = productBrandUpdate.Name;
@@ -145,7 +147,7 @@ namespace Expenses.Infrastructure.Data.Repository
             return productBrandUpdate;
         }
 
-        public ProductBrand Delete(int id)
+        public ProductDetails Delete(int id)
         {
             /* ProductBrand pb = GetById(id);
              if (pb == null)
@@ -154,9 +156,29 @@ namespace Expenses.Infrastructure.Data.Repository
              }
              FakeDB.productBrands.Remove(pb);
              return pb;*/
-            var productBrandDeleted = _context.Remove(new ProductBrand { Id = id }).Entity;
+            var productBrandDeleted = _context.Remove(new ProductDetails { Id = id }).Entity;
             _context.SaveChanges();
             return productBrandDeleted;
+        }
+
+        /// <summary>
+        /// Obtiene todos los formatos asociados con la marca indicada en el id
+        /// </summary>
+        /// <param name="idBrand">Id de la marca de la que se buscarán relaciones</param>
+        /// <returns>Lista de los formatos asociados a esa marca</returns>
+        public IEnumerable<Format> GetFormatsByBrand(int idBrand)
+        {
+            var productDetails = _context.ProductDetails.Where(pd => pd.Brand.Id == idBrand).AsNoTracking().ToList();
+
+            return productDetails.Select(p => p.Format).Distinct().ToList();
+        }
+
+        public async Task<ProductDetails> GetByDataAsync(int idProduct, int idBrand, int idFormat)
+        {
+            var productDetails = await _context.ProductDetails.Where(pd => pd.ProductId == idProduct
+            && pd.BrandId == idBrand && pd.FormatId == idFormat).FirstOrDefaultAsync();
+            
+            return productDetails;
         }
     }
 }

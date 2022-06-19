@@ -71,7 +71,7 @@ namespace Expenses.API.Controllers
                 {
                     store.Logo = fileName;
                 }
-                
+
             }
             store.Name = body.Name;
             var result = await _storeService.SaveStoreAsync(store);

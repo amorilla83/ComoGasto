@@ -10,73 +10,77 @@ namespace Expenses.API.Controllers
     [ApiController]
     public class ProductBrandsController : ControllerBase
     {
-        private readonly IProductBrandService _productBrandService;
+        private readonly IProductDetailsService _productBrandService;
 
-        public ProductBrandsController(IProductBrandService productBrandService)
+        public ProductBrandsController(IProductDetailsService productBrandService)
         {
             _productBrandService = productBrandService;
         }
 
         // GET api/productBrands
         [HttpGet]
-        public ActionResult<IEnumerable<ProductBrand>> Get([FromQuery] Filter filter)
+        public ActionResult<IEnumerable<ProductDetails>> Get([FromQuery] Filter filter)
         {
-            try
-            {
-                return Ok(_productBrandService.GetFilteredProductBrands(filter));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            //try
+            //{
+            //    return Ok(_productBrandService.GetFilteredProductBrands(filter));
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest(ex.Message);
+            //}
 
             //return _productBrandService.GetAllProductBrands();
+            return null;
         }
 
         // GET api/productBrands/5
         [HttpGet("{id}")]
-        public ActionResult<ProductBrand> Get(int id)
+        public ActionResult<ProductDetails> Get(int id)
         {
-            return _productBrandService.FindProductBrandById(id);
+            //return _productBrandService.FindProductBrandById(id);
+            return null;
         }
 
         // POST api/productBrands
         [HttpPost]
-        public ActionResult<ProductBrand> Post([FromBody] ProductBrand productBrand)
+        public ActionResult<ProductDetails> Post([FromBody] ProductDetails productBrand)
         {
-            try
-            {
-                return Ok( _productBrandService.SaveProductBrand(productBrand));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
+            //try
+            //{
+            //    return Ok( _productBrandService.SaveProductBrand(productBrand));
+            //}
+            //catch (Exception e)
+            //{
+            //    return BadRequest(e.Message);
+            //}
+            return null;
         }
 
         // PUT api/productBrands/5
         [HttpPut("{id}")]
-        public ActionResult<ProductBrand> Put(int id, [FromBody] ProductBrand productBrand)
+        public ActionResult<ProductDetails> Put(int id, [FromBody] ProductDetails productBrand)
         {
             //El BadRequest debe validarse en el controlador para no llegar más lejos
-            if (id == 0 || id != productBrand.Id)
-            {
-                return BadRequest("Parameter Id and ProductBrandId must be the same");
-            }
-            return Ok(_productBrandService.UpdateProductBrand(productBrand));
+            //if (id == 0 || id != productBrand.Id)
+            //{
+            //    return BadRequest("Parameter Id and ProductBrandId must be the same");
+            //}
+            //return Ok(_productBrandService.UpdateProductBrand(productBrand));
+            return null;
         }
 
         // DELETE api/productBrands/5
         [HttpDelete("{id}")]
-        public ActionResult<ProductBrand> Delete(int id)
+        public ActionResult<ProductDetails> Delete(int id)
         {
-            ProductBrand p = _productBrandService.DeleteProductBrand(id);
-            if (p == null)
-            {
-                return StatusCode(404, $"ProductBrand not found with id {id}");
-            }
-            return Ok($"ProductBrand with id {id} deleted");
+            //ProductDetails p = _productBrandService.DeleteProductBrand(id);
+            //if (p == null)
+            //{
+            //    return StatusCode(404, $"ProductBrand not found with id {id}");
+            //}
+            //return Ok($"ProductBrand with id {id} deleted");
+            return null;
         }
     }
 }

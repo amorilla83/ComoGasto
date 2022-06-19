@@ -34,14 +34,14 @@ namespace Expenses.API.Controllers
 
         // GET api/brands
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BrandModel>), 200)]
-        public async Task<IEnumerable<BrandModel>> ListAsync()
+        [ProducesResponseType(typeof(IEnumerable<ItemModel>), 200)]
+        public async Task<IEnumerable<ItemModel>> ListAsync()
         {
             var brands = await _brandService.GetAllBrandsAsync();
 
             _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {brands.Count()} marcas");
 
-            return _mapper.Map<IEnumerable<Brand>, IEnumerable<BrandModel>>(brands);
+            return _mapper.Map<IEnumerable<Brand>, IEnumerable<ItemModel>>(brands);
         }
 
         // POST api/brands
@@ -55,10 +55,10 @@ namespace Expenses.API.Controllers
                 Name = body.Name
             };
 
-            if (body.ProductId.HasValue)
-            {
-                brand.ProductList = new List<Product>() { new Product { Id = body.ProductId.Value } };
-            }
+            //if (body.ProductId.HasValue)
+            //{
+            //    brand.ProductList = new List<Product>() { new Product { Id = body.ProductId.Value } };
+            //}
 
             var result = await _brandService.SaveBrandAsync(brand);
 
@@ -67,10 +67,10 @@ namespace Expenses.API.Controllers
                 return BadRequest(new ErrorModel(result.Message));
             }
 
-            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida la marca con Id {result.Resource.Id} " +
-                $"relacionada con el producto {body.ProductId}");
+            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida la marca con Id {result.Resource.Id}");
+            //    $"relacionada con el producto {body.ProductId}");
 
-            BrandModel brandModel = _mapper.Map<Brand, BrandModel>(result.Resource);
+            ItemModel brandModel = _mapper.Map<Brand, ItemModel>(result.Resource);
 
             return Ok(brandModel);
         }

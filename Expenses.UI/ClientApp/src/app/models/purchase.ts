@@ -1,7 +1,7 @@
 import { ProductPurchase } from "./productPurchase";
 import { Store } from "./store";
 
-export interface Purchase {
+export class Purchase {
     idPurchase?: number;
     date: Date;
     store: Store;

@@ -8,6 +8,7 @@ import { Store } from 'src/app/models/store';
 import { ProductService } from 'src/app/services/product.service';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { StoreService } from 'src/app/services/store.service';
+import { HighlightSpanKind } from 'typescript';
 import { AddItemComponent } from '../add-item/add-item.component';
 import { AddProductComponent } from '../add-product/add-product.component';
 import { AddStoreComponent } from '../add-store/add-store.component';
@@ -19,14 +20,19 @@ import { AddStoreComponent } from '../add-store/add-store.component';
 })
 export class AddPurchaseComponent implements OnInit {
   @ViewChild('acc') accordionComponent: NgbAccordion;
+  purchase: Purchase;
   listStores: Store[] = [];
   listProducts: Product[] = [];
-  listProductsPurchase: ProductPurchase[] = [];
+  successMessage: string;
+  errorMessage: string;
+  //listProductsPurchase: ProductPurchase[] = [];
   date: NgbDateStruct;
-  title: boolean;
+  title: string;
   searchText: string;
   selectedStore: number;
   idPurchase: number;
+  //selectedStore: Store;
+
 
   constructor(private storeService: StoreService,
     private productService: ProductService,
@@ -43,26 +49,35 @@ export class AddPurchaseComponent implements OnInit {
   }
 
   esEditar() {
-
     if (this.idPurchase != undefined && this.idPurchase != 0) {
       this.purchaseService.getPurchase(this.idPurchase).subscribe(
         data => {
           console.log(data);
-          let date: Date = new Date(data.date);
-          this.title = true;
-          this.selectedStore = data.store.id;
-          this.date = { day: date.getUTCDate(), month: date.getUTCMonth() + 1, year: date.getUTCFullYear() };
+          this.purchase = {
+            idPurchase: this.idPurchase,
+            date: new Date(data.date),
+            store: data.store,  
+            productList: data.productList,
+            count: 0,
+            total: 0
+          };
+          this.date = { day: this.purchase.date.getUTCDate(), month: this.purchase.date.getUTCMonth() + 1, year: this.purchase.date.getUTCFullYear() };
+          this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year + " en " + this.purchase.store.name;
+          this.selectedStore = this.purchase.store.id;
           this.getStores();
           this.getProducts();
           this.getProductsPurchase();
           this.accordionComponent.toggle("Product");
-          console.log (date);
-          console.log(this.date);
         },
         error => {
           console.log(error);
+          this.errorMessage = "Error al obtener la compra";
         }
       )
+    }
+    else
+    {
+      this.purchase = new Purchase ();
     }
   }
 
@@ -74,6 +89,7 @@ export class AddPurchaseComponent implements OnInit {
       },
       error => {
         console.log(error);
+        this.errorMessage ="Error al obtener las tiendas";
       });
   }
 
@@ -85,26 +101,40 @@ export class AddPurchaseComponent implements OnInit {
       },
       error => {
         console.log(error);
+        this.errorMessage = "Error al obtener los productos";
       });
   }
 
   getProductsPurchase() {
-    this.purchaseService.getProductsByPurchase(this.idPurchase).subscribe(
+    this.purchaseService.getProductsByPurchase(this.purchase.idPurchase).subscribe(
       data => {
         console.log(data);
-        this.listProductsPurchase = data;
+        this.purchase.productList = data;
+        this.purchase.count = this.purchase.productList.length;
       },
       error => {
         console.log(error);
+        this.errorMessage = "Error al obtener los productos de la compra";
       }
     )
   }
 
   onDateSelection(event) {
     console.log(this.date);
-    this.title = true;
+    this.purchase.date = new Date(this.date.year, this.date.month, this.date.day)
+    this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year;
     this.getStores();
     this.accordionComponent.toggle("Store");
+  }
+
+  selectStore(id: number) {
+    console.log("Select Store" + id.toString());
+    console.log(this.listStores);
+    this.purchase.store = this.listStores.find(s => s.id == id);
+    this.selectedStore = id;
+    this.title += " en " + this.purchase.store.name;
+    this.getProducts();
+    this.accordionComponent.toggle("Product");
   }
 
   triggerAddModal(typeItem: string) {
@@ -115,8 +145,10 @@ export class AddPurchaseComponent implements OnInit {
       modalRef.result.then(
         (res) => {
           this.getStores();
+          this.successMessage ="Tienda añadida correctamente";
         }, (error) => {
           console.log(error);
+          this.errorMessage = "Error al añadir la tienda";
         });
     }
 
@@ -127,119 +159,171 @@ export class AddPurchaseComponent implements OnInit {
         (res) => {
           //Añadir producto a la lista
           console.log(res);
-          if (!res.includes('click')) {
+          if (res != null) {
 
-            let productItem: Product = { id: this.listProducts.length + 1, name: res };
+            let productItem: ProductPurchase = res;
+            //Product = { id: this.listProducts.length + 1, name: res, productDetails: [] };
             this.productService.addProduct(productItem).subscribe(
               (response) => {
                 this.listProducts.push(response);
                 console.log(response);
+                this.successMessage = "Se ha añadido el nuevo producto";
               },
-              (error) => console.log(error));
-
-            console.log("Nuevo producto añadido a la lista");
+              (error) => {
+                console.log(error);
+                this.errorMessage = "Error al añadir el producto";
+              });
           }
         },
         (error) => {
           console.log(error);
+          this.errorMessage ="Error al añadir el producto";
         }
       )
     }
-  }
-
-  selectStore(id: number) {
-    console.log("Select Store" + id.toString());
-    this.selectedStore = id;
-    this.getProducts();
-    this.accordionComponent.toggle("Product");
   }
 
   addProductToPurchase(id: number) {
     //Mostrar el modal con el formulario para las diferentes opciones de un producto
     const modalRef = this.modalService.open(AddProductComponent, { ariaLabelledBy: 'modal-basic-title' });
 
-    modalRef.componentInstance.product = this.listProducts.find(p => p.id == id);
+    let productPurchase: ProductPurchase = {
+      id: 0,
+      purchaseId: this.idPurchase,
+      productId: id,
+      product: this.listProducts.find(p => p.id == id),
+      quantity : 0,
+      price : 0,
+      weight: 0,
+      productDetail: {
+        id: 0,
+        product: this.listProducts.find(p => p.id == id),
+        productId: id,
+        brand: undefined,
+        brandId: 0,
+        format: undefined,
+        formatId: 0,
+        lastPrice: 0
+      }
+    };
+    modalRef.componentInstance.productPurchase = productPurchase;
     modalRef.result.then(
       async (res) => {
         console.log(res);
 
         if (res != undefined) {
           //TODO: Añadir la compra y el producto a base de datos
-          if (this.idPurchase == undefined || this.idPurchase == 0) {
+          if (this.purchase.idPurchase == undefined || this.purchase.idPurchase == 0) {
 
-            let purchase: Purchase =
-            {
-              date: new Date(this.date.year, this.date.month, this.date.day),
-              store: { id: this.selectedStore, name: '', logo: '', image: '' },
-              count: 0,
-              total: 0,
-              productList: undefined
-            };
+            // let purchase: Purchase =
+            // {
+            //   date: new Date(this.date.year, this.date.month, this.date.day),
+            //   store: this.purchase.store,
+            //   count: 0,
+            //   total: 0,
+            //   idPurchase: this.purchase.idPurchase,
+            //   productList: undefined
+            // };
+            console.log("Añadimos la compra");
+            console.log(this.purchase);
         
-            await this.purchaseService.addPurchase(purchase).subscribe(
+            await this.purchaseService.addPurchase(this.purchase).subscribe(
               data => {
                 console.log(data);
-        
                 console.log("Compra guardada");
-                this.idPurchase = data.idPurchase;
-                console.log("AddedPurchase: " + this.idPurchase.toString());
-              console.log("Añadimos un producto a la compra" + this.idPurchase.toString());
-              res.product = this.listProducts.find(p => p.id == id).name;
+                this.purchase.idPurchase = data.idPurchase;
+                console.log("AddedPurchase: " + this.purchase.idPurchase.toString());
+                console.log(this.purchase);
+              console.log("Añadimos un producto a la compra " + this.purchase.idPurchase.toString());
               //Añadimos el producto a la compra
-              this.purchaseService.addProductToPurchase(res, this.idPurchase).subscribe(
+              this.purchaseService.addProductToPurchase(res, this.purchase.idPurchase).subscribe(
                 dataProduct => {
                   console.log(dataProduct);
-                  console.log("Producto añadido a la compra");
-                  this.listProductsPurchase = (dataProduct.productList);
-                  console.log(this.listProductsPurchase);
+                  this.successMessage = "Producto añadido a la compra";
+                  res.id = dataProduct.id;
+                  console.log(res);
+                  this.purchase.productList = [];
+                  this.purchase.productList.push(dataProduct);
+                  console.log(this.purchase);
                 },
                 error => {
                   console.log(error);
+                  this.errorMessage = "Error al añadir el producto a la compra";
                 });
               },
               error => {
                 console.log(error);
-                this.idPurchase = 0;
+                this.purchase.idPurchase = 0;
+                this.errorMessage ="Error al añadir la compra";
               });
           }
           else {
-            console.log("Añadimos un producto a la compra" + this.idPurchase.toString());
-            res.product = this.listProducts.find(p => p.id == id).name;
+            console.log("Añadimos un producto a la compra " + this.purchase.idPurchase.toString());
             //Añadimos el producto a la compra
-            this.purchaseService.addProductToPurchase(res, this.idPurchase).subscribe(
+            this.purchaseService.addProductToPurchase(res, this.purchase.idPurchase).subscribe(
               data => {
                 console.log(data);
-                console.log("Producto añadido a la compra");
-                this.listProductsPurchase.push(data);
-                console.log(this.listProductsPurchase);
+                this.successMessage = "Producto añadido a la compra";
+                console.log(res);
+                this.purchase.productList.push(data);
+                console.log(this.purchase.productList);
               },
               error => {
                 console.log(error);
+                this.errorMessage ="Error al añadir el producto a la compra";
               });
           }
         }
       }, (error) => {
         console.log(error);
+        this.errorMessage = "Error al añadir el producto a la compra";
       });
   }
 
-  deleteProductPurchase(idProduct : number) {
-    this.purchaseService.deleteProductFromPurchase(this.idPurchase, idProduct).subscribe(
+  deleteProductPurchase(idProductPurchase : number) {
+    this.purchaseService.deleteProductFromPurchase(this.purchase.idPurchase, idProductPurchase).subscribe(
       data => {
         console.log(data);
-        console.log("Producto eliminado");
+        this.successMessage = "Producto eliminado de la compra";
 
-        let indexDelete = this.listProductsPurchase.findIndex(p => p.productId == idProduct);
-        this.listProductsPurchase.splice(indexDelete, 1);
+        let indexDelete = this.purchase.productList.findIndex(p => p.id == idProductPurchase);
+        this.purchase.productList.splice(indexDelete, 1);
       },
       error => {
         console.log(error);
+        this.errorMessage = "Error al eliminar el producto de la compra";
       }
     )
   }
 
-  editProductPurchase (idProduct: number) {
+  editProductPurchase (idProductPurchase: number) {
+    const modalRef = this.modalService.open(AddProductComponent, { ariaLabelledBy: 'modal-basic-title' });
     
+    modalRef.componentInstance.productPurchase = this.purchase.productList.find(p => p.id == idProductPurchase);
+    modalRef.result.then(
+      async (res) => {
+        console.log("Modificamos un producto de la compra " + this.purchase.idPurchase.toString());
+            //Añadimos el producto a la compra
+            this.purchaseService.addProductToPurchase(res, this.purchase.idPurchase).subscribe(
+              data => {
+                console.log(data);
+                this.successMessage = "Producto modificado en la compra";
+                //Vuelve sin la información para mostrar en la tabla
+                let index = this.purchase.productList.findIndex(p => p.id == idProductPurchase);
+                //this.purchase.productList.splice(indexDelete, 1);
+                //this.purchase.productList.push(res);
+                this.purchase.productList[index] = res;
+                console.log(this.purchase.productList);
+              },
+              error => {
+                console.log(error);
+                this.errorMessage ="Error al modificar el producto de la compra";
+              });
+      }, (error) => {
+        console.log(error);
+        this.errorMessage ="Error al modificar el producto de la compra";
+      }
+    );
   }
 
   getTotalProduct(product: ProductPurchase): number {
@@ -255,22 +339,18 @@ export class AddPurchaseComponent implements OnInit {
 
   getTotal(): number {
     let total = 0.0;
-    for (let i = 0; i < this.listProductsPurchase.length; i++) {
-      total += this.listProductsPurchase[i].price * this.listProductsPurchase[i].quantity;
+    for (let i = 0; i < this.purchase.productList.length; i++) {
+      total += this.purchase.productList[i].price * this.purchase.productList[i].quantity;
     }
 
     return total;
   }
 
   async addPurchase() {
-    //Guarda la compra completa en base de datos
-    //date
-    //selectedStore
-    //listProductsPurchase
     let purchase: Purchase =
     {
       date: new Date(this.date.year, this.date.month, this.date.day),
-      store: { id: this.selectedStore, name: '', logo: '', image: '' },
+      store: this.purchase.store,
       count: 0,
       total: 0,
       productList: undefined
@@ -279,13 +359,13 @@ export class AddPurchaseComponent implements OnInit {
     await this.purchaseService.addPurchase(purchase).subscribe(
       data => {
         console.log(data);
-
-        console.log("Compra guardada");
-        this.idPurchase = data.idPurchase;
+        this.successMessage = "Compra guardada";
+        this.purchase.idPurchase = data.idPurchase;
       },
       error => {
         console.log(error);
-        this.idPurchase = 0;
+        this.purchase.idPurchase = 0;
+        this.errorMessage ="Error al añadir la compra"
       });
   }
 }

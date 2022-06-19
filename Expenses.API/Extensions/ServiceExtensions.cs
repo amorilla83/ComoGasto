@@ -48,6 +48,8 @@ namespace Expenses.API.Extensions
             services.AddScoped<IBrandRepository, BrandRepository>();
             services.AddScoped<IFormatRepository, FormatRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+            services.AddScoped<IProductDetailsRepository, ProductDetailsRepository>();
+            services.AddScoped<IProductPurchaseRepository, ProductPurchaseRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
@@ -59,6 +61,7 @@ namespace Expenses.API.Extensions
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IFormatService, FormatService>();
             services.AddScoped<IPurchaseService, PurchaseService>();
+            services.AddScoped<IProductDetailsService, ProductDetailsService>();
         }
     }
 }

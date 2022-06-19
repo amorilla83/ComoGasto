@@ -34,7 +34,8 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public async Task<IEnumerable<Brand>> GetBrandsByProduct(int id)
         {
-            return await _brandRepository.GetBrandsByProduct(id);
+            //return await _brandRepository.GetBrandsByProduct(id);
+            return null;
         }
 
         public async Task<IEnumerable<Brand>> GetAllBrandsAsync()
@@ -47,7 +48,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             try
             {
                 Brand newBrand = new Brand();
-                //Exists brand and associate with product
+                //Exists brand
                 newBrand = await FindBrandByNameAsync(addBrand.Name);
 
                 if (newBrand == null)
@@ -58,24 +59,23 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
                     };
                 }
 
+                //if (addBrand.ProductList.Any())
+                //{
+                //    if (newBrand.ProductList.Any(b => b.Id == addBrand.ProductList.First().Id))
+                //    {
+                //        throw new Exception($"El producto con id {addBrand.ProductList.First().Id} " +
+                //            $"ya está asociado a la marca {newBrand.Name}");
+                //    }
 
-                if (addBrand.ProductList.Any())
-                {
-                    if (newBrand.ProductList.Any(b => b.Id == addBrand.ProductList.First().Id))
-                    {
-                        throw new Exception($"El producto con id {addBrand.ProductList.First().Id} " +
-                            $"ya está asociado a la marca {newBrand.Name}");
-                    }
+                //    Product newProduct = (await _productService.FindProductByIdAsync(addBrand.ProductList.First().Id))?.Resource;
 
-                    Product newProduct = (await _productService.FindProductByIdAsync(addBrand.ProductList.First().Id))?.Resource;
+                //    if (newProduct == null)
+                //    {
+                //        throw new Exception($"El producto con Id {addBrand.ProductList.First().Id} no existe en base de datos");
+                //    }
 
-                    if (newProduct == null)
-                    {
-                        throw new Exception($"El producto con Id {addBrand.ProductList.First().Id} no existe en base de datos");
-                    }
-
-                    newBrand.ProductList.Add(newProduct);
-                }
+                //    newBrand.ProductList.Add(newProduct);
+                //}
 
                 _brandRepository.Update(newBrand);
 

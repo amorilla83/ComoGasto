@@ -1,5 +1,5 @@
-<h3 *ngIf="title">Compra del día {{date.day}}/{{date.month}}/{{date.year}} en {{selectedStore}}</h3>
-
+<h3 *ngIf="title">{{title}}</h3>
+<app-alert [successMessage]="successMessage" [errorMessage]="errorMessage"></app-alert>
 <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="Data" animation="true">
     <ngb-panel title="Fecha" id="Data" >
       <ng-template ngbPanelContent>
@@ -53,7 +53,8 @@
             </button>
           </a>
         </div>
-        <div *ngIf="listProductsPurchase.length > 0">
+        <!-- Lista de productos de la compra-->
+        <div *ngIf="purchase != undefined && purchase.productList != undefined && purchase.productList.length > 0">
           <div class="row justify-content-end my-3">
             <label class="col-2">Total: <b>{{getTotal() | number}} €</b></label>
           </div>
@@ -73,29 +74,29 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of listProductsPurchase">
-              <th scope="row">{{product.productId}}</th>
+            <tr *ngFor="let product of purchase.productList">
+              <th scope="row">{{product.id}}</th>
               <td>{{product.product.name}}</td>
               <td>
-                <span *ngIf="product.brand != undefined">{{product.brand.name}}</span>
+                <span *ngIf="product.productDetail != undefined && product.productDetail.brand != undefined">{{product.productDetail.brand.name}}</span>
               </td>
               <td>
-                <span *ngIf="product.format != undefined">{{product.format.name}}</span>
-                <span *ngIf="product.format == undefined && product.weight != ''">Granel</span>
+                <span *ngIf="product.productDetail != undefined && product.productDetail.format != undefined">{{product.productDetail.format.name}}</span>
+                <span *ngIf="(product.productDetail == undefined || product.productDetail.format == undefined) && product.weight != ''">Granel</span>
               </td>
               <td>{{product.price}} € </td>
               <td>
-                <span *ngIf="product.weight == ''">{{product.quantity}}</span>
-                <span *ngIf="product.weight != ''">{{product.weight}} gr.</span>
+                <span *ngIf="product.weight == null">{{product.quantity}}</span>
+                <span *ngIf="product.weight != null">{{product.weight}} gr.</span>
               </td>
               <td>{{getTotalProduct (product) | number}} €</td>
               <td>
-                <button type="button" class="btn" (click)="editProductPurchase(product.productId)">
+                <button type="button" class="btn" (click)="editProductPurchase(product.id)">
                   <i class="bi bi-pencil"></i>
                 </button>
               </td>
               <td>
-                <button type="button" class="btn" (click)="deleteProductPurchase(product.productId)">
+                <button type="button" class="btn" (click)="deleteProductPurchase(product.id)">
                   <i class="bi bi-trash"></i>
                 </button>
               </td>

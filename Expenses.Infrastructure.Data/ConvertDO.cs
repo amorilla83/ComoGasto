@@ -41,28 +41,30 @@ namespace Expenses.Infrastructure.Data
             };
         }
 
-        public static ProductBrand Convert (ProductBrandDO productBrandDO)
+        public static ProductDetails Convert (ProductBrandDO productBrandDO)
         {
-            return new ProductBrand()
-            {
-                Id = productBrandDO.Id,
-                Name = productBrandDO.Name,
-                Packaging = productBrandDO.Packaging,
-                CurrentMoney = productBrandDO.CurrentMoney,
-                Product = Convert(productBrandDO.Product)
-            };
+            //return new ProductDetails()
+            //{
+            //    Id = productBrandDO.Id,
+            //    Name = productBrandDO.Name,
+            //    Packaging = productBrandDO.Packaging,
+            //    CurrentMoney = productBrandDO.CurrentMoney,
+            //    Product = Convert(productBrandDO.Product)
+            //};
+            return null;
         }
 
-        public static ProductBrandDO Convert(ProductBrand productBrand)
+        public static ProductBrandDO Convert(ProductDetails productBrand)
         {
-            return new ProductBrandDO()
-            {
-                Id = productBrand.Id,
-                Name = productBrand.Name,
-                Packaging = productBrand.Packaging,
-                CurrentMoney = productBrand.CurrentMoney,
-                Product = Convert(productBrand.Product)
-            };
+            //return new ProductBrandDO()
+            //{
+            //    Id = productBrand.Id,
+            //    Name = productBrand.Name,
+            //    Packaging = productBrand.Packaging,
+            //    CurrentMoney = productBrand.CurrentMoney,
+            //    Product = Convert(productBrand.Product)
+            //};
+            return null;
         }
     }
 }

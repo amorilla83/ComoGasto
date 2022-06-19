@@ -20,11 +20,19 @@ export class ProductService {
     return this.http.get(this.productURL);
   }
 
+  getProductDetails(id: number): Observable<any> {
+    return this.http.get(this.productURL + id)
+  }
+
   getBrandsByProduct (id: number): Observable<any> {
     return this.http.get(this.productURL + id + '/brands/');
   }
 
   addProduct(product : any) : any {
     return this.http.post(this.productURL, product);
+  }
+
+  getFormatsByBrand (id: number): Observable<any> {
+    return this.http.get('https://localhost:5001/api/details/formats/' + id);
   }
 }

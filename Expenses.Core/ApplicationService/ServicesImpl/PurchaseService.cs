@@ -11,22 +11,28 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
     public class PurchaseService : IPurchaseService
     {
         public readonly IUnitOfWork _unitOfWork;
+        public readonly IProductDetailsService _productDetailsService;
         public readonly IPurchaseRepository _purchaseRepository;
         public readonly IBrandRepository _brandRepository;
         public readonly IFormatRepository _formatRepository;
         public readonly IProductRepository _productRepository;
+        public readonly IProductPurchaseRepository _productPurchaseRepository;
 
         public PurchaseService(IUnitOfWork unitOfWork,
+            IProductDetailsService productDetailsService,
             IPurchaseRepository purchaseRepository,
             IBrandRepository brandRepository,
             IFormatRepository formatRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository,
+            IProductPurchaseRepository productPurchaseRepository)
         {
             _unitOfWork = unitOfWork;
+            _productDetailsService = productDetailsService;
             _purchaseRepository = purchaseRepository;
             _brandRepository = brandRepository;
             _formatRepository = formatRepository;
             _productRepository = productRepository;
+            _productPurchaseRepository = productPurchaseRepository;
         }
 
         public async Task<PurchaseResponse> SavePurchaseAsync(Purchase purchase)
@@ -75,35 +81,79 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
         {
             try
             {
-                Purchase currentPurchase = await _purchaseRepository.GetAllDataByIdAsync(id);
+                Purchase currentPurchase = await _purchaseRepository.GetWithProductsByIdAsync(id);
 
                 if (currentPurchase == null)
                 {
                     throw new Exception("La compra no existe en base de datos");
                 }
 
-                currentPurchase.ProductList.Add(product);
-                currentPurchase.Total += product.Price;
+                if (product.Weight > 0)
+                {
+                    product.ProductDetail = null;
+                    product.ProductDetailId = null;
+                }
 
-                _purchaseRepository.Update(currentPurchase);
+                ProductPurchase currentProduct = currentPurchase.ProductList.Where(p => p.Id == product.Id).FirstOrDefault();
+
+                if (currentProduct != null)
+                {
+                    //Estamos editando un producto ya existente
+
+                    if (product.ProductDetailId != null)
+                    {
+                        //Comprobar los productDetails
+                        var productDetail = await _productDetailsService.GetProductDetailsByDataAsync(product.ProductDetail.ProductId,
+                            product.ProductDetail.BrandId.Value, product.ProductDetail.FormatId.Value);
+
+                        if (productDetail != null)
+                        {
+                            productDetail.LastPrice = product.Price;
+                            currentProduct.ProductDetailId = productDetail.Id;
+                            currentProduct.ProductDetail = productDetail;
+                        }
+                        else
+                        {
+                            currentProduct.ProductDetail = new ProductDetails();
+                            currentProduct.ProductDetail.BrandId = product.ProductDetail.BrandId.Value;
+                            currentProduct.ProductDetail.FormatId = product.ProductDetail.FormatId.Value;
+                            currentProduct.ProductDetail.ProductId = product.Id;
+                            currentProduct.ProductDetail.LastPrice = product.Price;
+                        }
+                    }
+
+                    currentProduct.Quantity = product.Quantity;
+                    currentProduct.Weight = product.Weight;
+                    currentProduct.Price = product.Price;
+
+                    //Actualizamos el total de la compra
+                    //currentPurchase.Total = currentPurchase.Total - currentProduct.Price + product.Price;
+                    currentPurchase.Total = currentPurchase.ProductList.Sum(p => p.Price);
+                    _purchaseRepository.Update(currentPurchase);
+                }
+                else
+                {
+                    if (product.ProductDetail != null)
+                    {
+                        //Comprobar los productDetails
+                        var productDetail = await _productDetailsService.GetProductDetailsByDataAsync(product.ProductDetail.ProductId,
+                            product.ProductDetail.BrandId.Value, product.ProductDetail.FormatId.Value);
+
+                        if (productDetail != null)
+                        {
+                            productDetail.LastPrice = product.Price;
+                            product.ProductDetailId = productDetail.Id;
+                            product.ProductDetail = productDetail;
+                        }
+                    }
+
+                    currentPurchase.ProductList.Add(product);
+                    currentPurchase.Total += product.Price;
+                }
+                // context.Entry(existingBlog).CurrentValues.SetValues(blog);
                 await _unitOfWork.Commit();
 
-                //Cargamos en el producto los datos que faltan
-                if (product.Brand == null && product.BrandId.HasValue)
-                {
-                    product.Brand = await _brandRepository.GetByIdAsync(product.BrandId);
-                }
-
-                if (product.Product == null)
-                {
-                    product.Product = await _productRepository.GetByIdAsync(product.ProductId);
-                }
-
-                if (product.Format == null && product.FormatId.HasValue)
-                {
-                    product.Format = await _formatRepository.GetByIdAsync(product.FormatId);
-                }
-
+                product = await _productPurchaseRepository.GetByIdAsync(product.Id);
                 return new ProductPurchaseResponse(product);
             }
             catch (Exception ex)
@@ -124,19 +174,20 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             return purchase.ProductList;
         }
 
-        public async Task<ProductPurchaseResponse> DeleteProductFromPurchase(int idPurchase, int idProduct)
+        public async Task<ProductPurchaseResponse> DeleteProductFromPurchase(int idPurchase, int idProductPurchase)
         {
             try
             {
                 Purchase purchase = await _purchaseRepository.GetWithProductsByIdAsync(idPurchase);
-                ProductPurchase product = purchase.ProductList.SingleOrDefault(p => p.ProductId == idProduct);
+                ProductPurchase product = purchase.ProductList.SingleOrDefault(p => p.Id == idProductPurchase);
 
                 if (product == null)
                 {
-                    throw new Exception($"No existe el producto {idProduct} en la compra {idPurchase}");
+                    throw new Exception($"No existe el producto {idProductPurchase} en la compra {idPurchase}");
                 }
 
-                purchase.ProductList.Remove(purchase.ProductList.Single(p => p.ProductId == idProduct));
+                purchase.ProductList.Remove(purchase.ProductList.Single(p => p.Id == idProductPurchase));
+                purchase.Total -= product.Price;
 
                 _purchaseRepository.Update(purchase);
                 await _unitOfWork.Commit();
@@ -145,10 +196,23 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             }
             catch (Exception ex)
             {
-                return new ProductPurchaseResponse($"An error occurred when deleting a product with id {idProduct} " +
+                return new ProductPurchaseResponse($"An error occurred when deleting a product with id {idProductPurchase} " +
                     $"from a purchase with id { idPurchase }: { ex.Message}");
             }
-            
+        }
+
+        public async Task<PurchaseResponse> DeletePurchase(int idPurchase)
+        {
+            try
+            {
+                await _purchaseRepository.DeleteByIdAsync(idPurchase);
+                await _unitOfWork.Commit();
+                return new PurchaseResponse(new Purchase());
+            }
+            catch (Exception ex)
+            {
+                return new PurchaseResponse($"An error occurred when deleting the purchase with id {idPurchase}: {ex.Message}");
+            }
         }
     }
 }

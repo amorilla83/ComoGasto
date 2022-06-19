@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Expenses.Core.Entities
 {
@@ -13,12 +12,13 @@ namespace Expenses.Core.Entities
         }
 
         [Key]
-        public int IdPurchase { get; set; }
+        public int Id { get; set; }
 
-        //[ForeignKey("StoreId")]
+        [Required]
         public Store Store { get; set; }
         public int StoreId { get; set; }
 
+        [Required]
         public DateTime Date { get; set; }
 
         public ICollection<ProductPurchase> ProductList { get; set; }

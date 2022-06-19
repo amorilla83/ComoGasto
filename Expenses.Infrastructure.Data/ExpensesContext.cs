@@ -9,6 +9,7 @@ namespace Expenses.Infrastructure.Data
 
         public DbSet<Store> Store { get; set; }
         public DbSet<Product> Product { get; set; }
+        public DbSet<ProductDetails> ProductDetails { get; set; }
         public DbSet<Brand> Brand { get; set; }
         public DbSet<Format> Format { get; set; }
         public DbSet<Purchase> Purchase { get; set; }
@@ -24,7 +25,8 @@ namespace Expenses.Infrastructure.Data
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseSqlite($"Data Source=../Expenses.API/App_Data/Expenses.db",
-                o => o.MigrationsAssembly("Expenses.Model"));
+                o => o.MigrationsAssembly("Expenses.Model"))
+                .EnableSensitiveDataLogging();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,9 +41,6 @@ namespace Expenses.Infrastructure.Data
             //TODO: Comprobar si es el behavior que quiero. 
             //Cascada puede ser peligroso. Vale mas poner setNull y borrarlo manualmete para evitar problemas
         }
-
-        //public DbSet<Product> Product { get; set; }
-        //public DbSet<ProductBrand> ProductBrand { get; set; }
 
     }
 }

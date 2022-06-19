@@ -15,12 +15,18 @@ namespace Expenses.API.Models
                 d.Id,
                 opt => opt.MapFrom(src => src.StoreId)).ReverseMap();
             CreateMap<Product, ProductModel>();
+            CreateMap<ProductDetails, ProductDetailsModel>();
             CreateMap<Brand, BrandModel>();
             CreateMap<Format, FormatModel>();
+            CreateMap<Brand, ItemModel>();
+            CreateMap<Format, ItemModel>();
             CreateMap<Purchase, PurchaseModel>()
                 .ForMember(p =>
                 p.Count,
-                opt => opt.MapFrom(src => src.ProductList.Count));
+                opt => opt.MapFrom(src => src.ProductList.Count))
+                .ForMember(p =>
+                p.IdPurchase,
+                opt => opt.MapFrom(src => src.Id));
 
             CreateMap<AddPurchaseModel, Purchase>()
                 .ForMember(p =>
@@ -30,8 +36,13 @@ namespace Expenses.API.Models
                 p.Store,
                 opt => opt.Ignore());
             CreateMap<AddProductPurchaseModel, ProductPurchase>();
+            CreateMap<AddProductDetailsModel, ProductDetails>();
+            CreateMap<ProductDetailsModel, ProductDetails>();
             CreateMap<ProductPurchaseModel, ProductPurchase>();
             CreateMap<ProductPurchase, ProductPurchaseModel>();
+            CreateMap<ProductModel, Product>();
+            CreateMap<ItemModel, Brand>();
+            CreateMap<ItemModel, Format>();
         }
 
     }

@@ -13,8 +13,9 @@ namespace Expenses.Core.ApplicationService
         Task<PurchaseResponse> GetPurchaseByIdAsync(int id);
 
         Task<PurchaseResponse> SavePurchaseAsync(Purchase purchase);
-        Task<PurchaseResponse> FindPurchaseByIdAsync(int id);
+        //Task<PurchaseResponse> FindPurchaseByIdAsync(int id);
         Task<ProductPurchaseResponse> AddProductToPurchase(int id, ProductPurchase product);
         Task<ProductPurchaseResponse> DeleteProductFromPurchase(int idPurchase, int idProduct);
+        Task<PurchaseResponse> DeletePurchase(int idPurchase);
     }
 }

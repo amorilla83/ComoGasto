@@ -47,7 +47,7 @@ namespace Expenses.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(IEnumerable<ProductPurchaseModel>), 200)]
         [ProducesResponseType(typeof(ErrorModel), 400)]
-        public async Task<IActionResult> GetPurchaseAsync (int id)
+        public async Task<IActionResult> GetPurchaseAsync(int id)
         {
             var result = await _purchaseService.GetPurchaseByIdAsync(id);
 
@@ -91,7 +91,7 @@ namespace Expenses.API.Controllers
                 return BadRequest(new ErrorModel(result.Message));
             }
 
-            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida la compra con Id {result.Resource.IdPurchase}");
+            _logger.LogInformation(AppLoggingEvents.Create, $"Añadida la compra con Id {result.Resource.Id}");
 
             var purchaseModel = _mapper.Map<Purchase, PurchaseModel>(result.Resource);
 
@@ -117,29 +117,67 @@ namespace Expenses.API.Controllers
                 $" con Id {result.Resource.PurchaseId}");
 
             var purchaseModel = _mapper.Map<ProductPurchase, ProductPurchaseModel>(result.Resource);
-            
+
             return Ok(purchaseModel);
         }
 
-        [HttpDelete("{idPurchase}/product/{idProduct}")]
-        [ProducesResponseType (typeof (ProductPurchaseModel), 200)]
-        [ProducesResponseType(typeof (ErrorModel), 400)]
-        public async Task<IActionResult> DeleteAsync (int idPurchase, int idProduct)
+        // PUT api/purchase/5/product/3
+        [HttpPut("{id}/product/{idProductPurchase}")]
+        [ProducesResponseType(typeof(ProductPurchaseModel), 200)]
+        [ProducesResponseType(typeof(ErrorModel), 400)]
+        public async Task<IActionResult> PutProductAsync(int id, int idProductPurchase, [FromBody] AddProductPurchaseModel body)
         {
-            var result = await _purchaseService.DeleteProductFromPurchase(idPurchase, idProduct);
+            ProductPurchase product = _mapper.Map<AddProductPurchaseModel, ProductPurchase>(body);
+
+            var result = await _purchaseService.AddProductToPurchase(id, product);
 
             if (!result.Success)
             {
                 return BadRequest(new ErrorModel(result.Message));
             }
 
-            _logger.LogInformation(AppLoggingEvents.Create, $"Eliminado el producto {idProduct} de la compra" +
+            _logger.LogInformation(AppLoggingEvents.Create, $"Añadido el producto {body.ProductDetail.ProductId} a la compra" +
+                $" con Id {result.Resource.PurchaseId}");
+
+            var purchaseModel = _mapper.Map<ProductPurchase, ProductPurchaseModel>(result.Resource);
+
+            return Ok(purchaseModel);
+        }
+
+        [HttpDelete("{idPurchase}/product/{idProductPurchase}")]
+        [ProducesResponseType(typeof(ProductPurchaseModel), 200)]
+        [ProducesResponseType(typeof(ErrorModel), 400)]
+        public async Task<IActionResult> DeleteProductAsync(int idPurchase, int idProductPurchase)
+        {
+            var result = await _purchaseService.DeleteProductFromPurchase(idPurchase, idProductPurchase);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ErrorModel(result.Message));
+            }
+
+            _logger.LogInformation(AppLoggingEvents.Delete, $"Eliminado el producto {idProductPurchase} de la compra" +
                 $" con Id {idPurchase}");
 
             var purchaseModel = _mapper.Map<ProductPurchase, ProductPurchaseModel>(result.Resource);
 
             return Ok(purchaseModel);
 
+        }
+
+        [HttpDelete("{idPurchase}")]
+        public async Task<IActionResult> DeleteAsync (int idPurchase)
+        {
+            var result = await _purchaseService.DeletePurchase(idPurchase);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ErrorModel(result.Message));
+            }
+
+            _logger.LogInformation(AppLoggingEvents.Delete, $"Eliminada la compra {idPurchase}");
+
+            return Ok();
         }
     }
 }

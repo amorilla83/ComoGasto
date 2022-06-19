@@ -24,15 +24,24 @@ namespace Expenses.Infrastructure.Data.Repository
         {
             return await _context.Purchase.Include(p => p.Store)
                 .Include(p => p.ProductList).ThenInclude(pr => pr.Product)
-                .Include(p => p.ProductList).ThenInclude(pr => pr.Brand)
-                .Include(p => p.ProductList).ThenInclude(pr => pr.Format)
-                .FirstOrDefaultAsync(p => p.IdPurchase == id);
+                .Include(p => p.ProductList).ThenInclude(pr => pr.ProductDetail).ThenInclude(pd => pd.Product)
+                .Include(p => p.ProductList).ThenInclude(pr => pr.ProductDetail).ThenInclude(pd => pd.Brand)
+                .Include(p => p.ProductList).ThenInclude(pr => pr.ProductDetail).ThenInclude(pd => pd.Format)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<Purchase> GetWithProductsByIdAsync (int id)
         {
             return await _context.Purchase.Include(p => p.ProductList)
-                .FirstOrDefaultAsync(p => p.IdPurchase == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public void UpdateProduct(Purchase updatePurchase, ProductPurchase updateProduct)
+        {
+            _context.Set<Purchase>().Update(updatePurchase);
+
+            _context.Entry(updateProduct).CurrentValues.SetValues(updateProduct);
+            _context.Entry(updateProduct).State = EntityState.Modified;
         }
     }
 }

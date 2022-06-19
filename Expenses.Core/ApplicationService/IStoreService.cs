@@ -10,7 +10,7 @@ namespace Expenses.Core.ApplicationService
     public interface IStoreService
     {
         //POST
-        Store NewStore(string name, string logo);
+        //Store NewStore(string name, string logo);
 
         Task<StoreResponse> SaveStoreAsync(Store store);
         
@@ -18,8 +18,8 @@ namespace Expenses.Core.ApplicationService
         Task<StoreResponse> FindStoreByIdAsync(int id);
 
         Task<IEnumerable<Store>> GetAllStoresAsync();
-        //Los filtros en la lista los hacemos en el servicio
-        //List<Store> GetAllStoresByName(string name);
+        ////Los filtros en la lista los hacemos en el servicio
+        ////List<Store> GetAllStoresByName(string name);
 
         //PUT
         Task<StoreResponse> UpdateStoreAsync(int id, Store storeUpdate);

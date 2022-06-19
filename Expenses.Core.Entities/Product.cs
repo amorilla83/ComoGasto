@@ -7,7 +7,7 @@ namespace Expenses.Core.Entities
     {
         public Product ()
         {
-            BrandList = new List<Brand>();
+            ProductDetails = new List<ProductDetails>();
         }
 
         [Key]
@@ -16,14 +16,6 @@ namespace Expenses.Core.Entities
         [MaxLength(100)]
         public string Name { get; set; }
 
-        public ICollection<Brand> BrandList { get; set; }
-        //public string Detail { get; set; }
-        //public string Image { get; set; }
-        //public List<ProductBrand> ProductBrands { get; set; }
-
-        //public Product ()
-        //{
-          //  ProductBrands = new List<ProductBrand>();
-        //}
+        public List<ProductDetails> ProductDetails { get; set; }
     }
 }

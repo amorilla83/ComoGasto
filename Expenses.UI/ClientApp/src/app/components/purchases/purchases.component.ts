@@ -10,6 +10,8 @@ import { PurchaseService } from 'src/app/services/purchase.service';
 export class PurchasesComponent implements OnInit {
 
   listPurchases: Purchase[] = [];
+  errorMessage : string;
+  successMessage: string;
 
   constructor(private purchaseService: PurchaseService) { 
     //Tenemos que hacer el constructor añadiendo el servicio de compras
@@ -27,12 +29,24 @@ export class PurchasesComponent implements OnInit {
       },
       error => {
         console.log(error);
+        this.errorMessage ="Error al obtener el listado de compras";
       }
     );
   }
 
-  editPurchase (purchase : Purchase) {
-    //TODO: Hay que ir a la pagina de addPurchase cargando todos los datos de la compra, incluída la lista de productos
+  deletePurchase (id : number) {
+    this.purchaseService.deletePurchase(id).subscribe(
+      data => {
+        console.log(data);
+        this.successMessage = "Compra eliminada";
+        let index = this.listPurchases.findIndex(p => p.idPurchase == id);
+        this.listPurchases.splice(index, 1);
+      },
+      error => {
+        console.log(error);
+        this.errorMessage = "Error al eliminar la compra";
+      }
+    );
   }
 
 }

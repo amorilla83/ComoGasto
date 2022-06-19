@@ -1,22 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 namespace Expenses.Core.Entities
 {
     public class ProductPurchase
     {
-        public int ProductPurchaseId { get; set; }
+        [Key]
+        public int Id { get; set; }
 
+        public ProductDetails ProductDetail { get; set; }
+        public int? ProductDetailId { get; set; }
+
+        [Required]
         public Purchase Purchase { get; set;}
         public int PurchaseId { get; set; }
 
+        [Required]
         public Product Product { get; set; }
         public int ProductId { get; set; }
 
-        public Brand Brand { get; set; }
-        public int? BrandId { get; set; }
-
-        public Format Format { get; set; }
-        public int? FormatId { get; set; }
-
+        [Required]
         public double Price { get; set; }
         public int? Quantity { get; set; }
         public double? Weight { get; set; }
