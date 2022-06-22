@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from 'src/app/models/store';
@@ -15,13 +15,13 @@ export class AddStoreComponent implements OnInit {
   @Input() public newStore: boolean = true;
 
 
-  addStore: FormGroup;
+  addStore: UntypedFormGroup;
   title: string;
   imageUpload: any;
 
   constructor(
     public activeModal: NgbActiveModal,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private storeService: StoreService,
     private router: Router) {
   }

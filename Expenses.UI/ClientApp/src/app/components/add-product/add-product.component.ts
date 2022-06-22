@@ -1,6 +1,6 @@
 import { unescapeIdentifier } from '@angular/compiler';
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Brand } from 'src/app/models/brand';
 import { Item } from 'src/app/models/item';
@@ -19,13 +19,13 @@ import { AddItemComponent } from '../add-item/add-item.component';
 })
 export class AddProductComponent implements OnInit {
   @Input() productPurchase: ProductPurchase;
-  addProductToPurchase: FormGroup;
+  addProductToPurchase: UntypedFormGroup;
   id = 0;
   brandList: Item[] = [];
 
   formatList: Item[] = [];
 
-  constructor(private fb:FormBuilder,
+  constructor(private fb:UntypedFormBuilder,
     private productService: ProductService,
     private brandService: BrandService,
     private formatService: FormatService,
