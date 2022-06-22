@@ -111,7 +111,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
             if (existingProduct == null)
             {
-                return new ProductResponse("Store not found");
+                return new ProductResponse("Product not found");
             }
 
             try
