@@ -154,9 +154,9 @@ export class AddProductComponent implements OnInit {
         product: this.productPurchase.product,
         productId: this.productPurchase.product.id,
         brand: brand,
-        brandId: brand != undefined ? brand.id : 0,
+        brandId: brand != undefined ? brand.id : undefined,
         format: format,
-        formatId: format != undefined ? format.id : 0,
+        formatId: format != undefined ? format.id : undefined,
         lastPrice: this.addProductToPurchase.get('precio').value
       };
     }
@@ -249,11 +249,11 @@ export class AddProductComponent implements OnInit {
 
     let brand : number = this.addProductToPurchase.get('marca').value
 
-    if (brand == undefined)
-    {
-      alert("Se debe seleccionar una marca antes de añadir el formato");
-      return;
-    }
+    // if (brand == undefined)
+    // {
+    //   alert("Se debe seleccionar una marca antes de añadir el formato");
+    //   return;
+    // }
     if (event.target.value == -1) 
     {
       //Abrimos el modal de add-item
@@ -279,13 +279,18 @@ export class AddProductComponent implements OnInit {
                   //this.formatList.push(response);
   
                   console.log("Nuevo formato añadida a la lista");
+
+                  this.addProductToPurchase.patchValue({formato: response.id});
                 },
                 (error) => console.log(error));
               console.log("Nuevo formato añadido a la lista");
             }
+            else
+            {
+              this.addProductToPurchase.patchValue({formato: formatItem.id}); 
+            }
 
             this.formatList.push(formatItem);
-            this.addProductToPurchase.patchValue({formato: formatItem.id});
             console.log(this.addProductToPurchase);
           }
         },

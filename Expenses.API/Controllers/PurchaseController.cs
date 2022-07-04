@@ -102,7 +102,7 @@ namespace Expenses.API.Controllers
         [HttpPut("{id}/product")]
         [ProducesResponseType(typeof(ProductPurchaseModel), 200)]
         [ProducesResponseType(typeof(ErrorModel), 400)]
-        public async Task<IActionResult> PutAsync(int id, [FromBody] AddProductPurchaseModel body)
+        public async Task<IActionResult> PutProductAsync(int id, [FromBody] AddProductPurchaseModel body)
         {
             ProductPurchase product = _mapper.Map<AddProductPurchaseModel, ProductPurchase>(body);
 
@@ -125,7 +125,7 @@ namespace Expenses.API.Controllers
         [HttpPut("{id}/product/{idProductPurchase}")]
         [ProducesResponseType(typeof(ProductPurchaseModel), 200)]
         [ProducesResponseType(typeof(ErrorModel), 400)]
-        public async Task<IActionResult> PutProductAsync(int id, int idProductPurchase, [FromBody] AddProductPurchaseModel body)
+        public async Task<IActionResult> PutProductPurchaseAsync(int id, int idProductPurchase, [FromBody] AddProductPurchaseModel body)
         {
             ProductPurchase product = _mapper.Map<AddProductPurchaseModel, ProductPurchase>(body);
 
@@ -143,6 +143,34 @@ namespace Expenses.API.Controllers
 
             return Ok(purchaseModel);
         }
+
+        //PUT api/purchase/3
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(PurchaseModel), 200)]
+        [ProducesResponseType(typeof(ErrorModel), 400)]
+        public async Task<IActionResult> PutPurchaseAsync (int id, [FromBody] PurchaseModel body)
+        {
+            if (id != body.IdPurchase)
+            {
+                return BadRequest(new ErrorModel("Los datos de la petición no son correctos"));
+            }
+
+            Purchase purchase = _mapper.Map<PurchaseModel, Purchase>(body);
+
+            var result = await _purchaseService.UpdatePurchaseAsync(purchase);
+
+            if (!result.Success)
+            {
+                return BadRequest(new ErrorModel(result.Message));
+            }
+
+            _logger.LogInformation(AppLoggingEvents.Create, $"Modificada la compra con Id {result.Resource.Id}");
+
+            var purchaseModel = _mapper.Map<Purchase, PurchaseModel>(result.Resource);
+
+            return Ok(purchaseModel);
+        }
+
 
         [HttpDelete("{idPurchase}/product/{idProductPurchase}")]
         [ProducesResponseType(typeof(ProductPurchaseModel), 200)]

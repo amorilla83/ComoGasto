@@ -1,5 +1,17 @@
 <h3 *ngIf="title">{{title}}</h3>
 <app-alert [successMessage]="successMessage" [errorMessage]="errorMessage"></app-alert>
+<div *ngIf="idPurchase != 0">
+  <a (click)="updatePurchase()">
+    <button class="btn btn-default btn-circle my-3 border" >
+      <i class="bi bi-save"><span> Guardar Compra</span></i>
+    </button>
+  </a>
+  <a [routerLink]="['/purchase']">
+    <button class="btn btn-default btn-circle my-3 border" >
+      <i class="bi bi-cart-plus"><span> Nueva Compra</span></i>
+    </button>
+  </a>
+</div>
 <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="Data" animation="true">
     <ngb-panel title="Fecha" id="Data" >
       <ng-template ngbPanelContent>
@@ -38,15 +50,19 @@
       <ng-template ngbPanelContent>
         <div class="input-group mb-3">
           <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
-          aria-describedby="Search Product" placeholder="Enter text to search" >
+          aria-describedby="Search Product" placeholder="Enter text to search" list="productListOptions"
+          (keyup.enter)="selectedProduct($event)">
+          <datalist id="productListOptions">
+            <option *ngFor="let product of listProducts | nameFilter: searchText" [value]="product.name">{{product.name}}</option>
+          </datalist>
         </div>
         <div class="row">
           <!-- ngIf listaProducts > 0-->
-          <div *ngFor="let product of listProducts | nameFilter: searchText" class="position-relative col">
+          <!-- <div *ngFor="let product of listProducts | nameFilter: searchText" class="position-relative col">
               <button class="btn btn-default btn-circle border rounded-pill" (click)="addProductToPurchase(product.id)">
                 {{product.name}}
               </button>            
-          </div>
+          </div> -->
           <a (click)="triggerAddModal('producto')">
             <button class="btn btn-default btn-circle my-3 border" >
               <i class="bi bi-plus-circle-fill"><span>  Añadir Producto</span></i>
@@ -74,15 +90,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of purchase.productList">
-              <th scope="row">{{product.id}}</th>
+            <tr *ngFor="let product of purchase.productList | reverse; let i = index">
+              <th scope="row">{{i+1}}</th>
               <td>{{product.product.name}}</td>
               <td>
                 <span *ngIf="product.productDetail != undefined && product.productDetail.brand != undefined">{{product.productDetail.brand.name}}</span>
               </td>
               <td>
                 <span *ngIf="product.productDetail != undefined && product.productDetail.format != undefined">{{product.productDetail.format.name}}</span>
-                <span *ngIf="(product.productDetail == undefined || product.productDetail.format == undefined) && product.weight != ''">Granel</span>
+                <span *ngIf="(product.productDetail == undefined || product.productDetail.format == undefined) && product.weight != undefined">Granel</span>
               </td>
               <td>{{product.price}} € </td>
               <td>

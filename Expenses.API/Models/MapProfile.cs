@@ -28,10 +28,16 @@ namespace Expenses.API.Models
                 p.IdPurchase,
                 opt => opt.MapFrom(src => src.Id));
 
+            CreateMap<PurchaseModel, Purchase>()
+                .ForMember(p => p.Date, opt => opt.MapFrom(src => Convert.ToDateTime(src.DateString)))
+                .ForMember(p => p.StoreId, opt => opt.MapFrom(src => src.Store.Id))
+                .ForMember(p => p.Id, opt => opt.MapFrom(src => src.IdPurchase));
+
             CreateMap<AddPurchaseModel, Purchase>()
                 .ForMember(p =>
                 p.StoreId,
                 opt => opt.MapFrom(src => src.Store.Id))
+                .ForMember(p => p.Date, opt => opt.MapFrom(src => Convert.ToDateTime(src.DateString)))
                 .ForMember(p =>
                 p.Store,
                 opt => opt.Ignore());

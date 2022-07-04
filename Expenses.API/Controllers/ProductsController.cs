@@ -43,7 +43,9 @@ namespace Expenses.API.Controllers
 
             _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {products.Count()} products");
 
-            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductModel>>(products);
+            var productModel = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductModel>>(products);
+
+            return productModel.OrderBy(p => p.Name);
         }
 
         [HttpGet]

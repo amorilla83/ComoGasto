@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Purchase } from '../models/purchase';
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +48,9 @@ export class PurchaseService {
 
   updateProductFromPurchase (productPurchase: any, idPurchase: number) : any {
     return this.http.put(this.purchaseURL + idPurchase + '/product/' + productPurchase.id, productPurchase);
+  }
+
+  updatePurchase (purchase: Purchase) : any {
+    return this.http.put(this.purchaseURL + purchase.idPurchase, purchase);
   }
 }

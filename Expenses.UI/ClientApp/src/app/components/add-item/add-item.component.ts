@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Item } from 'src/app/models/item';
 import { BrandService } from 'src/app/services/brand.service';
@@ -10,6 +10,7 @@ import { FormatService } from 'src/app/services/format.service';
   styleUrls: ['./add-item.component.css']
 })
 export class AddItemComponent implements OnInit {
+  @ViewChild ('inputName') inputNameElement : ElementRef
   @Input() public typeItem: string;
   addName: string;
   selectedItem: Item;
@@ -47,6 +48,11 @@ export class AddItemComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit():void {
+
+    this.inputNameElement.nativeElement.focus();
+  }
+
   cancel() {
     this.activeModal.close(null);
   }
@@ -68,5 +74,19 @@ export class AddItemComponent implements OnInit {
   onItemSelected (event) {
     this.selectedItem = this.listItem.find(i => i.id == event.target.value);
     this.addName = this.selectedItem.name;
+  }
+
+  selectItem (event)
+  {
+    console.log(event);
+    if (this.selectedItem == undefined)
+    {
+    this.selectedItem = this.listItem.find(s => s.name == event.target.value);
+    console.log(this.selectedItem);
+    }
+    else 
+    {
+      this.save();
+    }
   }
 }

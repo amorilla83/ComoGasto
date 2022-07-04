@@ -21,7 +21,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             _productRepository = productRepository;
         }
 
-        public async Task<ProductDetails> GetProductDetailsByDataAsync (int productId, int brandId, int formatId)
+        public async Task<ProductDetails> GetProductDetailsByDataAsync (int productId, int? brandId, int? formatId)
         {
             return await _productDetailsRepository.GetByDataAsync(productId, brandId, formatId);
         }

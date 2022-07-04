@@ -6,14 +6,19 @@
 </div>
 <div class="modal-body row g-2">
     <div *ngIf="listItem.length != 0" class="col-md-6">
-        <select class="form-select" aria-label="Default select example" (change)="onItemSelected($event)">
-            <option selected>Selecciona {{typeItem}}</option>
-            <option [value]="item.id" *ngFor="let item of listItem">{{item.name}}</option>
+        <select class="form-select" aria-label="Default select example" 
+        (change)="onItemSelected($event)" [(ngModel)]="selectedItem" >
+            <option value="undefined">Selecciona {{typeItem}}</option>
+            <option [value]="item.id" *ngFor="let item of listItem" [ngValue]="item">{{item.name}}</option>
         </select>
     </div>
     <div class="col-12">
     <input type="text" class="form-control rounded-pill" aria-label="Add" [(ngModel)]="addName" 
-          aria-describedby="Add" placeholder="Nombre" >
+          aria-describedby="Add" placeholder="Nombre" list="itemListOptions"
+          (keyup.enter)="selectItem($event)" #inputName>
+    <datalist id="itemListOptions">
+    <option *ngFor="let item of listItem | nameFilter: addName" [value]="item.name">{{item.name}}</option>
+    </datalist>
     </div>
 </div>
 <div class="modal-footer">

@@ -8,6 +8,7 @@ namespace Expenses.API.Models
     {
         public int IdPurchase {get; set;}
         public DateTime Date { get; set; }
+        public string DateString { get; set; }
         public Stores.StoreModel Store { get; set; }
         public List<ProductPurchaseModel> ProductList { get; set; }
         public int Count { get; set; }

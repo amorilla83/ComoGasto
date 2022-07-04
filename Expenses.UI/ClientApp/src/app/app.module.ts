@@ -21,6 +21,7 @@ import { NameFilterPipe } from './Filter.pipe';
 import { AddProductComponent } from './components/add-product/add-product.component';
 import { PurchasesComponent } from './components/purchases/purchases.component';
 import { AlertComponent } from './components/alert/alert.component';
+import { ReversePipe } from './Reverse.pipe';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AlertComponent } from './components/alert/alert.component';
     NameFilterPipe,
     AddProductComponent,
     PurchasesComponent,
-    AlertComponent
+    AlertComponent,
+    ReversePipe
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

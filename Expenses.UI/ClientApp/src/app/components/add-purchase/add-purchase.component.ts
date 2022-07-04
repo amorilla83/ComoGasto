@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbAccordion, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Item } from 'src/app/models/item';
 import { Product } from 'src/app/models/product';
 import { ProductPurchase } from 'src/app/models/productPurchase';
 import { Purchase } from 'src/app/models/purchase';
@@ -56,12 +57,14 @@ export class AddPurchaseComponent implements OnInit {
           this.purchase = {
             idPurchase: this.idPurchase,
             date: new Date(data.date),
+            dateString: data.date.day + "/" + data.date.month + "/" + data.date.year,
             store: data.store,  
             productList: data.productList,
             count: 0,
             total: 0
           };
-          this.date = { day: this.purchase.date.getUTCDate(), month: this.purchase.date.getUTCMonth() + 1, year: this.purchase.date.getUTCFullYear() };
+          console.log (this.purchase);
+          this.date = { day: this.purchase.date.getDate(), month: this.purchase.date.getMonth() + 1, year: this.purchase.date.getFullYear() };
           this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year + " en " + this.purchase.store.name;
           this.selectedStore = this.purchase.store.id;
           this.getStores();
@@ -121,10 +124,43 @@ export class AddPurchaseComponent implements OnInit {
 
   onDateSelection(event) {
     console.log(this.date);
-    this.purchase.date = new Date(this.date.year, this.date.month, this.date.day)
+    this.purchase.date = new Date(this.date.year, this.date.month - 1, this.date.day)
+    this.purchase.dateString = this.date.day + "/" + this.date.month + "/" + this.date.year;
     this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year;
+    console.log(this.purchase.date);
     this.getStores();
     this.accordionComponent.toggle("Store");
+  }
+
+  selectedProduct (event)
+  {
+    if (event.target.value != "")
+    {
+      console.log(event);
+      let product = this.listProducts.find(s => s.name == event.target.value);
+      if (product == null)
+      {
+        //Add product y abrir modal
+        let productItem: Item = {id: 0, name: event.target.value};
+              //Product = { id: this.listProducts.length + 1, name: res, productDetails: [] };
+              this.productService.addProduct(productItem).subscribe(
+                (response) => {
+                  this.listProducts.push(response);
+                  this.addProductToPurchase(response.id);
+                  console.log(response);
+                  this.successMessage = "Se ha añadido el nuevo producto";
+                },
+                (error) => {
+                  console.log(error);
+                  this.errorMessage = "Error al añadir el producto";
+                });
+      }
+      else
+      {
+        this.addProductToPurchase(product.id);
+      }
+      this.searchText = "";
+    }
   }
 
   selectStore(id: number) {
@@ -326,6 +362,26 @@ export class AddPurchaseComponent implements OnInit {
     );
   }
 
+  updatePurchase ()
+  {
+    if (this.purchase.idPurchase != undefined || this.purchase.idPurchase != 0) 
+    {
+
+      console.log("Modificamos la compra");
+      console.log(this.purchase);
+  
+      this.purchaseService.updatePurchase(this.purchase).subscribe(
+        data => {
+          console.log(data);
+          console.log("Compra guardada");
+        },
+        error => {
+          console.log(error);
+          this.errorMessage ="Error al modificar la compra";
+        });
+    }
+  }
+
   getTotalProduct(product: ProductPurchase): number {
     if (product.quantity > 0) {
       return product.price * product.quantity;
@@ -350,6 +406,7 @@ export class AddPurchaseComponent implements OnInit {
     let purchase: Purchase =
     {
       date: new Date(this.date.year, this.date.month, this.date.day),
+      dateString: this.date.day + "/" + this.date.month + "/" + this.date.year,
       store: this.purchase.store,
       count: 0,
       total: 0,

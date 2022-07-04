@@ -8,6 +8,7 @@ namespace Expenses.API.Models
     {
         public int? IdPurchase { get; set; }
         public DateTime Date { get; set; }
+        public string DateString { get; set; }
         public StoreModel Store { get; set; }
         public double Total { get; set; }
     }

@@ -173,7 +173,7 @@ namespace Expenses.Infrastructure.Data.Repository
             return productDetails.Select(p => p.Format).Distinct().ToList();
         }
 
-        public async Task<ProductDetails> GetByDataAsync(int idProduct, int idBrand, int idFormat)
+        public async Task<ProductDetails> GetByDataAsync(int idProduct, int? idBrand, int? idFormat)
         {
             var productDetails = await _context.ProductDetails.Where(pd => pd.ProductId == idProduct
             && pd.BrandId == idBrand && pd.FormatId == idFormat).FirstOrDefaultAsync();

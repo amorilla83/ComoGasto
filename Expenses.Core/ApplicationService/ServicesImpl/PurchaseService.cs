@@ -49,6 +49,23 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             }
         }
 
+        public async Task<PurchaseResponse> UpdatePurchaseAsync (Purchase purchase)
+        {
+            try
+            {
+                Purchase currentPurchase = await _purchaseRepository.GetByIdAsync(purchase.Id);
+
+                currentPurchase.Date = purchase.Date;
+                currentPurchase.StoreId = purchase.StoreId;
+                await _unitOfWork.Commit();
+                return new PurchaseResponse(purchase);
+            }
+            catch (Exception ex)
+            {
+                return new PurchaseResponse($"An error occurred when updating a purchase: {ex.Message}");
+            }
+        }
+
         public async Task<PurchaseResponse> GetPurchaseByIdAsync (int id)
         {
             try
@@ -137,13 +154,17 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
                     {
                         //Comprobar los productDetails
                         var productDetail = await _productDetailsService.GetProductDetailsByDataAsync(product.ProductDetail.ProductId,
-                            product.ProductDetail.BrandId.Value, product.ProductDetail.FormatId.Value);
+                            product.ProductDetail.BrandId, product.ProductDetail.FormatId);
 
                         if (productDetail != null)
                         {
                             productDetail.LastPrice = product.Price;
                             product.ProductDetailId = productDetail.Id;
                             product.ProductDetail = productDetail;
+                        }
+                        else
+                        {
+                            product.ProductDetail.LastPrice = product.Price;
                         }
                     }
 
