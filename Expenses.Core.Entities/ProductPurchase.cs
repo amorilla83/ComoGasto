@@ -24,5 +24,6 @@ namespace Expenses.Core.Entities
         public double Price { get; set; }
         public int? Quantity { get; set; }
         public double? Weight { get; set; }
+        public string Details { get; set; }
     }
 }

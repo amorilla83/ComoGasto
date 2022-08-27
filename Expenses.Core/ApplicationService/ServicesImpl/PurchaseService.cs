@@ -57,6 +57,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
                 currentPurchase.Date = purchase.Date;
                 currentPurchase.StoreId = purchase.StoreId;
+                currentPurchase.Total = purchase.ProductList.Sum(p => p.Price * (p.Quantity.HasValue ? p.Quantity.Value : 1));
                 await _unitOfWork.Commit();
                 return new PurchaseResponse(purchase);
             }
@@ -121,7 +122,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
                     {
                         //Comprobar los productDetails
                         var productDetail = await _productDetailsService.GetProductDetailsByDataAsync(product.ProductDetail.ProductId,
-                            product.ProductDetail.BrandId.Value, product.ProductDetail.FormatId.Value);
+                            product.ProductDetail.BrandId, product.ProductDetail.FormatId);
 
                         if (productDetail != null)
                         {
@@ -132,9 +133,9 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
                         else
                         {
                             currentProduct.ProductDetail = new ProductDetails();
-                            currentProduct.ProductDetail.BrandId = product.ProductDetail.BrandId.Value;
-                            currentProduct.ProductDetail.FormatId = product.ProductDetail.FormatId.Value;
-                            currentProduct.ProductDetail.ProductId = product.Id;
+                            currentProduct.ProductDetail.BrandId = product.ProductDetail.BrandId ?? null;
+                            currentProduct.ProductDetail.FormatId = product.ProductDetail.FormatId ?? null;
+                            currentProduct.ProductDetail.ProductId = product.ProductId;
                             currentProduct.ProductDetail.LastPrice = product.Price;
                         }
                     }
@@ -142,10 +143,11 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
                     currentProduct.Quantity = product.Quantity;
                     currentProduct.Weight = product.Weight;
                     currentProduct.Price = product.Price;
+                    currentProduct.Details = product.Details;
 
                     //Actualizamos el total de la compra
                     //currentPurchase.Total = currentPurchase.Total - currentProduct.Price + product.Price;
-                    currentPurchase.Total = currentPurchase.ProductList.Sum(p => p.Price);
+                    currentPurchase.Total = currentPurchase.ProductList.Sum(p => (p.Price * (p.Quantity.HasValue ? p.Quantity.Value : 1)));
                     _purchaseRepository.Update(currentPurchase);
                 }
                 else
@@ -169,7 +171,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
                     }
 
                     currentPurchase.ProductList.Add(product);
-                    currentPurchase.Total += product.Price;
+                    currentPurchase.Total += product.Price * (product.Quantity.HasValue ? product.Quantity.Value : 1);
                 }
                 // context.Entry(existingBlog).CurrentValues.SetValues(blog);
                 await _unitOfWork.Commit();

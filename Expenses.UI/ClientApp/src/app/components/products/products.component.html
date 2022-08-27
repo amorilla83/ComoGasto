@@ -1,1 +1,11 @@
-<p>products works!</p>
+<p>Products</p>
+<div class="row">
+    <div *ngFor="let product of productList;">
+        <div class="card" style="width: 15rem">
+          <div class="card-body">
+            <h5 class="card-title"><a routerLink="/products/{{product.id}}">{{product.id}}</a></h5>
+            <p class="card-subtitle mb-2 text-muted">{{product.name}}</p>
+          </div>
+        </div>
+    </div>
+</div>

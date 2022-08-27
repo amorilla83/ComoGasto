@@ -82,7 +82,7 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
 
         public List<Format> GetFormatsByBrand(int idBrand)
         {
-            return _productDetailsRepository.GetFormatsByBrand(idBrand).ToList();
+            return _productDetailsRepository.GetFormatsByBrand(idBrand).OrderBy(f => f.Name).ToList();
         }
     }
 }

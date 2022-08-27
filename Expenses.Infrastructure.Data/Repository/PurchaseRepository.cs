@@ -17,7 +17,7 @@ namespace Expenses.Infrastructure.Data.Repository
 
         public async Task<IEnumerable<Purchase>> GetAllAsync()
         {
-            return await _context.Purchase.Include(p => p.Store).ToListAsync();
+            return await _context.Purchase.Include(p => p.Store).OrderBy(p => p.Date).ToListAsync();
         }
 
         public async Task<Purchase> GetAllDataByIdAsync(int id)

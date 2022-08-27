@@ -1,0 +1,21 @@
+<h3 *ngIf="product != undefined">{{product.name}}</h3>
+<div class="row">
+    <div *ngFor="let details of productDetails;">
+        <!--<div class="row">
+            <div class="col-md-3"><img src="/assets/angular.svg" width="200px"></div>
+        </div>-->
+        <div class="row">
+            <div class="col-md-3">Brand: {{details.brand.name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">Format: {{details.format.name}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">Last Price: {{details.lastPrice}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"><button  id="addToCart">Add to Cart</button></div>
+        </div>
+    </div>
+</div>  
+

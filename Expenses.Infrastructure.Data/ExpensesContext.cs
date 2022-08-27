@@ -24,6 +24,8 @@ namespace Expenses.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            ///Users/Aman/Library/Mobile Documents/com~apple~CloudDocs/App_Data/Expenses.db
+            //../Expenses.API/App_Data/Expenses.db
             options.UseSqlite($"Data Source=../Expenses.API/App_Data/Expenses.db",
                 o => o.MigrationsAssembly("Expenses.Model"))
                 .EnableSensitiveDataLogging();

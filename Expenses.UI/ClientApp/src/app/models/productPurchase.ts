@@ -10,4 +10,5 @@ export interface ProductPurchase {
     price: number;
     quantity: number;
     weight: number;
+    details: string;
   }

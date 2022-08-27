@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Item } from '../models/item';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,8 @@ export class BrandService {
   constructor(
     private http: HttpClient) { }
 
-  getBrands(): Observable<any> {
-    return this.http.get(this.brandsURL);
+  getBrands(): Observable<Item[]> {
+    return this.http.get<Item[]>(this.brandsURL);
   }
 
   addBrand(brand : any) : any {

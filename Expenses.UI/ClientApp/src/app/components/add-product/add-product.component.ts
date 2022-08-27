@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Brand } from 'src/app/models/brand';
@@ -16,7 +16,7 @@ import { AddItemComponent } from '../add-item/add-item.component';
   templateUrl: './add-product.component.html',
   styleUrls: ['./add-product.component.css']
 })
-export class AddProductComponent implements OnInit {
+export class AddProductComponent implements OnInit, AfterContentChecked {
   @Input() productPurchase: ProductPurchase;
   addProductToPurchase: UntypedFormGroup;
   id = 0;
@@ -29,15 +29,17 @@ export class AddProductComponent implements OnInit {
     private brandService: BrandService,
     private formatService: FormatService,
     public activeModal: NgbActiveModal,
-    private modalService: NgbModal) { 
+    private modalService: NgbModal,
+    private cdRef:ChangeDetectorRef) { 
     this.addProductToPurchase = this.fb.group (
       {
-        marca: [{value: '0', disabled: false}],
-        formato: [{value: '0', disabled: false}],
+        marca: [{value: '', disabled: false}],
+        formato: [{value: '', disabled: false}],
         precio: ['', Validators.required],
         unidades: ['1'],
         peso: [''],
-        granel: false
+        granel: false,
+        detalles: ['']
       }
     )
   }
@@ -49,12 +51,15 @@ export class AddProductComponent implements OnInit {
     {
       console.log(this.productPurchase);
       this.addProductToPurchase.setValue({
-        marca: this.productPurchase.productDetail != undefined ? this.productPurchase.productDetail.brand.id : 0,
-        formato: this.productPurchase.productDetail != undefined ? this.productPurchase.productDetail.format.id : 0,
+        marca: this.productPurchase.productDetail != undefined &&
+                  this.productPurchase.productDetail.brand != undefined ? this.productPurchase.productDetail.brand.id : 0,
+        formato: this.productPurchase.productDetail != undefined &&
+                  this.productPurchase.productDetail.format != undefined ? this.productPurchase.productDetail.format.id : 0,
         precio: this.productPurchase.price,
         unidades: this.productPurchase.quantity,
         peso: this.productPurchase.weight,
-        granel: (this.productPurchase.weight != undefined)
+        granel: (this.productPurchase.weight != undefined),
+        detalles: this.productPurchase.details
       }
       );
 
@@ -64,7 +69,14 @@ export class AddProductComponent implements OnInit {
       }
     }
     console.log(this.addProductToPurchase);
+
+    this.cdRef.detectChanges();
   }
+
+  ngAfterContentChecked() {
+
+    this.cdRef.detectChanges();
+     }
 
   getDetails ()
   {
@@ -74,11 +86,16 @@ export class AddProductComponent implements OnInit {
       data => {
         console.log(data);
         this.productPurchase.productDetail.product = data;
-        this.brandList = this.productPurchase.productDetail.product.productDetails.map(pd => pd.brand);
 
+        let list = this.productPurchase.productDetail.product.productDetails.
+          filter(pd => pd.brand != null).map(pd => pd.brand);
+          console.log(list);
+        this.brandList = list.filter((item, index, self) => self.findIndex(i => i.id == item.id) === index);
+        
         if (this.productPurchase.productDetail.brand != undefined && this.productPurchase.productDetail.brand.id != 0)
         {
-          this.formatList = this.productPurchase.productDetail.product.productDetails.filter(p => p.brand.id == this.productPurchase.productDetail.brand.id).map(p => p.format);
+          this.formatList = this.productPurchase.productDetail.product.productDetails
+          .filter(p => p.brand != null && p.brand.id == this.productPurchase.productDetail.brand.id && p.format != null).map(p => p.format);
         }
       },
       error => {
@@ -134,6 +151,7 @@ export class AddProductComponent implements OnInit {
       quantity : this.addProductToPurchase.get('unidades').value,
       price : this.addProductToPurchase.get('precio').value,
       weight: this.addProductToPurchase.get('peso').value,
+      details: this.addProductToPurchase.get('detalles').value,
       productDetail: undefined
       // productDetail: {
       //   id: this.productPurchase.productDetail.id,
@@ -224,7 +242,6 @@ export class AddProductComponent implements OnInit {
                   }
                 }
               );
-
               this.addProductToPurchase.patchValue({marca: brandItem.id});
             }
             this.brandList.push(brandItem);
@@ -235,14 +252,30 @@ export class AddProductComponent implements OnInit {
           console.log(error);
         }
       )
+
+      this.addProductToPurchase.patchValue({precio: ''});
     }
     else {
       console.log ('Marca seleccionada ');
       this.addProductToPurchase.patchValue({marca: event.target.value});
-      console.log (this.productPurchase.productDetail.product.productDetails.filter(p => p.brand.id == this.addProductToPurchase.get('marca').value));
-      this.formatList = this.productPurchase.productDetail.product.productDetails.filter(p => p.brand.id == this.addProductToPurchase.get('marca').value).map(p => p.format);
+      console.log(this.productPurchase.productDetail.product.productDetails);
+      console.log (this.productPurchase.productDetail.product.productDetails.filter(p => p.brand != null && p.brand.id == event.target.value));
+      this.formatList = this.productPurchase.productDetail.product.productDetails
+      .filter(p => p.brand != null && p.brand.id == this.addProductToPurchase.get('marca').value && p.format != null).map(p => p.format);
+      this.formatList.sort((a: Item, b: Item) => (a.name < b.name) ? 1 : -1);
+      let productDetail = this.productPurchase.productDetail.product.productDetails
+                    .find(p => (p.format == null) &&
+                    p.brand != null && p.brand.id == this.addProductToPurchase.get('marca').value);
+      this.addProductToPurchase.patchValue({productDetail: productDetail, precio: productDetail.lastPrice});
+                 
+      if (productDetail == undefined)
+      {
+        this.addProductToPurchase.patchValue({precio: ''});
+      }
       console.log(this.formatList);
     }
+
+    this.addProductToPurchase.patchValue({formato: ''});
   }
 
   onFormatSelected(event) { 
@@ -298,13 +331,14 @@ export class AddProductComponent implements OnInit {
           console.log(error);
         }
       )
+      this.addProductToPurchase.patchValue({precio: ''});
     }
     else {
       console.log ('formato Seleccionado');
       console.log (event);
       let productDetail = this.productPurchase.productDetail.product.productDetails
-        .find(p => (p.format.id == this.addProductToPurchase.get('formato').value) &&
-              p.brand.id == this.addProductToPurchase.get('marca').value);
+        .find(p => (p.format != null && p.format.id == this.addProductToPurchase.get('formato').value) &&
+              p.brand != null && p.brand.id == this.addProductToPurchase.get('marca').value);
       this.addProductToPurchase.patchValue({productDetail: productDetail, formato: event.target.value, precio: productDetail.lastPrice});
     }
   }

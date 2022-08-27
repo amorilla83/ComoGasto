@@ -168,9 +168,11 @@ namespace Expenses.Infrastructure.Data.Repository
         /// <returns>Lista de los formatos asociados a esa marca</returns>
         public IEnumerable<Format> GetFormatsByBrand(int idBrand)
         {
-            var productDetails = _context.ProductDetails.Where(pd => pd.Brand.Id == idBrand).AsNoTracking().ToList();
+            var productDetails = _context.ProductDetails
+                .Include(pd => pd.Format)
+                .Where(pd => pd.Brand.Id == idBrand && pd.Format != null).AsNoTracking().ToList();
 
-            return productDetails.Select(p => p.Format).Distinct().ToList();
+            return productDetails.Select(p => p.Format)?.DistinctBy(f => f.Id)?.ToList();
         }
 
         public async Task<ProductDetails> GetByDataAsync(int idProduct, int? idBrand, int? idFormat)

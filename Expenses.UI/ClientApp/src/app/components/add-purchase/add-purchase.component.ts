@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgbAccordion, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Item } from 'src/app/models/item';
 import { Product } from 'src/app/models/product';
@@ -57,12 +57,14 @@ export class AddPurchaseComponent implements OnInit {
           this.purchase = {
             idPurchase: this.idPurchase,
             date: new Date(data.date),
-            dateString: data.date.day + "/" + data.date.month + "/" + data.date.year,
+            dateString: "",
             store: data.store,  
             productList: data.productList,
             count: 0,
             total: 0
           };
+          this.purchase.dateString = this.purchase.date.toLocaleDateString();
+          console.log(this.purchase.dateString);
           console.log (this.purchase);
           this.date = { day: this.purchase.date.getDate(), month: this.purchase.date.getMonth() + 1, year: this.purchase.date.getFullYear() };
           this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year + " en " + this.purchase.store.name;
@@ -180,7 +182,7 @@ export class AddPurchaseComponent implements OnInit {
       modalRef.componentInstance.newStore = true;
       modalRef.result.then(
         (res) => {
-          this.getStores();
+          this.listStores.push(res);
           this.successMessage ="Tienda añadida correctamente";
         }, (error) => {
           console.log(error);
@@ -231,6 +233,7 @@ export class AddPurchaseComponent implements OnInit {
       quantity : 0,
       price : 0,
       weight: 0,
+      details: '',
       productDetail: {
         id: 0,
         product: this.listProducts.find(p => p.id == id),
@@ -338,6 +341,9 @@ export class AddPurchaseComponent implements OnInit {
     modalRef.componentInstance.productPurchase = this.purchase.productList.find(p => p.id == idProductPurchase);
     modalRef.result.then(
       async (res) => {
+        console.log(res);
+        if (res != undefined)
+        {
         console.log("Modificamos un producto de la compra " + this.purchase.idPurchase.toString());
             //Añadimos el producto a la compra
             this.purchaseService.addProductToPurchase(res, this.purchase.idPurchase).subscribe(
@@ -355,6 +361,7 @@ export class AddPurchaseComponent implements OnInit {
                 console.log(error);
                 this.errorMessage ="Error al modificar el producto de la compra";
               });
+        }
       }, (error) => {
         console.log(error);
         this.errorMessage ="Error al modificar el producto de la compra";
@@ -373,7 +380,7 @@ export class AddPurchaseComponent implements OnInit {
       this.purchaseService.updatePurchase(this.purchase).subscribe(
         data => {
           console.log(data);
-          console.log("Compra guardada");
+          this.successMessage = "Compra guardada";
         },
         error => {
           console.log(error);

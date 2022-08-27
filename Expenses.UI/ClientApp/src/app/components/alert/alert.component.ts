@@ -10,12 +10,11 @@ export class AlertComponent implements OnInit {
   @Input() successMessage : string;
   @Input() errorMessage: string;
 
-  @ViewChild('selfClosingAlert', {static: false}) selfClosingAlert: NgbAlert;
-
+  @ViewChild('selfClosingAlert', {static: false}) selfClosingAlert: NgbAlert | undefined;
   constructor() { }
 
   ngOnInit(): void {
-    setTimeout(() => this.selfClosingAlert.close(), 3000);
+    setTimeout(() => this.selfClosingAlert?.close(), 3000);
     
 
     // this._success.subscribe(message => this.successMessage = message);

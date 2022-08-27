@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ProductPurchase } from '../models/productPurchase';
 import { Purchase } from '../models/purchase';
 
 @Injectable({
@@ -17,16 +18,16 @@ export class PurchaseService {
   constructor(
     private http: HttpClient) { }
 
-  getPurchases(): Observable<any> {
-    return this.http.get(this.purchaseURL);
+  getPurchases(): Observable<Purchase[]> {
+    return this.http.get<Purchase[]>(this.purchaseURL);
   }
 
-  getProductsByPurchase (idPurchase: number) : Observable<any> {
-    return this.http.get(this.purchaseURL + idPurchase + '/product');
+  getProductsByPurchase (idPurchase: number) : Observable<ProductPurchase[]> {
+    return this.http.get<ProductPurchase[]>(this.purchaseURL + idPurchase + '/product');
   }
 
-  getPurchase (idPurchase: number) : Observable<any> {
-    return this.http.get(this.purchaseURL + idPurchase);
+  getPurchase (idPurchase: number) : Observable<Purchase> {
+    return this.http.get<Purchase>(this.purchaseURL + idPurchase);
   }
 
   addPurchase(purchase : any) : any {

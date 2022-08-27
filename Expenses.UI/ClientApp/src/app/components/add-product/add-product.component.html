@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-6">
             <select class="form-select" formControlName="marca" aria-label="Default select example" (change)="onBrandSelected($event)">
-                <option selected>Selecciona la marca</option>
+                <option selected value="">Selecciona la marca</option>
                 <option [value]="marca.id" *ngFor="let marca of brandList">{{marca.name}}</option>
                 <option value="-1">Otra...</option>
             </select>
@@ -26,7 +26,7 @@
         </div>
         <div class="col-md-6">
             <select formControlName="formato" class="form-select" aria-label="Default select example" (change)="onFormatSelected($event)">
-                <option selected>Selecciona el formato</option>
+                <option selected value="">Selecciona el formato</option>
                 <option [value]="format.id" *ngFor="let format of formatList">{{format.name}}</option>
                 <option value="-1">Otro...</option>
             </select>
@@ -59,6 +59,10 @@
             </div>
         </div>
 
+        <div class="col-12">
+            <label for="detalles" class="form-label">Detalles</label>
+            <input formControlName="detalles" type="text" class="form-control" id="detalles" autocomplete="off">
+        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>

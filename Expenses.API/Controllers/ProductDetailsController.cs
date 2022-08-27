@@ -8,13 +8,13 @@ namespace Expenses.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductBrandsController : ControllerBase
+    public class ProductDetailsController : ControllerBase
     {
-        private readonly IProductDetailsService _productBrandService;
+        private readonly IProductDetailsService _productDetailsService;
 
-        public ProductBrandsController(IProductDetailsService productBrandService)
+        public ProductDetailsController(IProductDetailsService productDetailsService)
         {
-            _productBrandService = productBrandService;
+            _productDetailsService = productDetailsService;
         }
 
         // GET api/productBrands

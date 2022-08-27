@@ -6,6 +6,8 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { StoresComponent } from './components/stores/stores.component';
 import { AddPurchaseComponent } from './components/add-purchase/add-purchase.component';
 import { PurchasesComponent } from './components/purchases/purchases.component';
+import { ProductsComponent } from './components/products/products.component';
+import { ProductDetailsComponent } from './components/product-details/product-details.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -15,6 +17,8 @@ const routes: Routes = [
   { path: 'counter', component: CounterComponent },
   { path: 'fetch-data', component: FetchDataComponent },
   { path: 'purchase-list', component: PurchasesComponent},
+  { path: 'products', component: ProductsComponent},
+  { path: 'products/:id', component: ProductDetailsComponent},
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

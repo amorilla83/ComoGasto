@@ -18,7 +18,7 @@
     "Expenses.UI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:6366;http://localhost:13837",
+      "applicationUrl": "http://localhost:65117",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
