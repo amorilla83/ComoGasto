@@ -8,7 +8,7 @@ namespace Expenses.Core.DomainService
 {
     public interface IProductRepository: IGenericRepository<Product>
     {
-        Task<IEnumerable<Product>> GetAllAsync();
+        Task<PaginatedEntity<Product>> GetAllAsync(int page, int itemsPerPage);
 
         Task<Product> GetProductDetailsAsync(int id);
         ////GET

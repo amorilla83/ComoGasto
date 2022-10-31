@@ -15,14 +15,16 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
     {
         private IUnitOfWork _unitOfWork;
         private IProductRepository _productRepository;
+        private IProductPurchaseRepository _productPurchaseRepository;
 
         private readonly IMemoryCache _cache;
 
         public ProductService (IUnitOfWork unitOfWork, IMemoryCache cache,
-            IProductRepository productRepository)
+            IProductRepository productRepository, IProductPurchaseRepository productPurchaseRepository)
         {
             _unitOfWork = unitOfWork;
             _productRepository = productRepository;
+            _productPurchaseRepository = productPurchaseRepository;
             _cache = cache;
         }
 
@@ -64,15 +66,28 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             }
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public async Task<PaginatedEntity<Product>> GetAllProductsAsync(int page = 1, int itemsPerPage = 0)
         {
-            var products = await _cache.GetOrCreateAsync(CacheKeys.ProductsList, (entry) =>
+            //Solo aplica la caché cuando se obtienen todos los productos
+            if (itemsPerPage == 0)
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
-                return _productRepository.GetAllAsync();
-            });
+                var products = await _cache.GetOrCreateAsync(CacheKeys.ProductsList, (entry) =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                    return _productRepository.GetAllAsync(page, itemsPerPage);
+                });
 
-            return products;
+                return products;
+            }
+            else
+            {
+                return await _productRepository.GetAllAsync(page, itemsPerPage);
+            }
+        }
+
+        public async Task<IEnumerable<ProductPurchase>> GetProductPurchaseByIdProduct(int idProduct)
+        {
+            return await _productPurchaseRepository.GetPurchasesByProduct(idProduct);
         }
 
         public async Task<Product> GetProductDetailsAsync (int id)

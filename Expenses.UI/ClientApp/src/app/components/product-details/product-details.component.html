@@ -1,21 +1,26 @@
+<div>
+<div class="sticky-top">
 <h3 *ngIf="product != undefined">{{product.name}}</h3>
 <div class="row">
-    <div *ngFor="let details of productDetails;">
+    <div *ngFor="let purchase of productPurchases">
         <!--<div class="row">
             <div class="col-md-3"><img src="/assets/angular.svg" width="200px"></div>
         </div>-->
         <div class="row">
-            <div class="col-md-3">Brand: {{details.brand.name}}</div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">Format: {{details.format.name}}</div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">Last Price: {{details.lastPrice}}</div>
-        </div>
-        <div class="row">
-            <div class="col-md-3"><button  id="addToCart">Add to Cart</button></div>
+            <div class="col">
+                <span *ngIf="purchase.productDetail != undefined && purchase.productDetail.brand != undefined">{{purchase.productDetail.brand.name}}</span>    
+            </div>
+            <div class="col">
+                <span *ngIf="purchase.productDetail != undefined && purchase.productDetail.format != undefined">{{purchase.productDetail.format.name}}</span>
+            </div>
+            <div class="col">
+                <span *ngIf="purchase.purchase.store != undefined">{{purchase.purchase.store.name}}</span>
+            </div>
+            <div class="col">{{purchase.price}}</div>
+            <div class="col">{{purchase.purchase.date}}</div>
         </div>
     </div>
 </div>  
+</div>
+</div>
 

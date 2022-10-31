@@ -54,7 +54,6 @@ namespace Expenses.API.Controllers
             //}
 
             //return _productBrandService.GetAllProductBrands();
-            return null;
         }
     }
 }

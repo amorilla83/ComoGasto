@@ -38,6 +38,7 @@ export class AddPurchaseComponent implements OnInit {
   constructor(private storeService: StoreService,
     private productService: ProductService,
     private purchaseService: PurchaseService,
+    private router: Router,
     private aRoute: ActivatedRoute,
     private modalService: NgbModal) {
 
@@ -46,6 +47,9 @@ export class AddPurchaseComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
     this.esEditar();
   }
 
@@ -73,6 +77,16 @@ export class AddPurchaseComponent implements OnInit {
           this.getProducts();
           this.getProductsPurchase();
           this.accordionComponent.toggle("Product");
+
+          console.log("Next");
+          console.log(this.purchaseService.nextId);
+          console.log("Previous");
+          console.log(this.purchaseService.previousId);
+          if (this.purchaseService.nextId == undefined)
+          {
+            this.purchaseService.getPurchases().subscribe(purchases => {this.purchaseService.changePurchase(this.idPurchase)});
+            
+          }
         },
         error => {
           console.log(error);
@@ -102,7 +116,7 @@ export class AddPurchaseComponent implements OnInit {
     this.productService.getProducts().subscribe(
       data => {
         console.log(data);
-        this.listProducts = data;
+        this.listProducts = data.items;
       },
       error => {
         console.log(error);
@@ -243,7 +257,8 @@ export class AddPurchaseComponent implements OnInit {
         format: undefined,
         formatId: 0,
         lastPrice: 0
-      }
+      },
+      purchase: this.purchase
     };
     modalRef.componentInstance.productPurchase = productPurchase;
     modalRef.result.then(
@@ -431,5 +446,17 @@ export class AddPurchaseComponent implements OnInit {
         this.purchase.idPurchase = 0;
         this.errorMessage ="Error al añadir la compra"
       });
+  }
+
+  nextPurchase() {
+    let next = this.purchaseService.nextId;
+    this.purchaseService.changePurchase(next);
+    this.router.navigate(['/purchase', next]);
+  }
+
+  prevPurchase() {
+    let previous = this.purchaseService.previousId;
+    this.purchaseService.changePurchase(previous);
+    this.router.navigate(['/purchase', previous]);
   }
 }

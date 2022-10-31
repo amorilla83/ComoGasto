@@ -1,12 +1,14 @@
 ﻿
 namespace Expenses.Core.Entities.Query
 {
-    public class Query
+    public class QueryParams
     {
-        public int Page { get; protected set; }
-        public int ItemsPerPage { get; protected set; }
+        public int Page { get; set; }
+        public int ItemsPerPage { get; set; }
 
-        public Query(int page, int itemsPerPage)
+        public QueryParams() { }
+
+        public QueryParams(int page, int itemsPerPage)
         {
             Page = page;
             ItemsPerPage = itemsPerPage;

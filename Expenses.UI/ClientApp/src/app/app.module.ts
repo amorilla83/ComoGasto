@@ -23,6 +23,7 @@ import { PurchasesComponent } from './components/purchases/purchases.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { ReversePipe } from './Reverse.pipe';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import { ProductDetailsComponent } from './components/product-details/product-de
     PurchasesComponent,
     AlertComponent,
     ReversePipe,
-    ProductDetailsComponent
+    ProductDetailsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -53,7 +54,7 @@ import { ProductDetailsComponent } from './components/product-details/product-de
     ReactiveFormsModule,
     NgbModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

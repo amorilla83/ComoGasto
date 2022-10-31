@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from 'src/app/models/product';
-import { ProductDetails } from 'src/app/models/productDetails';
+import { ProductPurchase } from 'src/app/models/productPurchase';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
@@ -9,25 +10,35 @@ import { ProductService } from 'src/app/services/product.service';
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css']
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnChanges {
 
-  productDetails : ProductDetails [];
-  product : Product;
+  @Input() product : Product ;
+  productPurchases: ProductPurchase[];
+  errorMessage: string;
 
-  constructor(private route: ActivatedRoute, private productService: ProductService) { }
-
-  ngOnInit(): void {
-    this.getProductDetails ();
+  constructor(private route: ActivatedRoute, private productService: ProductService, private datePipe: DatePipe) { }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("ngOnChanges");
+    console.log(changes);
+    if (this.product != undefined)
+    {
+      console.log(this.product);
+      this.getDetails ();
+    }
   }
 
-  getProductDetails () : void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.productService.getProductDetails(id)
-    .subscribe(data => {
-      console.log(data);
-      this.product = data;
-      this.productDetails = data.productDetails;
-    });
+  getDetails () 
+  {
+    this.productService.getPurchasesByProduct(this.product.id).subscribe(
+      data => {
+        this.productPurchases = data;
+        this.productPurchases.forEach(p => p.product = this.product);
+        console.log(this.productPurchases);
+      },
+      error => {
+        console.log(error);
+        this.errorMessage ="Error al obtener las tiendas";
+      });
   }
-
 }

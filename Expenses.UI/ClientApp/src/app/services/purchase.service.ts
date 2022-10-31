@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { isThisTypeNode, textChangeRangeIsUnchanged } from 'typescript';
 import { ProductPurchase } from '../models/productPurchase';
 import { Purchase } from '../models/purchase';
 
@@ -8,6 +9,12 @@ import { Purchase } from '../models/purchase';
   providedIn: 'root'
 })
 export class PurchaseService {
+
+  private purchaseListSubject: BehaviorSubject<Purchase[]> = new BehaviorSubject({} as Purchase[]);
+  public purchaseList: Observable<Purchase[]> = this.purchaseListSubject.asObservable();
+
+  public nextId: number;
+  public previousId: number;
 
   private purchaseURL = 'https://localhost:5001/api/purchase/';
 
@@ -18,8 +25,42 @@ export class PurchaseService {
   constructor(
     private http: HttpClient) { }
 
+  changePurchase (currentId: number)
+  {
+    if (this.purchaseListSubject.getValue().length > 0)
+    {
+      let index = this.purchaseListSubject.getValue().findIndex(p => p.idPurchase == currentId);
+      if (this.purchaseListSubject.getValue().length > index)
+      {
+        this.nextId = this.purchaseListSubject.getValue()[index+1].idPurchase;
+      }
+      else
+      {
+        this.nextId = 0;
+      }
+
+      if (index > 0)
+      {
+        this.previousId = this.purchaseListSubject.getValue()[index-1].idPurchase;
+      }
+      else
+      {
+        this.previousId = 0;
+      }
+    }
+  }
+
+  setPurchaseList(purchases: Purchase[])
+  {
+    this.purchaseListSubject.next(purchases);
+  }
+
   getPurchases(): Observable<Purchase[]> {
-    return this.http.get<Purchase[]>(this.purchaseURL);
+    this.http.get<Purchase[]>(this.purchaseURL).subscribe(purchases => 
+      {
+        this.setPurchaseList(purchases);
+      });
+      return this.purchaseList;
   }
 
   getProductsByPurchase (idPurchase: number) : Observable<ProductPurchase[]> {

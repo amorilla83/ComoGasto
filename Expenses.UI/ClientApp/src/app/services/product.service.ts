@@ -1,7 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Item } from '../models/item';
+import { Pagination } from '../models/pagination';
 import { Product } from '../models/product';
 
 @Injectable({
@@ -18,12 +19,13 @@ export class ProductService {
   constructor(
     private http: HttpClient) { }
 
+  getProducts(page: number = 1, itemsPerPage: number = 0): Observable<Pagination<Product>> {
 
-    //getItems(): Observable<Item[]> {
-   //   return of(mock_items);
-   // }
-  getProducts(): Observable<Product []> {
-    return this.http.get<Product[]>(this.productURL);
+    let params = new HttpParams()
+    .set("page", page?.toString())
+    .set("itemsPerPage", itemsPerPage?.toString());
+
+   return this.http.get<Pagination<Product>>(this.productURL, {params: params});
   }
 
   getProductDetails(id: number): Observable<Product> {
@@ -32,6 +34,10 @@ export class ProductService {
 
   getBrandsByProduct (id: number): Observable<any> {
     return this.http.get(this.productURL + id + '/brands/');
+  }
+
+  getPurchasesByProduct(id: number): Observable<any> {
+    return this.http.get(this.productURL + id + '/purchases/');
   }
 
   addProduct(product : any) : any {

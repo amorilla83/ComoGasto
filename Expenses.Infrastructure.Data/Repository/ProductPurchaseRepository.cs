@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Expenses.Core.DomainService;
@@ -20,6 +22,15 @@ namespace Expenses.Infrastructure.Data.Repository
                 .Include(pr => pr.ProductDetail).ThenInclude(pd => pd.Brand).DefaultIfEmpty()
                 .Include(pr => pr.ProductDetail).ThenInclude(pd => pd.Format).DefaultIfEmpty()
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<IEnumerable<ProductPurchase>> GetPurchasesByProduct (int idProduct)
+        {
+            return await _context.ProductPurchase
+                .Include(p => p.Purchase).ThenInclude(p => p.Store)
+                .Include(pr => pr.ProductDetail).ThenInclude(pd => pd.Brand).DefaultIfEmpty()
+                .Include(pr => pr.ProductDetail).ThenInclude(pd => pd.Format).DefaultIfEmpty()
+                .Where(p => p.ProductId == idProduct).ToListAsync();
         }
     }
 }

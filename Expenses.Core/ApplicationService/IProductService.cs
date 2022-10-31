@@ -17,9 +17,11 @@ namespace Expenses.Core.ApplicationService
         ////GET
         //Task<ProductResponse> FindProductByIdAsync(int id);
 
-        Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<PaginatedEntity<Product>> GetAllProductsAsync(int page, int itemsPerPage);
 
         Task<Product> GetProductDetailsAsync(int id);
+
+        Task<IEnumerable<ProductPurchase>> GetProductPurchaseByIdProduct(int idProduct);
 
         ////PUT
         //Task<ProductResponse> UpdateProductAsync(int id, Product productUpdate);

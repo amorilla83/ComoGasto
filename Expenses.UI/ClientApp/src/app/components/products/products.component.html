@@ -1,11 +1,104 @@
-<p>Products</p>
-<div class="row">
-    <div *ngFor="let product of productList;">
-        <div class="card" style="width: 15rem">
-          <div class="card-body">
-            <h5 class="card-title"><a routerLink="/products/{{product.id}}">{{product.id}}</a></h5>
-            <p class="card-subtitle mb-2 text-muted">{{product.name}}</p>
-          </div>
+<h1>Products</h1>
+
+<!-- row-cols-1 row-cols-md-4 g-2 -->
+<div *ngIf="selectedProduct == undefined">
+  <div class="row row-cols-1 row-cols-md-6 g-2">
+    <div class="col" *ngFor="let product of productList">
+      <div class="card">
+        <div class="card-body">
+          <!--<div class="card-header">{{product.name}}</div>-->
+          <h5 class="card-title">{{product.name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a (click)="onSelect(product)" class="btn btn-primary">Go somewhere</a>
         </div>
+      </div>
     </div>
+  </div>
+</div>
+<div *ngIf="selectedProduct != null && selectedProduct.id != 0">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card" >
+        <ul class="list-group list-group-flush" *ngFor="let product of productList">
+          <li class="list-group-item d-flex" [style.background-color]="product.id == selectedProduct.id ? 'lightblue' : ''"
+            (click)="onSelect(product)">
+            {{product.name}}
+          </li>
+        </ul>
+      </div> 
+    </div>
+    <div class="col-md-9">
+        <button type="button" class="btn-close float-end" aria-label="Close" (click)="closeDetails()"></button>
+      
+      <div class="row">
+        <app-product-details [product]="selectedProduct"></app-product-details>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="card w-25" >
+  <ul class="list-group list-group-flush" *ngFor="let product of productList">
+    <li class="list-group-item d-flex" (click)="showDetails()">
+      {{product.name}}</li>
+  </ul>
+</div> -->
+
+<!-- <table class="table table-hover w-25">
+  <thead>
+
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of productList">
+      <td (click)="showDetails(product.id)">
+        <i class="bi bi-chevron-right"></i>
+          <span>{{product.name}}</span>
+      </td>
+    </tr>
+  </tbody>
+</table> -->
+<div class="row">
+<div class="col">
+<ngb-accordion #acc="ngbAccordion" animation="true" *ngFor="let product of productList" (panelChange)="showDetails(product.id)">
+  <ngb-panel title={{product.name}} id={{product.id}} >
+    <ng-template ngbPanelContent>
+        <button class="btn btn-primary" (click)="onSelect(product)">Mostrar Datos</button>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Marca</th>
+                <th scope="col">Formato</th>
+                <th scope="col">Precio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let details of product.productDetails">
+                <td>
+                    <span *ngIf="details.brand != null">{{details.brand.name}}</span>
+                </td>
+                <td>
+                  <span *ngIf="details.format != null">{{details.format.name}}</span>
+                </td>
+                <td>
+                  <span>{{details.lastPrice}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+
+<ngb-pagination class="d-flex justify-content-center"
+  [maxSize] = "5"
+  [(page)]="pagination.pageNumber"
+  [pageSize]="pagination.itemsPerPage"
+  [collectionSize]="pagination.countItems"
+  [rotate] = "true"
+  (pageChange)="onPageChange($event)">
+</ngb-pagination>
+</div>
+<div class="col">
+  <app-product-details [product]="selectedProduct"></app-product-details>
+</div>
 </div>

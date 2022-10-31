@@ -9,6 +9,7 @@ using Expenses.Core.ApplicationService;
 using Expenses.Core.Entities;
 using Expenses.Core.Entities.Communication;
 using Expenses.Core.Entities.Infrastructure;
+using Expenses.Core.Entities.Query;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -37,17 +38,18 @@ namespace Expenses.API.Controllers
         // GET api/products
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ProductModel>), 200)]
-        public async Task<IEnumerable<ProductModel>> ListAsync()
+        public async Task<PaginatedEntity<ProductModel>> ListAsync([FromQuery] QueryParams queryParams)
         {
-            var products = await _productService.GetAllProductsAsync();
+            var products = await _productService.GetAllProductsAsync(queryParams.Page, queryParams.ItemsPerPage);
 
-            _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {products.Count()} products");
+            _logger.LogInformation(AppLoggingEvents.Read, $"Se han obtenido un total de {products.CountItems} products");
 
-            var productModel = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductModel>>(products);
+            var productModel = _mapper.Map<PaginatedEntity<Product>, PaginatedEntity<ProductModel>>(products);
 
-            return productModel.OrderBy(p => p.Name);
+            return productModel;
         }
 
+        //GET api/products/id
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(IEnumerable<Product>), 200)]
@@ -74,6 +76,20 @@ namespace Expenses.API.Controllers
 
             //return _mapper.Map<IEnumerable<Brand>, IEnumerable<BrandModel>>(brands);
             return null;
+        }
+
+        [HttpGet]
+        [Route("{id}/Purchases")]
+        [ProducesResponseType(typeof(IEnumerable<ProductPurchaseModel>), 200)]
+        [ProducesResponseType(typeof(ErrorModel), 400)]
+        public async Task<IEnumerable<ProductPurchaseModel>> GetProductPurchase (int id)
+        {
+            var productPurchases = await _productService.GetProductPurchaseByIdProduct(id);
+
+            _logger.LogInformation(AppLoggingEvents.Read, "El producto con id " + id +
+                " aparece en " + productPurchases.Count() + " compras");
+
+            return _mapper.Map<IEnumerable<ProductPurchase>, IEnumerable<ProductPurchaseModel>>(productPurchases);
         }
 
 

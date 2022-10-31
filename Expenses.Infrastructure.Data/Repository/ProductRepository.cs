@@ -16,9 +16,9 @@ namespace Expenses.Infrastructure.Data.Repository
             : base(context) { }
 
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<PaginatedEntity<Product>> GetAllAsync(int page, int itemsPerPage)
         {
-            return await _context.Product.ToListAsync();
+            return  PaginatedEntity<Product>.ToPaginate(_context.Product.OrderBy(p => p.Name), page, itemsPerPage);
         }
 
         public async Task<Product> GetProductDetailsAsync (int id)

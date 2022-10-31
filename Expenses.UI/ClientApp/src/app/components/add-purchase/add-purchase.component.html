@@ -1,6 +1,8 @@
 <h3 *ngIf="title">{{title}}</h3>
 <app-alert [successMessage]="successMessage" [errorMessage]="errorMessage"></app-alert>
+
 <div>
+  
   <a (click)="updatePurchase()" *ngIf="idPurchase != 0">
     <button class="btn btn-default btn-circle my-3 border" >
       <i class="bi bi-save"><span> Guardar Compra</span></i>
@@ -29,6 +31,7 @@
         <span>Tiendas</span>
       </ng-template>
       <ng-template ngbPanelContent>
+        <!-- <app-stores></app-stores> -->
         <div *ngIf="listStores.length == 0" class="row at-3">
           <h5 class="float-start">No existe ninguna tienda en base de datos.</h5>
         </div>
@@ -56,8 +59,8 @@
           <datalist id="productListOptions">
             <option *ngFor="let product of listProducts | nameFilter: searchText" [value]="product.name">{{product.name}}</option>
           </datalist>
-        </div>
-        <div class="row">
+        <!--</div>
+        <div class="row">-->
           <!-- ngIf listaProducts > 0-->
           <!-- <div *ngFor="let product of listProducts | nameFilter: searchText" class="position-relative col">
               <button class="btn btn-default btn-circle border rounded-pill" (click)="addProductToPurchase(product.id)">
@@ -65,8 +68,21 @@
               </button>            
           </div> -->
           <a (click)="triggerAddModal('producto')">
-            <button class="btn btn-default btn-circle my-3 border" >
+            <button class="btn btn-default btn-circle ms-3 border" >
               <i class="bi bi-plus-circle-fill"><span>  Añadir Producto</span></i>
+            </button>
+          </a>
+        </div>
+        <div class="row" *ngIf="idPurchase != 0">
+          <a (click)="prevPurchase()" class="col" aria-label="Previous">
+            <button class="btn btn-default btn-circle my-3 border" [disabled]="purchaseService.previousId == undefined || purchaseService.previousId == 0">
+              <i class="bi bi-chevron-left"><span> Previous</span></i>
+            </button>
+          </a>
+        
+          <a (click)="nextPurchase()" class="col" aria-label="Next">
+            <button class="btn btn-default btn-circle my-3 border float-end" [disabled]="purchaseService.nextId == undefined || purchaseService.nextId == 0">
+              <span> Next <i class="bi bi-chevron-right"></i></span>
             </button>
           </a>
         </div>

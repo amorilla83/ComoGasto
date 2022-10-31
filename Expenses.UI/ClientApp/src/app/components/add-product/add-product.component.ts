@@ -6,6 +6,7 @@ import { Item } from 'src/app/models/item';
 import { Product } from 'src/app/models/product';
 import { ProductDetails } from 'src/app/models/productDetails';
 import { ProductPurchase } from 'src/app/models/productPurchase';
+import { Purchase } from 'src/app/models/purchase';
 import { BrandService } from 'src/app/services/brand.service';
 import { FormatService } from 'src/app/services/format.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -152,7 +153,8 @@ export class AddProductComponent implements OnInit, AfterContentChecked {
       price : this.addProductToPurchase.get('precio').value,
       weight: this.addProductToPurchase.get('peso').value,
       details: this.addProductToPurchase.get('detalles').value,
-      productDetail: undefined
+      productDetail: undefined,
+      purchase: undefined
       // productDetail: {
       //   id: this.productPurchase.productDetail.id,
       //   product: this.productPurchase.product,

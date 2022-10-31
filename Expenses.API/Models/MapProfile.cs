@@ -20,6 +20,7 @@ namespace Expenses.API.Models
             CreateMap<Format, FormatModel>();
             CreateMap<Brand, ItemModel>();
             CreateMap<Format, ItemModel>();
+            CreateMap(typeof(PaginatedEntity<>), typeof(PaginatedEntity<>));
             CreateMap<Purchase, PurchaseModel>()
                 .ForMember(p =>
                 p.Count,

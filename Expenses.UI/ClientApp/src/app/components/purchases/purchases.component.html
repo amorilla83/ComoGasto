@@ -44,6 +44,11 @@
     </div>
   </div>
 </form>
+<div class="d-flex justify-content-center" *ngIf="!response">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
 <div *ngIf="filterPurchases.length > 0">
     <table class="table table-striped">
         <thead class="table-dark">
@@ -57,12 +62,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let purchase of filterPurchases; let i = index ">
+          <tr *ngFor="let purchase of filterPurchases | slice: (currentPage-1) * 10 : currentPage * 10; let i = index ">
             <th scope="row">{{i+1}}</th>
             <td>{{purchase.date | date:'dd/MM/yyyy'}}</td>
             <td>{{purchase.store.name}}</td>
             <td>{{purchase.total | number}} € </td>
-            <td><a [routerLink]="['/purchase', purchase.idPurchase]"><i class="bi bi-pencil"></i></a></td>
+            <td><a (click)="editPurchase(purchase.idPurchase)"><i class="bi bi-pencil"></i></a></td>
             <td>
               <button type="button" class="btn" (click)="deletePurchase(purchase.idPurchase)">
                 <i class="bi bi-trash"></i>
@@ -71,7 +76,16 @@
           </tr>
         </tbody>
       </table>
+
+     <ngb-pagination class="d-flex justify-content-center"
+        [(page)]="currentPage"
+        [pageSize]="10"
+        [rotate] = "true"
+        [collectionSize]="filterPurchases.length"
+        [maxSize] = "7"
+        (pageChange)="onPageChange($event)">
+      </ngb-pagination>
 </div>
-<div *ngIf="filterPurchases.length == 0" class="row at-3">
+<div *ngIf="response && filterPurchases.length == 0" class="row at-3">
     <h5 class="float-start">No existe ninguna compra en base de datos.</h5>
 </div>
