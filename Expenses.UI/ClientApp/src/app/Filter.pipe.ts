@@ -20,9 +20,19 @@ export class NameFilterPipe implements PipeTransform{
         }
 
         searchText = searchText.toLocaleLowerCase();
+        //Quitar tildes
+
+        searchText = this.quitarAcentos(searchText);
 
         return items.filter( i => {
-            return i.name.toLocaleLowerCase().includes(searchText);
+            let name : string = i.name;
+            name = this.quitarAcentos (name);
+            return name.toLocaleLowerCase().includes(searchText);
         })
+    }
+
+    quitarAcentos(cadena: string) : string{
+        const acentos = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
+        return cadena.split('').map( letra => acentos[letra] || letra).join('').toString();	
     }
 }

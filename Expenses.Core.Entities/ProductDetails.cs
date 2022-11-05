@@ -1,10 +1,17 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Expenses.Core.Entities
 {
     public class ProductDetails
     {
+        public ProductDetails()
+        {
+            ProductPurchaseList = new List<ProductPurchase>();
+        }
+
         [Key]
         public int Id { get; set; }
         [Required]
@@ -16,5 +23,7 @@ namespace Expenses.Core.Entities
         public int? FormatId { get; set; }
         [DefaultValue(0)]
         public double LastPrice { get; set; }
+
+        public ICollection<ProductPurchase> ProductPurchaseList { get; set; }
     }
 }

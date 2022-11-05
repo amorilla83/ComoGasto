@@ -32,6 +32,33 @@ namespace Expenses.Infrastructure.Data.Repository
                 .FirstOrDefaultAsync();
         }
 
+        public IEnumerable<Product> GetDataProductReview()
+        {
+            //productDetails.SelectMany(pd => pd.ProductPurchaseList).Distinct().Count()
+            //productDetails.Select(pd => pd.BrandId).Distinct().Count()
+            //productDetails.Select(pd => pd.FormatId).Distinct().Count()
+            //productDetails.SelectMany(pd => pd.ProductPurchaseList).OrderByDescending(pp => pp.Purchase.Date).FirstOrDefault()
+
+            //            select* From product pr
+            //left join ProductDetails pd on pr.id = pd.ProductId
+            //left join ProductPurchase pp on pp.ProductDetailId = pd.id
+            //left join Purchase p on p.id = pp.PurchaseId
+            //var productDetails = _context.ProductDetails
+            //    .Include(pd => pd.ProductPurchaseList)
+            //    .Include(pd => pd.ProductPurchaseList).ThenInclude(pp => pp.Purchase)
+            //    .Include(pd => pd.Product)
+            //    .AsNoTracking();
+
+            var product = _context.Product
+                .Include(p => p.ProductDetails).DefaultIfEmpty()
+                .Include(p => p.ProductDetails).ThenInclude(pd => pd.ProductPurchaseList).DefaultIfEmpty()
+                .Include(p => p.ProductDetails).ThenInclude(pd => pd.ProductPurchaseList).ThenInclude(pp => pp.Purchase).DefaultIfEmpty()
+                .OrderBy(p => p.Name)
+                .AsNoTracking();
+
+            return product.ToList();
+        }
+
         //public IEnumerable<Product> GetAll()
         //{
         //    //return _context.Product;

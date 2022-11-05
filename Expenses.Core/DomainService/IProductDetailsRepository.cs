@@ -13,6 +13,7 @@ namespace Expenses.Core.DomainService
         IEnumerable<Format> GetFormatsByBrand(int idBrand);
 
         Task<ProductDetails> GetByDataAsync(int idProduct, int? idBrand, int? idFormat);
+        
 
         //ProductDetails GetById(int id);
 

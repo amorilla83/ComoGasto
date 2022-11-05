@@ -42,6 +42,10 @@ namespace Expenses.API.Models
                 .ForMember(p =>
                 p.Store,
                 opt => opt.Ignore());
+            CreateMap<ProductReview, ProductReviewModel>()
+                .ForMember(p => p.BrandsCount, opt => opt.MapFrom(src => src.BrandsList.Count))
+                .ForMember(p => p.FormatsCount, opt => opt.MapFrom(src => src.FormatsList.Count))
+                .ForMember(p => p.PurchaseCount, opt => opt.MapFrom(src => src.PurchaseList.Count));
             CreateMap<AddProductPurchaseModel, ProductPurchase>();
             CreateMap<AddProductDetailsModel, ProductDetails>();
             CreateMap<ProductDetailsModel, ProductDetails>();
@@ -50,6 +54,7 @@ namespace Expenses.API.Models
             CreateMap<ProductModel, Product>();
             CreateMap<ItemModel, Brand>();
             CreateMap<ItemModel, Format>();
+            
         }
 
     }

@@ -17,7 +17,7 @@ namespace Expenses.Core.ApplicationService
 
         List<Format> GetFormatsByBrand(int idBrand);
         Task<ProductDetails> GetProductDetailsByDataAsync(int productId, int? brandId, int? formatId);
-
+        
         ////POST
         //ProductDetails SaveProductBrand(ProductDetails productBrand);
 

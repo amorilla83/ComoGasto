@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Pagination } from 'src/app/models/pagination';
-import { Product } from 'src/app/models/product';
+import { Product, ProductReview } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
@@ -11,9 +11,12 @@ import { ProductService } from 'src/app/services/product.service';
 export class ProductsComponent implements OnInit {
 
   productList: Product[] = [];
+  productReviewList: ProductReview[] = [];
   pagination: Pagination<Product>;
   show: boolean;
   selectedProduct: Product;
+  idSelected: number;
+  searchText: string;
 
   constructor(public productService: ProductService) { }
 
@@ -25,8 +28,19 @@ export class ProductsComponent implements OnInit {
       countItems: 0,
       countPage: 0
     };
-    this.getProducts();
+    //this.getProducts();
+    this.getProductsReview();
     this.show = false;
+  }
+
+  getProductsReview (): void {
+    this.productService.getProductReview().subscribe(data => {
+      console.log(data);
+      this.productReviewList = data;
+    },
+    error => {
+      console.log(error);
+    });
   }
 
   getProducts() : void {
@@ -58,6 +72,17 @@ export class ProductsComponent implements OnInit {
 
   showDetails (idProduct: number) :void {
     //Hay que mirar cómo hacer para cerrar uno que ya esté abierto. Puede haber varios abiertos
+    if (this.productList.find(p => p.id == idProduct) == null)
+    {
+      let product : Product = {
+        id: idProduct,
+        name: this.productReviewList.find(p => p.idProduct == idProduct).nameProduct,
+        productDetails: undefined
+      };
+      console.log("Añadimos un nuevo producto a la lista");
+      this.productList.push(product)
+    }
+
     if (this.productList.find(p => p.id == idProduct).productDetails == null
       ||this.productList.find(p => p.id == idProduct).productDetails.length == 0 )
     {
@@ -73,12 +98,26 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  onSelect (product: Product):void{
-    this.selectedProduct = product;
+  // onSelect (product: Product):void{
+  //   this.selectedProduct = product;
+  // }
+
+  onSelect (idProduct: number) :void {
+    console.log(idProduct);
+    this.idSelected = idProduct;
+    this.productService.getProductDetails(idProduct).subscribe(data => {
+      console.log(data);
+      this.selectedProduct = data;
+    },
+    error => {
+      console.log(error);
+    }
+    );
   }
 
   closeDetails (): void {
     this.selectedProduct = null;
+    this.idSelected = 0;
   }
 
 }

@@ -17,7 +17,7 @@
                 <span *ngIf="purchase.purchase.store != undefined">{{purchase.purchase.store.name}}</span>
             </div>
             <div class="col">{{purchase.price}}</div>
-            <div class="col">{{purchase.purchase.date}}</div>
+            <div class="col">{{purchase.purchase.date | date : 'dd/MM/yyyy'}}</div>
         </div>
     </div>
 </div>  

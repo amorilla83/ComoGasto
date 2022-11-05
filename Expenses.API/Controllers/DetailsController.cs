@@ -6,6 +6,7 @@ using AutoMapper;
 using Expenses.API.Models;
 using Expenses.Core.ApplicationService;
 using Expenses.Core.Entities;
+using Expenses.Core.Entities.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -43,18 +44,8 @@ namespace Expenses.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
-            //try
-            //{
-            //    return Ok(_productBrandService.GetFilteredProductBrands(filter));
-            //}
-            //catch (Exception ex)
-            //{
-            //    return BadRequest(ex.Message);
-            //}
-
-            //return _productBrandService.GetAllProductBrands();
         }
+
     }
 }
 

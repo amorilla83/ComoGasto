@@ -2,15 +2,39 @@
 
 <!-- row-cols-1 row-cols-md-4 g-2 -->
 <div *ngIf="selectedProduct == undefined">
+  <div class="input-group mb-3">
+    <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
+    aria-describedby="Search Product" placeholder="Enter text to search">
+  </div>
+  
   <div class="row row-cols-1 row-cols-md-6 g-2">
-    <div class="col" *ngFor="let product of productList">
+    <!-- <div class="col" *ngFor="let product of productList">
       <div class="card">
         <div class="card-body">
-          <!--<div class="card-header">{{product.name}}</div>-->
           <h5 class="card-title">{{product.name}}</h5>
           <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
           <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           <a (click)="onSelect(product)" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div> -->
+    <!-- <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
+          aria-describedby="Search Product" placeholder="Enter text to search" list="productListOptions"
+          (keyup.enter)="selectedProduct($event)">
+          <datalist id="productListOptions">
+            <option *ngFor="let product of listProducts | nameFilter: searchText" [value]="product.name">{{product.name}}</option>
+          </datalist> -->
+    <div class="col" *ngFor="let product of productReviewList | nameFilter: searchText">
+      <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{product.name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{product.lastDate | date : 'dd/MM/yyyy'}} -> {{product.lastPrice}} €</h6>
+          <p class="card-text">
+            Compras: {{product.purchaseCount}} <br/>
+            Marcas: {{product.brandsCount}} <br/>
+            Formatos: {{product.formatsCount}}
+          </p>
+          <a (click)="onSelect(product.idProduct)" class="btn btn-primary">Detalles</a>
         </div>
       </div>
     </div>
@@ -20,9 +44,9 @@
   <div class="row">
     <div class="col-md-3">
       <div class="card" >
-        <ul class="list-group list-group-flush" *ngFor="let product of productList">
-          <li class="list-group-item d-flex" [style.background-color]="product.id == selectedProduct.id ? 'lightblue' : ''"
-            (click)="onSelect(product)">
+        <ul class="list-group list-group-flush" *ngFor="let product of productReviewList">
+          <li class="list-group-item d-flex" [style.background-color]="product.idProduct == selectedProduct.id ? 'lightblue' : ''"
+            (click)="onSelect(product.idProduct)">
             {{product.name}}
           </li>
         </ul>
@@ -57,7 +81,7 @@
     </tr>
   </tbody>
 </table> -->
-<div class="row">
+<!-- <div class="row">
 <div class="col">
 <ngb-accordion #acc="ngbAccordion" animation="true" *ngFor="let product of productList" (panelChange)="showDetails(product.id)">
   <ngb-panel title={{product.name}} id={{product.id}} >
@@ -101,4 +125,4 @@
 <div class="col">
   <app-product-details [product]="selectedProduct"></app-product-details>
 </div>
-</div>
+</div> -->

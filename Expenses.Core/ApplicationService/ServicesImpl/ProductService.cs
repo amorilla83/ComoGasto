@@ -156,6 +156,44 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
         }
 
 
+        public List<ProductReview> GetProductReview()
+        {
+            List<Product> products = _productRepository.GetDataProductReview().ToList();
+            //TODO: Comprobar si se puede meter todo esto en la query
+            //productDetails.SelectMany(pd => pd.ProductPurchaseList).Distinct().Count()
+            //productDetails.Select(pd => pd.BrandId).Distinct().Count()
+            //productDetails.Select(pd => pd.FormatId).Distinct().Count()
+            //productDetails.SelectMany(pd => pd.ProductPurchaseList).OrderByDescending(pp => pp.Purchase.Date).FirstOrDefault()
+            List<ProductReview> productReviewList = new List<ProductReview>();
+
+            foreach (Product p in products)
+            {
+                ProductReview productReview = new ProductReview()
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    PurchaseList = p.ProductDetails.SelectMany(pd => pd.ProductPurchaseList).Distinct().ToList(),
+                    BrandsList = p.ProductDetails.Select(pd => pd.BrandId).Distinct().ToList(),
+                    FormatsList = p.ProductDetails.Select(pd => pd.FormatId).Distinct().ToList()
+                };
+
+                Purchase lastPurchase = productReview.PurchaseList.Select(pp => pp.Purchase)
+                    .OrderByDescending(p => p.Date).FirstOrDefault();
+
+                if (lastPurchase != null)
+                {
+                    productReview.LastDate = lastPurchase.Date;
+                    productReview.LastPrice = productReview.PurchaseList.Where(p => p.PurchaseId == lastPurchase.Id).FirstOrDefault()?.Price;
+                }
+
+                productReviewList.Add(productReview);
+            }
+
+            return productReviewList;
+        }
+
+
+
         //public Product FindProductByIdIncludeBrands (int id)
         //{
         //    Product product = _productRepository.GetByIdIncludeProductBrands(id);

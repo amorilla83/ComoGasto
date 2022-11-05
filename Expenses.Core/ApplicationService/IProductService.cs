@@ -23,6 +23,8 @@ namespace Expenses.Core.ApplicationService
 
         Task<IEnumerable<ProductPurchase>> GetProductPurchaseByIdProduct(int idProduct);
 
+        List<ProductReview> GetProductReview();
+
         ////PUT
         //Task<ProductResponse> UpdateProductAsync(int id, Product productUpdate);
 

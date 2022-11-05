@@ -6,6 +6,7 @@ using AutoMapper;
 using Expenses.API.Models;
 using Expenses.API.Models.Brands;
 using Expenses.Core.ApplicationService;
+using Expenses.Core.ApplicationService.ServicesImpl;
 using Expenses.Core.Entities;
 using Expenses.Core.Entities.Communication;
 using Expenses.Core.Entities.Infrastructure;
@@ -173,6 +174,19 @@ namespace Expenses.API.Controllers
 
             //return Ok(productModel);
             return null;
+        }
+
+        [HttpGet]
+        [Route("Review")]
+        public ActionResult<IEnumerable<ProductReviewModel>> GetProductsReview()
+        {
+            var productReviews = _productService.GetProductReview();
+
+            _logger.LogInformation(AppLoggingEvents.Read, "Se han obtenido los productDetails");
+
+            var productsReviewModel = _mapper.Map<IEnumerable<ProductReview>, IEnumerable<ProductReviewModel>>(productReviews);
+            
+            return Ok(productsReviewModel);
         }
     }
 }

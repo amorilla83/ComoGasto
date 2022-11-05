@@ -9,7 +9,6 @@ import { Store } from 'src/app/models/store';
 import { ProductService } from 'src/app/services/product.service';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { StoreService } from 'src/app/services/store.service';
-import { HighlightSpanKind } from 'typescript';
 import { AddItemComponent } from '../add-item/add-item.component';
 import { AddProductComponent } from '../add-product/add-product.component';
 import { AddStoreComponent } from '../add-store/add-store.component';

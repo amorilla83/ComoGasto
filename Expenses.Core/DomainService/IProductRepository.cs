@@ -11,6 +11,8 @@ namespace Expenses.Core.DomainService
         Task<PaginatedEntity<Product>> GetAllAsync(int page, int itemsPerPage);
 
         Task<Product> GetProductDetailsAsync(int id);
+
+        IEnumerable<Product> GetDataProductReview();
         ////GET
         //IEnumerable<Product> GetAll();
 

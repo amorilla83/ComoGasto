@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Item } from '../models/item';
 import { Pagination } from '../models/pagination';
-import { Product } from '../models/product';
+import { Product, ProductReview } from '../models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -46,5 +46,9 @@ export class ProductService {
 
   getFormatsByBrand (id: number): Observable<Item[]> {
     return this.http.get<Item[]>('https://localhost:5001/api/details/formats/' + id);
+  }
+
+  getProductReview (): Observable<ProductReview[]> {
+    return this.http.get<ProductReview[]>(this.productURL + 'review/');
   }
 }
