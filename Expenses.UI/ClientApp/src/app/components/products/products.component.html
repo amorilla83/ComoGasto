@@ -6,7 +6,12 @@
     <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
     aria-describedby="Search Product" placeholder="Enter text to search">
   </div>
-  
+
+  <div
+  infinite-scroll
+  [infiniteScrollDistance]="2"
+  (scrolled)="onScroll()">
+
   <div class="row row-cols-1 row-cols-md-6 g-2">
     <!-- <div class="col" *ngFor="let product of productList">
       <div class="card">
@@ -18,13 +23,8 @@
         </div>
       </div>
     </div> -->
-    <!-- <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
-          aria-describedby="Search Product" placeholder="Enter text to search" list="productListOptions"
-          (keyup.enter)="selectedProduct($event)">
-          <datalist id="productListOptions">
-            <option *ngFor="let product of listProducts | nameFilter: searchText" [value]="product.name">{{product.name}}</option>
-          </datalist> -->
-    <div class="col" *ngFor="let product of productReviewList | nameFilter: searchText">
+    
+    <div class="col" *ngFor="let product of productsToShow | nameFilter: searchText">
       <div class="card">
         <div class="card-body">
             <h5 class="card-title">{{product.name}}</h5>
@@ -34,28 +34,36 @@
             Marcas: {{product.brandsCount}} <br/>
             Formatos: {{product.formatsCount}}
           </p>
-          <a (click)="onSelect(product.idProduct)" class="btn btn-primary">Detalles</a>
+          <a (click)="onSelect(product.id)" class="btn btn-primary">Detalles</a>
         </div>
       </div>
     </div>
   </div>
+  <button *ngIf="show" class="btn position-fixed bottom-0 end-0" (click)="scrollToTop()">
+    Back to top<i class="bi bi-caret-up-square me-2 mb-2 ms-1"></i>
+  </button>
+  </div>
 </div>
 <div *ngIf="selectedProduct != null && selectedProduct.id != 0">
-  <div class="row">
-    <div class="col-md-3">
-      <div class="card" >
-        <ul class="list-group list-group-flush" *ngFor="let product of productReviewList">
-          <li class="list-group-item d-flex" [style.background-color]="product.idProduct == selectedProduct.id ? 'lightblue' : ''"
-            (click)="onSelect(product.idProduct)">
+  <div class="row max-vh-100">
+    <div class="col-md-3"> <!-- max-height -->
+      <div class="input-group mb-3">
+        <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
+        aria-describedby="Search Product" placeholder="Enter text to search">
+      </div>
+      <div class="card overflow-scroll" >
+        <ul class="list-group list-group-flush" *ngFor="let product of productReviewList | nameFilter: searchText">
+          <li class="list-group-item d-flex" [style.background-color]="product.id == selectedProduct.id ? 'lightblue' : ''"
+            (click)="onSelect(product.id)">
             {{product.name}}
           </li>
         </ul>
       </div> 
     </div>
-    <div class="col-md-9">
-        <button type="button" class="btn-close float-end" aria-label="Close" (click)="closeDetails()"></button>
+    <div class="col-md-9 overflow-scroll">
+        <!--<button type="button" class="btn-close position-fixed" aria-label="Close" (click)="closeDetails()"></button>-->
       
-      <div class="row">
+      <div class="row sticky-top">
         <app-product-details [product]="selectedProduct"></app-product-details>
       </div>
     </div>

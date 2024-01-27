@@ -24,6 +24,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { ReversePipe } from './Reverse.pipe';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { DatePipe } from '@angular/common';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { DatePipe } from '@angular/common';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    InfiniteScrollModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]
