@@ -279,3 +279,4 @@ Thumbs.db
 *.jpg
 Expenses.Infrastructure.Data/.DS_Store
 Expenses.UI/.DS_Store
+Expenses.API/App_Data/Expenses.db~fe9addde5822bcb9790ab50ae5edcd567f5f72c4
