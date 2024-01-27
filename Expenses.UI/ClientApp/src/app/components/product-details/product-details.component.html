@@ -1,11 +1,42 @@
 <div>
 <div class="sticky-top">
 <h3 *ngIf="product != undefined">{{product.name}}</h3>
-<div class="row">
+<table class="table table-striped table-hover">
+    <thead class="table-primary">
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Marca</th>
+            <th scope="col">Formato</th>
+            <th scope="col">Tienda</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Fecha</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        <tr *ngFor="let purchase of productPurchases; let i = index">
+            <th scope="row">{{i+1}}</th>
+            <td>
+                <span *ngIf="purchase.productDetail != undefined && purchase.productDetail.brand != undefined">{{purchase.productDetail.brand.name}}</span>    
+                
+            </td>
+            <td>
+                <span *ngIf="purchase.productDetail != undefined && purchase.productDetail.format != undefined">{{purchase.productDetail.format.name}}</span>
+                <span *ngIf="purchase.weight != undefined && purchase.weight > 0">{{purchase.weight}} g.</span>    
+            </td>
+            <td>
+                <span *ngIf="purchase.purchase.store != undefined">{{purchase.purchase.store.name}}</span>
+            </td>
+            <td>
+                {{purchase.price}}
+            </td>
+            <td>
+                {{purchase.purchase.date | date : 'dd/MM/yyyy'}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- <div class="row">
     <div *ngFor="let purchase of productPurchases">
-        <!--<div class="row">
-            <div class="col-md-3"><img src="/assets/angular.svg" width="200px"></div>
-        </div>-->
         <div class="row">
             <div class="col">
                 <span *ngIf="purchase.productDetail != undefined && purchase.productDetail.brand != undefined">{{purchase.productDetail.brand.name}}</span>    
@@ -20,7 +51,7 @@
             <div class="col">{{purchase.purchase.date | date : 'dd/MM/yyyy'}}</div>
         </div>
     </div>
-</div>  
+</div>   -->
 </div>
 </div>
 

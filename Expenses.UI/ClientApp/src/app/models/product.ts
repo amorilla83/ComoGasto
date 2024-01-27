@@ -7,8 +7,8 @@ export interface Product {
   }
 
 export interface ProductReview  {
-  idProduct: number;
-  nameProduct: string;
+  id: number;
+  name: string;
   purchaseCount: number;
   formatsCount: number;
   brandsCount:number;

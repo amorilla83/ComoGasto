@@ -107,7 +107,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of purchase.productList | reverse; let i = index">
+            <!-- con | reverse se puede poner la lista ordenada al revés-->
+            <tr *ngFor="let product of purchase.productList; let i = index"> 
               <th scope="row">{{i+1}}</th>
               <td>{{product.product.name}}</td>
               <td>
@@ -117,13 +118,13 @@
                 <span *ngIf="product.productDetail != undefined && product.productDetail.format != undefined">{{product.productDetail.format.name}}</span>
                 <span *ngIf="(product.productDetail == undefined || product.productDetail.format == undefined) && product.weight != undefined">Granel</span>
               </td>
-              <td>{{product.price}} € </td>
+              <td>{{product.price | number}} € </td>
               <td>
                 <span *ngIf="product.weight == null">{{product.quantity}}</span>
-                <span *ngIf="product.weight != null">{{product.weight}} gr.</span>
+                <span *ngIf="product.weight != null">{{product.weight | number}} gr.</span>
               </td>
               <td>{{getTotalProduct (product) | number}} €</td>
-              <td>
+              <td> 
                 <button type="button" class="btn" (click)="editProductPurchase(product.id)">
                   <i class="bi bi-pencil"></i>
                 </button>

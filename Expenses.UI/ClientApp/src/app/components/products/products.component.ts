@@ -12,6 +12,7 @@ export class ProductsComponent implements OnInit {
 
   productList: Product[] = [];
   productReviewList: ProductReview[] = [];
+  productsToShow: ProductReview[] = [];
   pagination: Pagination<Product>;
   show: boolean;
   selectedProduct: Product;
@@ -30,13 +31,32 @@ export class ProductsComponent implements OnInit {
     };
     //this.getProducts();
     this.getProductsReview();
-    this.show = false;
+    
+    //this.show = false;
+    window.addEventListener('scroll', () => {
+      this.show = (window.scrollY != 0);
+    });
+  }
+
+  add20Items (){
+    let count = this.productsToShow.length;
+    if (this.productReviewList.length < count + 20)
+    {
+      this.productsToShow.push(...this.productReviewList.slice(count, this.productReviewList.length));
+    }
+    else
+    {
+        this.productsToShow.push(...this.productReviewList.slice(count, count + 20));
+    }
+
+    console.log (this.productsToShow);
   }
 
   getProductsReview (): void {
     this.productService.getProductReview().subscribe(data => {
       console.log(data);
       this.productReviewList = data;
+      this.add20Items();
     },
     error => {
       console.log(error);
@@ -76,7 +96,7 @@ export class ProductsComponent implements OnInit {
     {
       let product : Product = {
         id: idProduct,
-        name: this.productReviewList.find(p => p.idProduct == idProduct).nameProduct,
+        name: this.productReviewList.find(p => p.id == idProduct).name,
         productDetails: undefined
       };
       console.log("Añadimos un nuevo producto a la lista");
@@ -108,6 +128,7 @@ export class ProductsComponent implements OnInit {
     this.productService.getProductDetails(idProduct).subscribe(data => {
       console.log(data);
       this.selectedProduct = data;
+      console.log(this.selectedProduct);
     },
     error => {
       console.log(error);
@@ -118,6 +139,17 @@ export class ProductsComponent implements OnInit {
   closeDetails (): void {
     this.selectedProduct = null;
     this.idSelected = 0;
+  }
+
+  onScroll () {
+    if (this.productsToShow.length < this.productReviewList.length)
+    {
+      this.add20Items();
+    }  
+  }
+
+  scrollToTop () {
+    window.scrollTo(0, 0);
   }
 
 }
