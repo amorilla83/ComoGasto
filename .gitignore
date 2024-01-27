@@ -277,3 +277,5 @@ Thumbs.db
 #Project Files
 *.png
 *.jpg
+Expenses.Infrastructure.Data/.DS_Store
+Expenses.UI/.DS_Store
