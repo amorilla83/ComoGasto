@@ -27,36 +27,34 @@ import { DatePipe } from '@angular/common';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavMenuComponent,
-    HomeComponent,
-    CounterComponent,
-    FetchDataComponent,
-    StoresComponent,
-    AddPurchaseComponent,
-    ProductsComponent,
-    AddItemComponent,
-    AddStoreComponent,
-    SafeURLPipe,
-    DeleteModalComponent,
-    NameFilterPipe,
-    AddProductComponent,
-    PurchasesComponent,
-    AlertComponent,
-    ReversePipe,
-    ProductDetailsComponent,
-  ],
-  imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    AppRoutingModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbModule,
-    InfiniteScrollModule
-  ],
-  providers: [DatePipe],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+        AppRoutingModule,
+        HttpClientModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgbModule,
+        InfiniteScrollModule,
+        NavMenuComponent,
+        HomeComponent,
+        CounterComponent,
+        FetchDataComponent,
+        StoresComponent,
+        //AddPurchaseComponent,
+        ProductsComponent,
+        AddItemComponent,
+        AddStoreComponent,
+        SafeURLPipe,
+        DeleteModalComponent,
+        NameFilterPipe,
+        AddProductComponent,
+        PurchasesComponent,
+        AlertComponent,
+        ReversePipe,
+        ProductDetailsComponent
+    ],
+    providers: [DatePipe],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

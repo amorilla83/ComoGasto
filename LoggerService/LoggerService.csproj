@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.2.3" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Expenses.Core\Expenses.Core.csproj" />

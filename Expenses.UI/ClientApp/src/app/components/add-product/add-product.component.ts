@@ -1,5 +1,5 @@
 import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Brand } from 'src/app/models/brand';
 import { Item } from 'src/app/models/item';
@@ -11,11 +11,14 @@ import { BrandService } from 'src/app/services/brand.service';
 import { FormatService } from 'src/app/services/format.service';
 import { ProductService } from 'src/app/services/product.service';
 import { AddItemComponent } from '../add-item/add-item.component';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-add-product',
-  templateUrl: './add-product.component.html',
-  styleUrls: ['./add-product.component.css']
+    selector: 'app-add-product',
+    templateUrl: './add-product.component.html',
+    styleUrls: ['./add-product.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, NgFor, NgIf]
 })
 export class AddProductComponent implements OnInit, AfterContentChecked {
   @Input() productPurchase: ProductPurchase;

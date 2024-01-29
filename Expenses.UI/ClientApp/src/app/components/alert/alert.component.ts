@@ -1,10 +1,13 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-alert',
-  templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.css']
+    selector: 'app-alert',
+    templateUrl: './alert.component.html',
+    styleUrls: ['./alert.component.css'],
+    standalone: true,
+    imports: [NgIf, NgbAlert]
 })
 export class AlertComponent implements OnInit {
   @Input() successMessage : string;

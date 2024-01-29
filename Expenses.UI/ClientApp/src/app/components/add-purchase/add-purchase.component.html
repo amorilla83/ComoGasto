@@ -15,9 +15,14 @@
     </button>
   </a>
 </div>
-<ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="Data" animation="true">
-    <ngb-panel title="Fecha" id="Data" >
-      <ng-template ngbPanelContent>
+<div ngbAccordion [closeOthers]="true" #accordion="ngbAccordion" animation="true">
+  <div ngbAccordionItem="Data" #data="ngbAccordionItem" [collapsed]="false">
+    <h2 ngbAccordionHeader>
+      <button ngbAccordionButton>Fecha</button>
+    </h2>
+    <div ngbAccordionCollapse>
+      <div ngbAccordionBody>
+        <ng-template>
           <div class="input-group w-25">
             <input class="form-control" placeholder="dd-mm-yyyy" name="date" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event)">
             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
@@ -25,127 +30,135 @@
             </button>
         </div>
       </ng-template>
-    </ngb-panel>
-    <ngb-panel id="Store">
-      <ng-template ngbPanelTitle>
-        <span>Tiendas</span>
-      </ng-template>
-      <ng-template ngbPanelContent>
-        <!-- <app-stores></app-stores> -->
-        <div *ngIf="listStores.length == 0" class="row at-3">
-          <h5 class="float-start">No existe ninguna tienda en base de datos.</h5>
-        </div>
-        <div class="row at-5">
-          <div *ngFor="let store of listStores" class="position-relative col">
-              <img [src]="store.image | safeURL" height="170" width="150" (click)="selectStore(store.id)"
-              [ngClass]="(store.id == selectedStore) ? 'rounded border border-primary border-5' : 'rounded mr-1 border' " 
-              [title]="store.name" [alt]="store.name">
-            
-          </div>
-          <a (click)="triggerAddModal('tienda')">
-            <button class="btn btn-default btn-circle m-1 border" >
-              <i class="bi bi-plus-circle-fill"><span>Añadir Tienda</span></i>
-            </button>
-          </a>
-        </div>
-      </ng-template>
-    </ngb-panel>
-    <ngb-panel title="Productos" id="Product">
-      <ng-template ngbPanelContent>
-        <div class="input-group mb-3">
-          <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
-          aria-describedby="Search Product" placeholder="Enter text to search" list="productListOptions"
-          (keyup.enter)="selectedProduct($event)">
-          <datalist id="productListOptions">
-            <option *ngFor="let product of listProducts | nameFilter: searchText" [value]="product.name">{{product.name}}</option>
-          </datalist>
-        <!--</div>
-        <div class="row">-->
-          <!-- ngIf listaProducts > 0-->
-          <!-- <div *ngFor="let product of listProducts | nameFilter: searchText" class="position-relative col">
-              <button class="btn btn-default btn-circle border rounded-pill" (click)="addProductToPurchase(product.id)">
-                {{product.name}}
-              </button>            
-          </div> -->
-          <a (click)="triggerAddModal('producto')">
-            <button class="btn btn-default btn-circle ms-3 border" >
-              <i class="bi bi-plus-circle-fill"><span>  Añadir Producto</span></i>
-            </button>
-          </a>
-        </div>
-        <div class="row" *ngIf="idPurchase != 0">
-          <a (click)="prevPurchase()" class="col" aria-label="Previous">
-            <button class="btn btn-default btn-circle my-3 border" [disabled]="purchaseService.previousId == undefined || purchaseService.previousId == 0">
-              <i class="bi bi-chevron-left"><span> Previous</span></i>
-            </button>
-          </a>
-        
-          <a (click)="nextPurchase()" class="col" aria-label="Next">
-            <button class="btn btn-default btn-circle my-3 border float-end" [disabled]="purchaseService.nextId == undefined || purchaseService.nextId == 0">
-              <span> Next <i class="bi bi-chevron-right"></i></span>
-            </button>
-          </a>
-        </div>
-        <!-- Lista de productos de la compra-->
-        <div *ngIf="purchase != undefined && purchase.productList != undefined && purchase.productList.length > 0">
-          <div class="row justify-content-end my-3">
-            <label class="col-2">Total: <b>{{getTotal() | number}} €</b></label>
-          </div>
-          <div class="row">
-        <table class="table table-striped">
-          <thead class="table-light">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Producto</th>
-              <th scope="col">Marca</th>
-              <th scope="col">Formato</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Cantidad/Peso</th>
-              <th scope="col">Total</th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- con | reverse se puede poner la lista ordenada al revés-->
-            <tr *ngFor="let product of purchase.productList; let i = index"> 
-              <th scope="row">{{i+1}}</th>
-              <td>{{product.product.name}}</td>
-              <td>
-                <span *ngIf="product.productDetail != undefined && product.productDetail.brand != undefined">{{product.productDetail.brand.name}}</span>
-              </td>
-              <td>
-                <span *ngIf="product.productDetail != undefined && product.productDetail.format != undefined">{{product.productDetail.format.name}}</span>
-                <span *ngIf="(product.productDetail == undefined || product.productDetail.format == undefined) && product.weight != undefined">Granel</span>
-              </td>
-              <td>{{product.price | number}} € </td>
-              <td>
-                <span *ngIf="product.weight == null">{{product.quantity}}</span>
-                <span *ngIf="product.weight != null">{{product.weight | number}} gr.</span>
-              </td>
-              <td>{{getTotalProduct (product) | number}} €</td>
-              <td> 
-                <button type="button" class="btn" (click)="editProductPurchase(product.id)">
-                  <i class="bi bi-pencil"></i>
-                </button>
-              </td>
-              <td>
-                <button type="button" class="btn" (click)="deleteProductPurchase(product.id)">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="5"></td>
-              <td colspan="1">Total</td>
-              <td colspan="1"> {{getTotal() | number}} €</td>
-            </tr>
-          </tfoot>
-        </table>
       </div>
+    </div>
+  </div>
+  <div ngbAccordionItem="Store" #data="ngbAccordionItem">
+    <h2 ngbAccordionHeader>
+      <button ngbAccordionButton>Tiendas</button>
+    </h2>
+    <div ngbAccordionCollapse>
+      <div ngbAccordionBody>
+        <ng-template>
+          <div *ngIf="listStores.length == 0" class="row at-3">
+            <h5 class="float-start">No existe ninguna tienda en base de datos.</h5>
+          </div>
+          <div class="row at-5">
+            <div *ngFor="let store of listStores" class="position-relative col">
+                <img [src]="store.image | safeURL" height="170" width="150" (click)="selectStore(store.id)"
+                [ngClass]="(store.id == selectedStore) ? 'rounded border border-primary border-5' : 'rounded mr-1 border' " 
+                [title]="store.name" [alt]="store.name">
+              
+            </div>
+            <a (click)="triggerAddModal('tienda')">
+              <button class="btn btn-default btn-circle m-1 border" >
+                <i class="bi bi-plus-circle-fill"><span>Añadir Tienda</span></i>
+              </button>
+            </a>
+          </div>
+        </ng-template>
       </div>
-      </ng-template>
-    </ngb-panel>
-  </ngb-accordion>
+    </div>
+  </div>
+  <div ngbAccordionItem="Product" #product="ngbAccordionItem">
+    <h2 ngbAccordionHeader>
+      <button ngbAccordionButton>Productos</button>
+    </h2>
+    <ng-template>
+      <div class="input-group mb-3">
+        <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
+        aria-describedby="Search Product" placeholder="Enter text to search" list="productListOptions"
+        (keyup.enter)="selectedProduct($event)">
+        <datalist id="productListOptions">
+          <option *ngFor="let product of listProducts | nameFilter: searchText" [value]="product.name">{{product.name}}</option>
+        </datalist>
+      <!--</div>
+      <div class="row">-->
+        <!-- ngIf listaProducts > 0-->
+        <!-- <div *ngFor="let product of listProducts | nameFilter: searchText" class="position-relative col">
+            <button class="btn btn-default btn-circle border rounded-pill" (click)="addProductToPurchase(product.id)">
+              {{product.name}}
+            </button>            
+        </div> -->
+        <a (click)="triggerAddModal('producto')">
+          <button class="btn btn-default btn-circle ms-3 border" >
+            <i class="bi bi-plus-circle-fill"><span>  Añadir Producto</span></i>
+          </button>
+        </a>
+      </div>
+      <div class="row" *ngIf="idPurchase != 0">
+        <a (click)="prevPurchase()" class="col" aria-label="Previous">
+          <button class="btn btn-default btn-circle my-3 border" [disabled]="purchaseService.previousId == undefined || purchaseService.previousId == 0">
+            <i class="bi bi-chevron-left"><span> Previous</span></i>
+          </button>
+        </a>
+      
+        <a (click)="nextPurchase()" class="col" aria-label="Next">
+          <button class="btn btn-default btn-circle my-3 border float-end" [disabled]="purchaseService.nextId == undefined || purchaseService.nextId == 0">
+            <span> Next <i class="bi bi-chevron-right"></i></span>
+          </button>
+        </a>
+      </div>
+      <!-- Lista de productos de la compra-->
+      <div *ngIf="purchase != undefined && purchase.productList != undefined && purchase.productList.length > 0">
+        <div class="row justify-content-end my-3">
+          <label class="col-2">Total: <b>{{getTotal() | number}} €</b></label>
+        </div>
+        <div class="row">
+      <table class="table table-striped">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Producto</th>
+            <th scope="col">Marca</th>
+            <th scope="col">Formato</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Cantidad/Peso</th>
+            <th scope="col">Total</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- con | reverse se puede poner la lista ordenada al revés-->
+          <tr *ngFor="let product of purchase.productList; let i = index"> 
+            <th scope="row">{{i+1}}</th>
+            <td>{{product.product.name}}</td>
+            <td>
+              <span *ngIf="product.productDetail != undefined && product.productDetail.brand != undefined">{{product.productDetail.brand.name}}</span>
+            </td>
+            <td>
+              <span *ngIf="product.productDetail != undefined && product.productDetail.format != undefined">{{product.productDetail.format.name}}</span>
+              <span *ngIf="(product.productDetail == undefined || product.productDetail.format == undefined) && product.weight != undefined">Granel</span>
+            </td>
+            <td>{{product.price | number}} € </td>
+            <td>
+              <span *ngIf="product.weight == null">{{product.quantity}}</span>
+              <span *ngIf="product.weight != null">{{product.weight | number}} gr.</span>
+            </td>
+            <td>{{getTotalProduct (product) | number}} €</td>
+            <td> 
+              <button type="button" class="btn" (click)="editProductPurchase(product.id)">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn" (click)="deleteProductPurchase(product.id)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5"></td>
+            <td colspan="1">Total</td>
+            <td colspan="1"> {{getTotal() | number}} €</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    </div>
+    </ng-template>
+  </div>
+</div>

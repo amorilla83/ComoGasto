@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from 'src/app/models/product';
@@ -6,9 +6,11 @@ import { ProductPurchase } from 'src/app/models/productPurchase';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
-  selector: 'app-product-details',
-  templateUrl: './product-details.component.html',
-  styleUrls: ['./product-details.component.css']
+    selector: 'app-product-details',
+    templateUrl: './product-details.component.html',
+    styleUrls: ['./product-details.component.css'],
+    standalone: true,
+    imports: [NgIf, NgFor, DatePipe]
 })
 export class ProductDetailsComponent implements OnChanges {
 

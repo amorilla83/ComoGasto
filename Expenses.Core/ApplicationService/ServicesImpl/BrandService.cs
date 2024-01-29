@@ -32,11 +32,11 @@ namespace Expenses.Core.ApplicationService.ServicesImpl
             _cache = cache;
         }
 
-        public async Task<IEnumerable<Brand>> GetBrandsByProduct(int id)
+        /*public async Task<IEnumerable<Brand>> GetBrandsByProduct(int id)
         {
             //return await _brandRepository.GetBrandsByProduct(id);
             return null;
-        }
+        }*/
 
         public async Task<IEnumerable<Brand>> GetAllBrandsAsync()
         {

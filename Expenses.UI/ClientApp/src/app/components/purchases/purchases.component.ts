@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FilterPurchase } from 'src/app/models/filterPurchase';
 import { Purchase } from 'src/app/models/purchase';
@@ -7,11 +7,16 @@ import { Store } from 'src/app/models/store';
 import { DetailService } from 'src/app/services/detail.service';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { StoreService } from 'src/app/services/store.service';
+import { NgFor, NgIf, SlicePipe, DecimalPipe, DatePipe } from '@angular/common';
+import { NgbInputDatepicker, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
+import { AlertComponent } from '../alert/alert.component';
 
 @Component({
-  selector: 'app-purchases',
-  templateUrl: './purchases.component.html',
-  styleUrls: ['./purchases.component.css']
+    selector: 'app-purchases',
+    templateUrl: './purchases.component.html',
+    styleUrls: ['./purchases.component.css'],
+    standalone: true,
+    imports: [AlertComponent, FormsModule, ReactiveFormsModule, NgbInputDatepicker, NgFor, NgIf, NgbPagination, SlicePipe, DecimalPipe, DatePipe]
 })
 export class PurchasesComponent implements OnInit {
 

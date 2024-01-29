@@ -1,14 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from 'src/app/models/store';
 import { StoreService } from '../../services/store.service';
+import { SafeURLPipe } from '../../SafeURL.pipe';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-add-store',
-  templateUrl: './add-store.component.html',
-  styleUrls: ['./add-store.component.css']
+    selector: 'app-add-store',
+    templateUrl: './add-store.component.html',
+    styleUrls: ['./add-store.component.css'],
+    standalone: true,
+    imports: [FormsModule, ReactiveFormsModule, NgIf, SafeURLPipe]
 })
 export class AddStoreComponent implements OnInit {
   @Input() public storeEdit: Store;

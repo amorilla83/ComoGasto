@@ -2,11 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { Pagination } from 'src/app/models/pagination';
 import { Product, ProductReview } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
+import { NameFilterPipe } from '../../Filter.pipe';
+import { ProductDetailsComponent } from '../product-details/product-details.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css']
+    selector: 'app-products',
+    templateUrl: './products.component.html',
+    styleUrls: ['./products.component.css'],
+    standalone: true,
+    imports: [NgIf, FormsModule, InfiniteScrollModule, NgFor, ProductDetailsComponent, DatePipe, NameFilterPipe]
 })
 export class ProductsComponent implements OnInit {
 

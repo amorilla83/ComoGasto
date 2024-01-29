@@ -3,11 +3,16 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Item } from 'src/app/models/item';
 import { BrandService } from 'src/app/services/brand.service';
 import { FormatService } from 'src/app/services/format.service';
+import { NameFilterPipe } from '../../Filter.pipe';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-add-item',
-  templateUrl: './add-item.component.html',
-  styleUrls: ['./add-item.component.css']
+    selector: 'app-add-item',
+    templateUrl: './add-item.component.html',
+    styleUrls: ['./add-item.component.css'],
+    standalone: true,
+    imports: [NgIf, FormsModule, NgFor, NameFilterPipe]
 })
 export class AddItemComponent implements OnInit {
   @ViewChild ('inputName') inputNameElement : ElementRef

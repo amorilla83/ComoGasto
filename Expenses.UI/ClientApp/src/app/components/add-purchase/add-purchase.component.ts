@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbAccordion, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAccordionDirective, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { Item } from 'src/app/models/item';
 import { Product } from 'src/app/models/product';
 import { ProductPurchase } from 'src/app/models/productPurchase';
@@ -15,11 +16,13 @@ import { AddStoreComponent } from '../add-store/add-store.component';
 
 @Component({
   selector: 'app-add-purchase',
+  standalone: true,
   templateUrl: './add-purchase.component.html',
-  styleUrls: ['./add-purchase.component.css']
+  styleUrls: ['./add-purchase.component.css'],
+	imports: [NgbAccordionModule]
 })
 export class AddPurchaseComponent implements OnInit {
-  @ViewChild('acc') accordionComponent: NgbAccordion;
+  @ViewChild('accordion') accordionComponent: NgbAccordionDirective;
   purchase: Purchase;
   listStores: Store[] = [];
   listProducts: Product[] = [];

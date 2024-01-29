@@ -5,11 +5,15 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 import { AddStoreComponent } from '../add-store/add-store.component';
 import { AddPurchaseComponent } from '../add-purchase/add-purchase.component';
+import { SafeURLPipe } from '../../SafeURL.pipe';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-stores',
-  templateUrl: './stores.component.html',
-  styleUrls: ['./stores.component.css']
+    selector: 'app-stores',
+    templateUrl: './stores.component.html',
+    styleUrls: ['./stores.component.css'],
+    standalone: true,
+    imports: [NgFor, NgIf, SafeURLPipe]
 })
 export class StoresComponent implements OnInit {
   @Input() public name : string
