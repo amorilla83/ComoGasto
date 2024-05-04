@@ -1,12 +1,9 @@
-﻿using Expenses.Core.DomainService;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Expenses.Core.DomainService;
 using Expenses.Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Expenses.Infrastructure.Data.Repository
 {
@@ -18,7 +15,7 @@ namespace Expenses.Infrastructure.Data.Repository
 
         public async Task<PaginatedEntity<Product>> GetAllAsync(int page, int itemsPerPage)
         {
-            return  PaginatedEntity<Product>.ToPaginate(_context.Product.OrderBy(p => p.Name), page, itemsPerPage);
+            return  await PaginatedEntity<Product>.ToPaginate(_context.Product.OrderBy(p => p.Name), page, itemsPerPage);
         }
 
         public async Task<Product> GetProductDetailsAsync (int id)

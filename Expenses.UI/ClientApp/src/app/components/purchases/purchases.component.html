@@ -3,13 +3,11 @@
 <form [formGroup]="filterData" (ngSubmit)="filter()">
   <div class="modal-body row g-3">
     <div class="col-6">
-        <!-- Rango de fechas -->
-
+        <!-- Rango de fechas --> 
         <label for="dateStart" class="form-label">Fecha Inicio</label>
               <div class="input-group w-50">
-                <input class="form-control" placeholder="dd-mm-yyyy" name="dateStart" formControlName="dateStart" ngbDatepicker #d="ngbDatepicker" (dateSelect)="filter()">
-                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
-                    <i class="bi bi-calendar3"></i>
+                <input class="form-control" placeholder="dd-mm-yyyy" name="dateStart" formControlName="dateStart" ngbDatepicker #dS="ngbDatepicker" (dateSelect)="filter()">
+                <button class="btn btn-outline-secondary calendar bi bi-calendar3" (click)="dS.toggle()" type="button">
                 </button>
             </div>
     </div>
@@ -17,9 +15,9 @@
       <!-- Rango de fechas -->
       <label for="dateEnd" class="form-label">Fecha Fin</label>
             <div class="input-group w-50">
-              <input class="form-control" placeholder="dd-mm-yyyy" name="dateEnd" formControlName="dateEnd"  ngbDatepicker #d="ngbDatepicker" (dateSelect)="filter()">
-              <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
-                  <i class="bi bi-calendar3"></i>
+              <input class="form-control" placeholder="dd-mm-yyyy" name="dateEnd" formControlName="dateEnd"  ngbDatepicker #dE="ngbDatepicker" (dateSelect)="filter()">
+              <button class="btn btn-outline-secondary calendar bi bi-calendar3" (click)="dE.toggle()" type="button">
+                  
               </button>
           </div>
     </div>
@@ -69,8 +67,8 @@
             <td>{{purchase.total | number}} € </td>
             <td><a (click)="editPurchase(purchase.idPurchase)"><i class="bi bi-pencil"></i></a></td>
             <td>
-              <button type="button" class="btn" (click)="deletePurchase(purchase.idPurchase)">
-                <i class="bi bi-trash"></i>
+              <button type="button" class="btn bi bi-trash" (click)="deletePurchase(purchase.idPurchase)">
+                <!--<i class=""></i>-->
               </button>
             </td>
           </tr>

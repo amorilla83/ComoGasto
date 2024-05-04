@@ -16,7 +16,7 @@
   </a>
 </div>
 <div ngbAccordion [closeOthers]="true" #accordion="ngbAccordion" animation="true">
-  <div ngbAccordionItem="Data" #data="ngbAccordionItem" [collapsed]="false">
+    <div ngbAccordionItem="Data" #data="ngbAccordionItem" [collapsed]="false">
     <h2 ngbAccordionHeader>
       <button ngbAccordionButton>Fecha</button>
     </h2>
@@ -24,9 +24,8 @@
       <div ngbAccordionBody>
         <ng-template>
           <div class="input-group w-25">
-            <input class="form-control" placeholder="dd-mm-yyyy" name="date" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event)">
-            <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
-                <i class="bi bi-calendar3"></i>
+            <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="date" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelection($event)">
+            <button class="btn btn-outline-secondary calendar bi bi-calendar3" (click)="d.toggle()" type="button">
             </button>
         </div>
       </ng-template>
@@ -64,8 +63,14 @@
     <h2 ngbAccordionHeader>
       <button ngbAccordionButton>Productos</button>
     </h2>
+    <div ngbAccordionCollapse>
+      <div ngbAccordionBody>
     <ng-template>
       <div class="input-group mb-3">
+        <!--<label for="typeahead-basic">Producto</label>
+        <input id="productListOptions" type="text" class="form-control rounded-pill" [(ngModel)]="searchText" 
+        [ngbTypeahead]="search"/>-->
+
         <input type="text" class="form-control rounded-pill" aria-label="Search" [(ngModel)]="searchText" 
         aria-describedby="Search Product" placeholder="Enter text to search" list="productListOptions"
         (keyup.enter)="selectedProduct($event)">
@@ -109,19 +114,41 @@
         <thead class="table-light">
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Producto</th>
-            <th scope="col">Marca</th>
-            <th scope="col">Formato</th>
-            <th scope="col">Precio</th>
-            <th scope="col">Cantidad/Peso</th>
-            <th scope="col">Total</th>
+            <th scope="col" (click) = "sort('product')" class="sortable">
+              Producto
+              <i *ngIf="currentSortProperty === 'product'" [class]="currentSortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+            </th>
+            <th scope="col" (click) = "sort('brand')" class="sortable">
+              Marca
+              <i *ngIf="currentSortProperty === 'brand'" [class]="currentSortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+            </th>
+            <th scope="col" (click) = "sort('format')" class="sortable">
+              Formato
+              <i *ngIf="currentSortProperty === 'format'" [class]="currentSortDirection === 'asc' ? 'bi bi-arrow-up' : 
+                          currentSortDirection === 'asc' ? 'bi bi-arrow-down' : ''"></i>
+            </th>
+            <th scope="col" (click) = "sort('price')" class="sortable">
+              Precio
+              <i *ngIf="currentSortProperty === 'price'" [class]="currentSortDirection === 'asc' ? 'bi bi-arrow-up' : 
+                          currentSortDirection === 'asc' ? 'bi bi-arrow-down' : ''"></i>
+            </th>
+            <th scope="col" (click) = "sort('quantity')" class="sortable">
+              Cantidad/Peso
+              <i *ngIf="currentSortProperty === 'quantity'" [class]="currentSortDirection === 'asc' ? 'bi bi-arrow-up' : 
+                          currentSortDirection === 'asc' ? 'bi bi-arrow-down' : ''"></i>
+            </th>
+            <th scope="col" (click) = "sort('total')" class="sortable">
+              Total
+              <i *ngIf="currentSortProperty === 'total'" [class]="currentSortDirection === 'asc' ? 'bi bi-arrow-up' : 
+                          currentSortDirection === 'asc' ? 'bi bi-arrow-down' : ''"></i>
+            </th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
           <!-- con | reverse se puede poner la lista ordenada al revés-->
-          <tr *ngFor="let product of purchase.productList; let i = index"> 
+          <tr *ngFor="let product of sortedData; let i = index"> 
             <th scope="row">{{i+1}}</th>
             <td>{{product.product.name}}</td>
             <td>
@@ -138,13 +165,11 @@
             </td>
             <td>{{getTotalProduct (product) | number}} €</td>
             <td> 
-              <button type="button" class="btn" (click)="editProductPurchase(product.id)">
-                <i class="bi bi-pencil"></i>
+              <button type="button" class="btn bi bi-pencil" (click)="editProductPurchase(product.id)">
               </button>
             </td>
             <td>
-              <button type="button" class="btn" (click)="deleteProductPurchase(product.id)">
-                <i class="bi bi-trash"></i>
+              <button type="button" class="btn bi bi-trash" (click)="deleteProductPurchase(product.id)">
               </button>
             </td>
           </tr>
@@ -160,5 +185,7 @@
     </div>
     </div>
     </ng-template>
+      </div>
+    </div>
   </div>
 </div>

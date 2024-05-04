@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { CSP_NONCE, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { isThisTypeNode, textChangeRangeIsUnchanged } from 'typescript';
 import { ProductPurchase } from '../models/productPurchase';
@@ -30,6 +30,7 @@ export class PurchaseService {
     if (this.purchaseListSubject.getValue().length > 0)
     {
       let index = this.purchaseListSubject.getValue().findIndex(p => p.idPurchase == currentId);
+      console.log(index);
       if (this.purchaseListSubject.getValue().length > index)
       {
         this.nextId = this.purchaseListSubject.getValue()[index+1].idPurchase;

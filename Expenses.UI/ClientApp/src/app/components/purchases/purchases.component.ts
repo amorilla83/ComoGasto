@@ -73,6 +73,8 @@ export class PurchasesComponent implements OnInit {
         this.errorMessage ="Error al obtener el listado de compras";
       }
     );
+
+    //TODO: Marcar los días del calendario en los que haya compras
   }
 
   deletePurchase (id : number) {
@@ -98,16 +100,36 @@ export class PurchasesComponent implements OnInit {
   filter () {
     console.log(this.filterData);
     let storeId = this.filterData.get('storeId').value;
+    let dateStart = this.filterData.get('dateStart').value;
+    let dateEnd = this.filterData.get('dateEnd').value;
+    let filter = false;
     if (storeId != "" && storeId != null)
     {
       console.log ("Se filtra por tienda");
       this.filterPurchases = this.totalPurchases.filter(p => p.store.id == storeId);
+      filter = true;
     }
-    else 
+    
+    if (dateStart != null)
     {
-      //De momento solo aplico el filtro de tiendas, cuando haya más habrá que aplicar los que corresponda
+      console.log("Filtramos por fecha de inicio");
+      console.log(dateStart);
+      this.filterPurchases = this.totalPurchases.filter(p => p.date > dateStart);
+      filter = true;
+    }
+
+    if (dateEnd != null)
+    {
+      console.log("Filtramos por fecha de fin");
+      this.filterPurchases = this.totalPurchases.filter(p => p.date < dateEnd);
+      filter = true;
+    }
+    
+    if (!filter) 
+    {
       this.filterPurchases = this.totalPurchases;
     }
+    
     this.purchaseService.setPurchaseList(this.filterPurchases);
   }
 

@@ -1,7 +1,8 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgbAccordionDirective, NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { NgbAccordionDirective, NgbDate, NgbDateAdapter, NgbDateParserFormatter, NgbDateStruct, NgbDatepickerModule, NgbModal, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { Item } from 'src/app/models/item';
 import { Product } from 'src/app/models/product';
 import { ProductPurchase } from 'src/app/models/productPurchase';
@@ -13,28 +14,51 @@ import { StoreService } from 'src/app/services/store.service';
 import { AddItemComponent } from '../add-item/add-item.component';
 import { AddProductComponent } from '../add-product/add-product.component';
 import { AddStoreComponent } from '../add-store/add-store.component';
-
+import { AlertComponent } from '../alert/alert.component';
+import { NgIf, NgFor, CurrencyPipe, DecimalPipe, NgClass } from '@angular/common';
+import { CustomAdapter, CustomDateParserFormatter } from 'src/app/DataAdapter';
+import { SafeURLPipe } from 'src/app/SafeURL.pipe';
+import { NameFilterPipe } from 'src/app/Filter.pipe';
+import { Observable, OperatorFunction } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-add-purchase',
   standalone: true,
   templateUrl: './add-purchase.component.html',
   styleUrls: ['./add-purchase.component.css'],
-	imports: [NgbAccordionModule]
-})
+	imports: [NgbAccordionModule, AlertComponent, RouterModule, NgIf, NgFor, NgbDatepickerModule, SafeURLPipe, NgbTypeaheadModule,
+    NameFilterPipe,CurrencyPipe, DecimalPipe, NgClass, FormsModule],
+  /*providers: [
+		{ provide: NgbDateAdapter, useClass: CustomAdapter },
+		{ provide: NgbDateParserFormatter, useClass: CustomDateParserFormatter },
+	],
+*/})
 export class AddPurchaseComponent implements OnInit {
   @ViewChild('accordion') accordionComponent: NgbAccordionDirective;
+  date: NgbDateStruct;
   purchase: Purchase;
   listStores: Store[] = [];
   listProducts: Product[] = [];
   successMessage: string;
   errorMessage: string;
   //listProductsPurchase: ProductPurchase[] = [];
-  date: NgbDateStruct;
   title: string;
   searchText: string;
   selectedStore: number;
   idPurchase: number;
+  sortedData: ProductPurchase[] = [];
+  currentSortDirection : string;
+  currentSortProperty : string = "index";
   //selectedStore: Store;
+
+  /*search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) =>
+  text$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    map((term) =>
+      term.length < 2 ? [] : this.listProducts.filter((p) => p.name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10),
+    ),
+  );*/
 
 
   constructor(private storeService: StoreService,
@@ -52,6 +76,8 @@ export class AddPurchaseComponent implements OnInit {
 
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.onSameUrlNavigation = 'reload';
+    this.getStores();
+    this.getProducts();
     this.esEditar();
   }
 
@@ -69,14 +95,14 @@ export class AddPurchaseComponent implements OnInit {
             count: 0,
             total: 0
           };
+          this.sort();
           this.purchase.dateString = this.purchase.date.toLocaleDateString();
           console.log(this.purchase.dateString);
           console.log (this.purchase);
           this.date = { day: this.purchase.date.getDate(), month: this.purchase.date.getMonth() + 1, year: this.purchase.date.getFullYear() };
           this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year + " en " + this.purchase.store.name;
           this.selectedStore = this.purchase.store.id;
-          this.getStores();
-          this.getProducts();
+          console.log(this.selectedStore);
           this.getProductsPurchase();
           this.accordionComponent.toggle("Product");
 
@@ -132,6 +158,7 @@ export class AddPurchaseComponent implements OnInit {
         console.log(data);
         this.purchase.productList = data;
         this.purchase.count = this.purchase.productList.length;
+        this.sort();
       },
       error => {
         console.log(error);
@@ -140,13 +167,13 @@ export class AddPurchaseComponent implements OnInit {
     )
   }
 
-  onDateSelection(event) {
+  onDateSelection(date: NgbDate) {
     console.log(this.date);
+    this.date = date;
     this.purchase.date = new Date(this.date.year, this.date.month - 1, this.date.day)
     this.purchase.dateString = this.date.day + "/" + this.date.month + "/" + this.date.year;
     this.title = "Compra del día " + this.date.day + "/" + this.date.month + "/" + this.date.year;
     console.log(this.purchase.date);
-    this.getStores();
     this.accordionComponent.toggle("Store");
   }
 
@@ -187,7 +214,6 @@ export class AddPurchaseComponent implements OnInit {
     this.purchase.store = this.listStores.find(s => s.id == id);
     this.selectedStore = id;
     this.title += " en " + this.purchase.store.name;
-    this.getProducts();
     this.accordionComponent.toggle("Product");
   }
 
@@ -300,6 +326,7 @@ export class AddPurchaseComponent implements OnInit {
                   console.log(res);
                   this.purchase.productList = [];
                   this.purchase.productList.push(dataProduct);
+                  this.sort();
                   console.log(this.purchase);
                 },
                 error => {
@@ -322,6 +349,7 @@ export class AddPurchaseComponent implements OnInit {
                 this.successMessage = "Producto añadido a la compra";
                 console.log(res);
                 this.purchase.productList.push(data);
+                this.sort();
                 console.log(this.purchase.productList);
               },
               error => {
@@ -344,6 +372,7 @@ export class AddPurchaseComponent implements OnInit {
 
         let indexDelete = this.purchase.productList.findIndex(p => p.id == idProductPurchase);
         this.purchase.productList.splice(indexDelete, 1);
+        this.sort();
       },
       error => {
         console.log(error);
@@ -372,6 +401,7 @@ export class AddPurchaseComponent implements OnInit {
                 //this.purchase.productList.splice(indexDelete, 1);
                 //this.purchase.productList.push(res);
                 this.purchase.productList[index] = res;
+                this.sort();
                 console.log(this.purchase.productList);
               },
               error => {
@@ -424,6 +454,65 @@ export class AddPurchaseComponent implements OnInit {
     }
 
     return total;
+  }
+
+  sort (property : string = "index") {
+    if (property == 'index' && this.currentSortProperty == "index")
+    {
+      //No se ordena
+      console.log("no se ordena")
+      this.sortedData = this.purchase.productList;
+      return;
+    }
+    else if (property == "index" && this.currentSortProperty != "index")
+    {
+      console.log("se utiliza el orden anterior " + this.currentSortProperty);
+      //Se utiliza el orden anterior
+      this.sort(this.currentSortProperty);
+    }
+    else if (property == this.currentSortProperty) {
+      if (this.currentSortDirection === 'asc')
+      {
+        console.log("Orden desc");
+        this.currentSortDirection = 'desc';
+      }
+      else if (this.currentSortDirection == '')
+      {
+        console.log("Orden asc");
+        this.currentSortDirection = 'asc';
+      }
+      else
+      {
+        console.log("Sin orden");
+        this.sortedData = this.purchase.productList;
+        this.currentSortDirection = '';
+        this.currentSortProperty = "index";
+        return;
+      }
+    }
+    else
+    {
+      console.log("informa variables current");
+      this.currentSortDirection = 'asc';
+      this.currentSortProperty = property;
+    }
+    console.log(this.currentSortDirection);
+    console.log(this.currentSortProperty);
+
+
+    this.sortedData.sort((a, b) => {
+      let comparison : number;
+      switch(property) {
+        case "product":
+          {
+            comparison = a.product.name > b.product.name ? 1 : -1;
+            break;
+          }
+      }
+      console.log(a);
+      console.log(b);
+      return this.currentSortDirection === 'asc' ? comparison : -comparison;
+    });
   }
 
   async addPurchase() {
