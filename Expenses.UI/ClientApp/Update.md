@@ -13,3 +13,8 @@ Si da errores de dependencias, cambiar en el package.json a la versi√≥n que est√
 ## Update Bootstrap
 
 ng update @ng-bootstrap/ng-bootstrap
+
+## DS_Store
+Si da problemas con el DS_Store, eliminarlo con el siguiente comando
+
+find `npm list -g | head -1` -name '.DS_Store' -type f -delete
