@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using AutoMapper;
 using Expenses.API.Models.Brands;
 using Expenses.API.Models.Stores;
@@ -38,7 +39,7 @@ namespace Expenses.API.Models
                 .ForMember(p =>
                 p.StoreId,
                 opt => opt.MapFrom(src => src.Store.Id))
-                .ForMember(p => p.Date, opt => opt.MapFrom(src => Convert.ToDateTime(src.DateString)))
+                .ForMember(p => p.Date, opt => opt.MapFrom(src => DateTime.Parse(src.DateString, new CultureInfo("es-ES"))))
                 .ForMember(p =>
                 p.Store,
                 opt => opt.Ignore());
